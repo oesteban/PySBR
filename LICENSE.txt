@@ -1,0 +1,24 @@
+Copyright (c) 2013, BIT-UPM and GIB-UB
+All rights reserved.
+
+
+The PySBR Project modules are licensed under different terms, please find
+them in the LICENSE.txt file placed on every root folder.
+
+The individuals that have participated in this project are credited
+in the README.md file.
+
+Works derived from this project must follow the licensing terms, and please
+reference the appropriate works among those specified in the README.md file.
+
+
+BIT-UPM:
+Biomedical Image Technologies, Departamento de Ing. Electrónica,
+ETSI Telecomunicación, Universidad Politécnica de Madrid. 
+Av. Complutense 30, 28040. MADRID-SPAIN
+
+
+GIB-UB:
+Biophysics and Bioengineering Unit, Physiological Sciences Department I, School of 
+Medicine, University of Barcelona-IDIBAPS.
+C/ Casanova 143 – Planta 5 (Ala Nord), 08036. BARCELONA - SPAIN.

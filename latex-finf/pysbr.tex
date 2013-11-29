@@ -1,0 +1,1276 @@
+\documentclass{frontiers}
+% From http://www.frontiersin.org/Neuroinformatics/authorguidelines, original research has:
+% Abstract: < 2001 characters
+% Running title: <6 words
+% Figures & tables: <16
+% Total length: <12.001 words
+% Final PDF length: <13 pages
+
+\usepackage{url}
+\usepackage[acronym]{glossaries}
+\usepackage[hidelinks]{hyperref}
+
+%\usepackage[boxed,lined,commentsnumbered]{algorithm2e}
+% this really should be part of the frontiers style package 
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+\usepackage[font=footnotesize]{subcaption}
+
+% Set this to true if you submit the article
+%  it will put all the figures at the end 
+\newboolean{submit}
+\setboolean{submit}{false}
+
+
+\ifthenelse{\boolean{submit}}
+{
+  % if this is the submission version put all images at the end
+  % Should they be in the file at all? I think Frontiers wants the 
+  % images as separate files 
+  \usepackage[nofiglist,figuresonly]{endfloat}
+  \renewcommand{\efloatseparator}{\mbox{}}
+  \newcommand{\insertgraphic}[2]{}
+  \newcommand{\fixme}[1]{}
+}
+{
+  % Until we submit we can have fixmes, Setting the version to submit will 
+  % let latex choke on this one forcing us to really fix it ;) 
+  \newcommand{\fixme}[1]{{\color{red}{\bf FIXME: }\emph{#1}}}
+  \newcommand{\insertgraphic}[2]{\includegraphics[#1]{#2}}
+}
+
+\usepackage[procnames]{listings}
+\definecolor{pink}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{50,120,110}
+\definecolor{string}{RGB}{160,0,0}
+\definecolor{keywords}{RGB}{0,150,0}
+
+\usepackage{relsize}
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+\lstset{
+  language=Python,
+  showstringspaces=false,
+  formfeed=\newpage,
+  tabsize=4,
+  breaklines=true,
+  basicstyle=\ttfamily\smaller\relax,
+  keywordstyle=\color{keywords}\bfseries,
+  commentstyle=\color{comments}\itshape,
+  stringstyle=\color{string},
+  showstringspaces=false,
+  %identifierstyle=\color{green},
+  procnamekeys={def,class},
+  morekeywords={models, lambda, forms, as, from},
+  numbers=left,
+  numberstyle=\smaller\color{black!60},
+  stepnumber=1,
+  numbersep=5pt,
+  frame=single,
+  xleftmargin= 40pt,
+  xrightmargin= 20pt,
+  framexleftmargin=20pt,
+  frameround=tttt,
+  fillcolor=\color{gray!10},
+  backgroundcolor=\color{gray!10}
+}
+
+\usepackage{algorithm}
+\usepackage{mdframed}
+
+\mdfdefinestyle{algstyle}{%
+  backgroundcolor=gray!10,
+  topline=false, rightline=false, leftline=false, bottomline=true,
+  frametitlerule=true,
+  skipabove=15pt, skipbelow=10pt,
+  innertopmargin=\topskip,innerbottommargin=5pt,
+  frametitlebackgroundcolor=white,
+  frametitleaboveskip=10pt, frametitlebelowskip=0pt,
+  frametitlerule=true, frametitlerulewidth=0.5pt,
+  frametitlealignment=\raggedright,
+  font=\footnotesize
+  %subtitlebelowline=true
+}
+
+\mdtheorem[style=algstyle]{myalgorithm}{Algorithm}
+\def\myalgorithmautorefname{Algorithm}
+
+\copyrightyear{2013}
+\pubyear{}
+
+%%% write here for which journal %%%
+\def\journal{Neuroinformatics}
+\def\DOI{}
+\def\articleType{Original Research}
+\def\keyFont{\fontsize{6}{11}\helveticabold }
+\def\firstAuthorLast{Esteban {et~al}} %use et al only if is more than 1 author
+\def\Authors{Oscar Esteban\,$^{1,3,*}$, 
+             Gert Wollny\,$^{1,3}$, 
+             Aida Ni\~nerola-Baiz\'an\,$^{2,3}$, 
+             Berta Mart\'i-Fuster\,$^{2,3}$,
+             Mar\'ia Jes\'us Ledesma-Carbayo\,$^{1,3}$, 
+             Xavier Setoain\,$^{3,4}$, and 
+             Andr\'es Santos\,$^{1,3}$}
+
+\def\Address{$^{1}$ Biomedical Image Technologies (BIT), ETSI Telecomunicaci\'on, 
+               Universidad Polit\'ecnica de Madrid, Madrid, Spain \\
+             $^{2}$ Biophysics and Bioengineering Unit, Physiological Sciences Department I, 
+               School of Medicine, University of Barcelona, Barcelona, Spain\\
+             $^{3}$ Biomedical Research Networking center in Bioengineering, 
+               Biomaterials and Nanomedicine (CIBER-BBN), Zaragoza, Spain\\
+            $^{4}$ Servei de Medicina Nuclear, Hospital Cl\'inic, Barcelona, Spain}
+\def\corrAuthor{O. Esteban}
+\def\corrAddress{Biomedical Image Technologies (BIT), Av. Complutense 30, 
+                 ETSI Telecomunicaci\'on, Lab. C203, E-28040 Madrid, Spain}
+\def\corrEmail{oesteban@die.upm.es}
+
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\vx}{\vect{x}}
+\newcommand{\vy}{\vect{y}}
+\newcommand{\lm}[1]{\ensuremath{\mathbf{l}_{#1}}}
+
+\newcommand{\emitem}[1]{\item \emph{#1}}
+
+\newcommand{\ab}{\ensuremath{\partial \mathbf{A}}}
+\newcommand{\gc}{\ensuremath{\mathbf{g}_{\ab}}}
+
+\newcommand{\ma}{\ensuremath{\mu(\lm{1}, \ab)}}
+\newcommand{\va}{\ensuremath{\sigma(\lm{1}, \ab)}}
+\newcommand{\degree}{\ensuremath{^{\circ}}}
+
+\newcommand{\pc}{\ensuremath{\mathbf{c}}}
+\newcommand{\pb}{\ensuremath{\mathbf{b}}}
+\newcommand{\pa}{\ensuremath{\mathbf{a}}}
+\newcommand{\ps}{\ensuremath{\mathbf{s}}}
+\newcommand{\ph}{\ensuremath{\mathbf{h}}}
+\newcommand{\px}{\ensuremath{\mathbf{x}}}
+\newcommand{\pr}{\ensuremath{\mathbf{r}}}
+
+\newcommand{\hp}[1]{\ensuremath{\mathbf{h}_{#1}}}
+
+
+\begin{document}
+\onecolumn
+\firstpage{1}
+
+\title[Evaluating normalization]%
+  {Evaluating spatial normalization in fully automated SPECT imaging quantification protocols}
+
+\author[\firstAuthorLast ]{\Authors}
+\address{}
+\correspondance{}
+\editor{}
+\topic{Python in Neuroscience II}
+
+\maketitle
+
+\makeglossaries
+
+\newglossaryentry{spm}{%
+  name        = {SPM},%
+  description = {Statistical Parametric Mapping},%
+  first       = {\emph{SPM} (Statistical Parametric Mapping, \cite{ashburner_unified_2005})},%
+}
+
+\newglossaryentry{syn}{%
+  name        = {SyN},%
+  description = {Symmetric Normalization transformation model},%
+  first       = {Symmetric Normalization (SyN) transformation model \citep{avants_symmetric_2008}},%
+}
+
+\newglossaryentry{ants}{%
+  name        = {ANTS},%
+  description = {Advanced Normalization tools},%
+  first       = {\emph{ANTS} (Advanced Normalization tools, \cite{avants_ants:_2013})},%
+}
+
+\newglossaryentry{itk}{%
+  name        = {ITK},%
+  description = {Insight Registration \& Segmentation Toolkit},%
+  first       = {\emph{ITK} (the Insight Registration \& Segmentation Toolkit, \url{http://www.itk.org})},%
+}
+
+\newglossaryentry{pysbr}{%
+  name        = {PySBR},%
+  description = {Shape-based registration in Python},%
+  first       = {\emph{PySBR} (shape-based registration in Python)},%
+}
+
+\newglossaryentry{nipype}{%
+  name        = {\emph{nipype}},%
+  description = {Neuroimaging in Python, Pipelines and Interfaces},%
+  first       = {\emph{nipype} (Neuroimaging in Python, Pipelines and Interfaces, \cite{gorgolewski_nipype:_2011})},%
+}
+
+\newacronym{mri}{MRI}{magnetic resonance imaging}
+\newacronym{montecarlo}{MC}{Monte-Carlo}
+\newacronym[longplural={regions of interest}]{roi}{ROI}{region of interest}
+\newacronym{spect}{SPECT}{single photon emission computed tomography}
+\newacronym{pet}{PET}{positron emission tomography}
+\newacronym{mi}{MI}{mutual Information}
+\newacronym{nmi}{NMI}{normalized mutual information}
+\newacronym{dat}{DAT}{dopamine transporter}
+\newacronym{datscan}{DaTSCAN}{dopamine transporter imaging}
+\newacronym{t1}{T1}{T1-weighted MRI}
+\newacronym{fov}{FoV}{field of view}
+\newacronym{pv}{PV}{partial volume effect}
+\newacronym{ebs}{EBS}{elastic body splines}
+\newacronym{pde}{PDE}{partial differential equation}
+\newacronym{pca}{PCA}{principal components analysis}
+\newacronym{lehr}{LEHR}{low-energy high-resolution}
+\newacronym{csf}{CSF}{cerebrospinal fluid}
+\newacronym{wm}{WM}{white matter}
+\newacronym{gm}{GM}{grey matter}
+\newacronym{json}{JSON}{JavaScript Object Notation}
+\newacronym{ibr}{IBR}{intensity-based registration}
+
+
+\begin{abstract}
+\section{}
+Absolute quantification of \gls*{spect} will
+  provide the necessary standardization for the diagnosis and monitoring
+  of movement disorders and a number of related diseases.
+In order to achieve this standardization, the full automation of the
+  process requires precise image normalization to/from a standard space.
+However, quantification protocols generally lack of a structural reference
+  (e.g. T1-weighted MRI) for high-standard accuracy.
+In this paper, we present a new evaluation framework implemented with \emph{nipype},
+  and we propose \gls*{pysbr}, a new spatial normalization tool implemented in Python for 
+  its use in the described environment.
+\gls*{pysbr} detects particular shape-features in the SPECT images and
+  minimizes a distance to the corresponding features in standard space.
+Densification of the resulting sparse displacements field is achieved by using
+  Elastic-body splines as deformation model.
+We use the evaluation tool to study \gls*{pysbr} and a standard normalization
+  scheme employing intensity-based non-linear image registration, both starting 
+  from an affine initialization. 
+The evaluation was run on 60 synthetic  phantoms and 23 realistic datasets simulated 
+  for a gamma-camera commonly-used in the clinical routine.
+Finally, we compare the proposed tools on the normalization of 5 real datasets.
+Results show that both approaches on average do not offer significant improvements over 
+  the affine initialization.
+Nevertheless, \gls*{pysbr} shows potential for the use in a different
+  imaging settings with better signal-to-noise ratio that justifies its further development.
+
+
+\tiny
+  \section{Keywords:} non-linear registration, spect, pet, quantification, movement disorders
+\end{abstract}
+
+%\twocolumn
+
+\glsresetall[\acronymtype]
+
+\section{Introduction}
+\label{sec:intro}
+\Gls*{spect} imaging of the dopaminergic system using
+  specific agents (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
+  value to discriminate parkinsonian syndromes from other movement
+  disorders by quantifying the \acrlong*{dat} binding \citep{bajaj_clinical_2013}.
+Quantification of \gls*{datscan} can facilitate early 
+  diagnosis, progression follow-up, and assessment of treatment
+  strategies. In clinical routine, this application is generally
+  performed by visual evaluation of the \gls*{spect} images
+  (see \autoref{fig:01}, subfigure A).
+Quantification protocols typically define a set of \glspl*{roi} along the
+  striatum structures to measure the uptake and characterize the pattern.
+
+Some efforts have been made to help automate the process and standardize
+  the outcome \citep{calvini_basal_2007,badiavas_spect_2011}.
+A first automation step requires finding the mapping between the subject's
+  study and an appropriate template, on which the quantification \glspl*{roi}
+  are defined.
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% TODO: remove the figure environment
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\begin{figure*}[ht]
+\insertgraphic{width=1.0\linewidth}{figures/01-ProblemStatement}
+\caption{\label{fig:01} \textbf{Problem statement.} 
+On the left panel, A sub-figures show the standard classification by 
+  the progression state of Parkinson's Disease: 
+  A0 (normal), A1 (grade 1), A2 (grade 2), and A3 (grade 3). 
+  (reproduced from \cite{center_for_drug_evaluation_and_research_fda_2011}).
+On the right panel, B0 is a close-up of the template to which the subjects are registered, B1 depicts 
+  one pathologic subject (grade 1) for which a corresponding \gls*{mri} scan was available, 
+  and B2 is the resulting template non-linearly mapped onto subject's space using a standard 
+  image registration procedure.
+Finally, C shows the \gls*{mri} scan corresponding to B1.
+In blue color, the contour of \glspl*{roi} of caudate and putamen structures.
+In yellow, the corresponding contours from the template projected into the subject's space through 
+  the deformation field obtained with non-linear registration, showing the problematic matching
+  or the underlying anatomy.
+}
+\end{figure*}
+
+This image registration process is challenging for two reasons:
+Firstly, given their low resolution  (typically around $2.5mm\times2.5mm\times2.5mm$)
+  and the imaged feature itself, \gls*{datscan} images retain little information about the
+  underlying anatomical structure  (see \autoref{fig:01}). 
+In addition, since clinical protocols usually do not include the acquisition
+  of an anatomical image (e.g. T1 weighted \gls*{mri}), 
+  no structural reference is available.
+Secondly, the natural difficulty of subject-to-atlas image registration
+  posed by severe pathologies (e.g. a tumor, resected tissues, etc.) 
+  is boosted in this application by the fact that the information 
+  contained in the images dramatically changes with the advance of
+  the imaged disorder.
+Specifically, due to the predominant uptake that occurs at caudal and putaminal areas,
+  \gls*{datscan} images of healthy subjects present two
+  ``comma-shaped'' patterns at the locations of the striatum nuclei
+  (\autoref{fig:01}, A0).
+  However, in subjects affected by parkinsonian syndromes, the associated
+  neuronal degeneration results in a lower uptake in the putamen.
+Therefore, the activity registered by the corresponding \gls*{datscan} presents
+  ``point-like'' patterns located at the areas of caudates (\autoref{fig:01}, A1-A3).
+The alignment problem between the subject's \gls*{spect} image and the
+  \gls*{datscan} template is solved with acceptable accuracy by standard
+  intensity-based registration restricted to affine transformations (12 parameters).
+Such algorithms maximize the image overlap and are able to find a reasonable solution
+  to the rigid-body mapping (i.e. head location and 3D rotations) and the head size matching.
+Even though the subject's \gls*{spect} is globally aligned with respect to the
+  template, many cases present \gls*{datscan} activity patterns that do
+  not match the locations in the template, thereby misleading quantification.
+This anatomical variability could easily be overcome by using a structural
+  reference, but this is not available.
+A common solution is to refine the affine mapping with a second
+  non-linear registration step. 
+Many standardized and readily available tools for image registration include a wide range 
+  of intensity-based matching metrics  and deformation models.
+However, standard intensity-based non-linear registration are rather ill-posed for 
+  this application, because their included metrics do not take the shape of the registered
+  features into account. 
+The problem is more prominent in subjects with advanced progression of
+  the disorder: as their patterns are ``point-like'', the registration
+  methodology converts them into ``comma-like'' patterns to match the template,
+  introducing an artificial ``stretching''.
+To make the registration problem more tractable, non-linear registration 
+  methodologies generally include regularization constraints that help
+  find plausible solutions.
+For the problem at hand, very strong regularization conditions may not 
+  capture the anatomical variability of the subject with respect to the 
+  template (i.e. left-right structures are not symmetrically located),
+  and the outcome is not very different from the mapping
+  obtained with registration procedures restricted to affine
+  transformations (which are an extreme case of very strong
+  regularization).
+On the contrary, relaxing the regularization constraints may hinder the quantification 
+  because ``comma-shaped'' patterns may be turned into ``point-like'' and vice-versa
+  depending on the choice of the template (\autoref{fig:01}, right panel).
+
+In this work we present an evaluation framework of spatial normalization
+  applied in \gls*{datscan} absolute quantification protocols.
+The evaluation framework comprises the following parts: 
+(1) A workflow for generating very simplistic phantoms from
+   \gls*{mri} data, to be used in the evaluation framework;
+(2) a fast intensity-based registration process to search for an affine
+   transformation that initializes the spatial normalization;
+(3) a template-to-image registration process to refine normalization,
+   where the tool under evaluation can be inserted; and
+(4) a benchmarking and reporting module to gather and present results.
+
+We created the evaluation framework as a test platform
+  to guide the development and validation of \gls*{pysbr}, a tool 
+  implemented in Python (with several C++ modules) that provides a novel
+  approach to achieve fully-automated spatial normalization.
+We propose a solution to the described normalization problem using a
+  shape-based registration metric that locates the centers of the caudates,
+  evaluates the eccentricity of the registered activity,
+  and individually orientates the left and right structures.
+Therefore, the hypothesis behind our approach is that it is possible to detect
+  an approximation of the underlying anatomy on the \gls*{spect} images, and
+  independently optimize the involved structures of each hemisphere for
+  an improved match.
+
+We finally illustrate the use of evaluation framework,
+  conducting a number of experiments (described in
+  \autoref{sec:evaluation}) to cross-compare \gls*{pysbr}
+  to an implementation of the standard spatial normalization
+  approach.
+We will refer to these refinement approaches as \gls*{ibr},
+  in contrast to ``shape-based registration''.
+  
+Quantitative evaluation of the tools are performed on synthetic
+  phantoms and simulated \gls*{spect} images (\autoref{sec:data}).
+Finally, the aptness of the tools is also tested on real datasets,
+  assessed by visual inspection (see \autoref{sec:results_real}).
+The evaluation framework, \gls*{pysbr}, one template,
+  and a representative subset of the presented data are publicly 
+  available in \url{https://github.com/oesteban/PySBR}.
+
+\section{Material \& Methods} \label{sec:methods}
+
+\subsection{Data}\label{sec:data}
+ 
+
+\subsubsection{Synthetic phantoms database} %
+\label{sec:data_synthetic}
+We randomly selected 60 source T1 images from a publicly available
+  \gls*{mri} database \citep{hill_ixi_2006} of healthy volunteers.
+The striatal cavities and a brain mask were obtained from each dataset
+  using \emph{Freesurfer} \citep{fischl_freesurfer_2012}.
+Then, based on the extracted \glspl*{roi} corresponding to the caudate and putamen
+  nuclei,  we generated very simplistic \gls*{spect}-like images mimicking disease in
+  four stages of severity: healthy, and the three remaining stages.
+  Therefore, a total of four datasets (healthy as ``grade 0'',
+  and diseased as ``grades 1, 2, and 3'') were generated from each \gls*{mri}.
+Finally, all the synthetic phantoms were downsampled and cropped to the characteristic
+  grid and \acrlong*{fov} of typical \glspl*{datscan} ($100\times100\times100$ matrix,
+  $2.56mm\times2.56mm\times2.56mm$ voxel size).
+
+\subsubsection{Simulated \gls*{spect} database} %
+\label{sec:data_simulated}
+A cohort of 23 datasets was simulated from real \gls*{mri} data.
+  \Gls*{spect} projections were simulated  for a Siemens E-CAM gamma
+  camera equipped with a \acrlong*{lehr} parallel-hole collimator.
+The acquisition parameters were selected accordingly to routine conditions.
+Thus, a total of 128 projections were obtained over 360{\degree} using a
+  bin size of $3.9\times3.9mm^{2}$, a radius of rotation of $14.5cm$, and
+  a $15\%$ energy window.
+Subject-specific projections were obtained by using an in-house version
+  \citep{crespo_quantification_2008} of the \emph{SimSET} software
+  \citep{harrison_preliminary_1993}, which adapts the original code
+  to $^{123}$I-labelled radioligands.
+This version uses different approaches to model the interactions of
+  the high-energy photons within the collimator and the detector depending
+  on the energy of the simulated photons 
+  \citep{cot_study_2004, cot_modeling_2006}.
+To generate the activity maps, 23 \gls*{mri} images acquired from healthy
+  volunteers were segmented into \gls*{gm}, \gls*{wm}, and \gls*{csf}
+  using \gls*{spm}.
+A different striatal to background ratio was considered for each individual
+  (i.e. each subject was assigned a disease stage randomly).
+Non-specific uptake was considered to be the same for \gls*{gm} and \gls*{wm},
+  whereas the activity from the \gls*{csf} regions was assumed to be zero.
+Specific uptake was considered by the segmentation of the striatal cavities
+  using \emph{FIRST} \citep{patenaude_bayesian_2011},
+  and selecting the caudate and putamen nuclei of each subject.
+Attenuation maps were generated from a normalized CT image that was
+  segmented into water and bone using a threshold value.
+Non-uniformity of the attenuation maps was obtained by setting the
+  corresponding attenuation coefficients for brain tissue and bone
+  depending on the energy of the simulated photons.
+Projections were filtered with a 2D-Butterworth filter ($0.64cm^{-1}$,
+  order 5). Finally, reconstruction was performed by using filtered 
+  back-projection algorithm with a ramp filter.
+
+
+\subsubsection{Real datasets} %
+\label{sec:data_real}
+\Gls*{spect} acquisition was undertaken $4h$
+  after injection  of $185$\textit{MBq} of $^{123}$I-ioflupane
+  (\Gls*{datscan}, GE Healthcare, Eindhoven, The Netherlands),
+  with a  double-head gamma camera (E-CAM, Siemens Medical System,
+  Erlangen, Germany) fitted with low energy, high-resolution collimators.
+The parameters of acquisition were: radius of rotation of $15cm$,
+  circular orbit; zoom $1.23$; $128\times128$
+  pixels matrix size, $3.9\times3.9mm^{2}$ pixel size;
+  128 projections, $40s$ per projection; 
+  $15\%$ energy window.
+At least 2 million counts per acquisition were obtained in all cases.
+Reconstruction was performed as described for simulated studies.
+
+\subsubsection{Templates} %
+\label{sec:data_templates}
+
+Two templates were built using subsets of cases of the simulated and real
+  databases (\autoref{sec:data_simulated} and \autoref{sec:data_real}), respectively.
+For the experiments using synthetic phantoms (\autoref{sec:data_synthetic}),
+  we used the template generated for the simulated database.
+The simulated template was created averaging 14 ``healthy'' subjects drawn from
+  the numerical simulations.
+All the subjects were normalized to the T1 \gls*{mri} template distributed with
+  \gls*{spm}2.
+This normalization step was validated by visual inspection.
+The normalized \glspl*{mri} were resampled to have a matrix size of
+  $111\times134\times102$ and a voxel size of $2.0mm\times2.0mm\times2.0mm$.
+\Gls*{spect} studies were simulated (as described in \autoref{sec:data_simulated})
+  on the native \gls*{mri} space, spatially normalized applying the transform
+  corresponding to the subject, and intensity was normalized to a
+  uniform number of counts.
+The final template was obtained by averaging the normalized \gls*{spect} studies
+  and filtering the result with a Gaussian filter of $8.0mm$ (isotropic)
+  full width at half maximum.
+The real template was obtained with a very similar procedure. 
+First, we selected 10 real datasets from a healthy volunteers database, acquired
+  with a T1 \gls*{mri} reference and a coupled \gls*{spect} study obtained as
+  described in \autoref{sec:data_real}.
+Second, the \gls*{mri} were normalized to the T1 \gls*{mri} template of \gls*{spm}2.
+Third, the \gls*{spect} studies were rigidly registered to their corresponding T1, 
+  and then the normalization transform was applied.
+Finally, the resampling, the normalization of \gls*{spect} counts, and the final
+  smoothing filter were applied as explained for the simulated template.
+
+\subsection{Computational methods}
+\label{sec:sub_methods}
+A flowchart to overview \gls*{pysbr} is presented in \autoref{fig:02},
+  and described hereafter.
+Shape-based registration is initialized with an affine transform matrix
+  obtained by means of intensity-based registration.
+After this step, the pre-cached features in the template space are projected
+  onto the subject's coordinate system and fed to a shape-matching function.
+On the subject's branch, the corresponding features are detected.
+Then, the shape-matching function evaluates the similarity between features.
+Finally, we apply a kernel transform to propagate the local displacements of
+  the features along the coordinate system of the template, obtaining the final
+  projection of the template onto the subject's image.
+
+\subsubsection{Initialization}
+\label{sec:meth_initialization}
+The initial step performs a preliminary affine approximation of the selected
+  template to the subject's image as explained in \autoref{sec:intro}.
+To this end, a fast registration approach is implemented using \gls*{ants}.
+We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
+  mutual information as cost function; the detailed parameter description 
+  is given in \autoref{Tab:01}.
+The resulting affine matrix is then applied to project the search-\gls*{roi}
+  and the landmarks associated with the template in
+  subject's space (see \autoref{fig:02}).
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% TODO: remove the figure environment
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\begin{figure*}[!ht]
+\centering
+  \begin{subfigure}[bt]{0.65\textwidth}
+    \insertgraphic{width=\linewidth}{figures/02-RegistrationFlowDiagram}
+  \end{subfigure}
+  \hfill
+  \begin{minipage}[bt]{0.30\textwidth}
+  \caption{\label{fig:02}
+  \textbf{Internal design of \gls*{pysbr}}. \Gls*{pysbr} follows a rather standard
+  registration pattern for spatial normalization, replacing the intensity-based
+  metric by a shape-based one. In the \emph{Initialization} step (yellow box),
+  a global alignment is found, and the shape-descriptors from the template
+  are projected onto subject's space. Also, image data is masked outside the
+  so-called ``Search-\gls*{roi}'' on which the features are sought. \\
+  Finally, \gls*{pysbr} iteratively seeks for the features mapping in
+  shape-features space. The mapping found can be propagated to the full
+  image domain using a kernel transform.
+  }
+  \end{minipage}
+\end{figure*}
+
+
+\subsubsection{Shape features extraction}
+\label{sec:shape_features}
+
+The shape features used for registration are two-fold:
+On one hand, landmarks on the brain surface are used as boundary condition to limit the non-linear 
+  transformation of the test image. 
+On the other hand, landmarks are extracted from the activation areas. 
+
+As all the affine mismatch between template and subject should be captured by the initialization
+  step, we define a number of \emph{static} landmarks (\lm{static}).
+These \lm{static} are intended to prevent the 
+  transformation change the scale of the imaged whole brain.
+To this end, \lm{static} should be uniformly located on the brain surface and present
+  zero displacement. The \lm{static} are located as described in \autoref{alg:lstatic}.
+
+\begin{figure}
+\centering
+\insertgraphic{width=0.75\linewidth}{figures/03-Segflow}
+\caption{ \label{fig:featlmextract} Workflow to extract landmarks related to the activation areas. 
+}
+\end{figure}
+
+Because at the feature extraction step the test image is already linearly registered to the template, 
+  the activation spot search area can be restricted with the search-\gls*{roi} mask obtained from the template.
+To obtain the \emph{mapping} landmarks (along the activation areas), the procedure
+  outlined in Figure \ref{fig:featlmextract} is used.
+The detailed description of the procedure is found in \autoref{alg:lspots}.
+
+In summary, this feature extraction results in tree landmark sets: the static landmarks \lm{static} on the 
+  brain surface, the landmarks related to the left \lm{*,l} and right \lm{*,l} activation area, 
+  and the  landmark centered between the two activation centers \lm{center} that are then used for the 
+  feature based non-linear registration described below.
+
+\subsubsection{Registration methodology}
+\label{sec:registration}
+In order to correct for location and orientation of the segmented nuclei, we
+  perform a registration step in spherical coordinates. We extract the boundary of
+  each label extracted from the \gls*{spect} images. The cartesian pixel coordinates are
+  transformed to a spherical coordinates system centered at the primary 
+  landmark, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
+  of the objects \citep{davies_computer_2012}.
+This profile shows a flat surface for point-like shapes (typically
+  present in patients with grade 2 and 3) and a characteristic distribution for
+  comma-like shapes. Interpolating the profile in a regular grid in $(\theta,\phi)$, 
+  we obtain a 2D gray-scale map, where the intensity is associated to $r$.
+Registration is then performed to the corresponding boundary-profiles cached from
+  template data. This registration is restricted to translations in the
+  $(\theta,\phi)$ space, what is finally translated into small corrections of
+  the relative angular missalignment of each nuclei (i.e. correction of
+  azimuth and elevation of the putaminal tails \emph{seen} from the caudate heads).
+
+\subsubsection{Deformation model}
+\label{sec:deformation}
+Once the landmarks have been extracted and mapped, a dense deformation field of the image
+  is generated, using \gls*{ebs}. \gls*{ebs} makes use the Navier 
+  equilibrium \acrlongpl*{pde} for an homogeneous isotropic elastic body
+  subjected to forces \citep{davis_physics-based_1997}:
+  \begin{equation}
+    \label{eq:ebs_pde}
+    \mu \nabla^2 \vect{u}(\vect{x}) + (\mu+\lambda) \nabla \left[ \nabla \cdot \vect{u}(\vect{x}) \right] = \vect{f}(\vect{x}),
+  \end{equation}
+  where $\vect{u}(\vect{x})$ is the displacement of a point within the body
+  from the original (unloaded) position $\vect{x}$; $\nabla^2$ and $\nabla$
+  are the Laplacian and gradient, repectively; $\nabla \cdot \vect{u}(\vect{x})$
+  is de divergence of the displacement field; $\vect{f}(\vect{x})$ is the force
+  field defined by the landmarks mapping, and $\mu$ and $\lambda$ are the Lam\'e
+  coefficients, which describe the physical properties of the elastic material.
+
+Therefore, the $\vect{u}(\vect{x})$ found is the solution to our problem and
+  can be used to project the quantification \glspl*{roi} to the subject's image.
+
+
+\subsection{Evaluation}
+\label{sec:evaluation}
+
+Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
+  of signal processing methods are notoriously difficult tasks.
+In order to produce a trustful benchmarking framework, we generate two cohorts
+  of datasets from real \gls*{mri} scans (\autoref{sec:data_synthetic}
+  and \autoref{sec:data_simulated}) that can be used as gold standard, 
+  because they retain the relevant information about the underlying anatomy.
+
+\subsubsection{Evaluation criteria} %
+In order to quantitatively evaluate the accuracy improvement of
+  the tool with respect to the affine registration, we use the 
+  workflows described in \autoref{sec:user_interface}.
+We also performed the same task with an alternative registration
+  tool, the \gls*{ants} package, to evaluate the impact of
+  \gls*{ibr} itself and to compare the
+  standard methodologies with our tool.
+As we introduced in \autoref{sec:intro}, we are evaluating the
+  refinement step after an ubiquitous affine initialization.
+  
+  \begin{table*}[!t]
+  \processtable{\textbf{Configuration of initialization and \gls*{ibr}}.
+                Table presents registration levels and corresponding parameters
+                for \Gls*{ants}.
+                Levels 0 and 1 implement to the \emph{Initialization} step, shared
+                by \gls*{ibr} and \gls*{pysbr}.
+                Remaining levels correspond to the \emph{refinement} step using
+                a nonlinear \gls*{ibr} algorithm.\label{Tab:01}} %
+        {
+        \begin{tabular}{llp{11cm}}
+        Level & Sub-sampling                   & Parameters configuration     \\
+  \hline 
+  \hline  \\[-0.8em]
+        0     & Regular$^{*}$ ($4\times4\times4$)    & Rigid (6 parameters) transformation, pre-smoothing of $\sigma=8.0mm$. 
+                                                 Initialized with a translation mapping geometrical centers of template and subject's images.\\
+  \hline \\[-0.8em]
+        1     & Regular$^{*}$ ($2\times2\times2$)    & Affine (12 parameters) transformation, pre-smoothing of $\sigma=4.0mm$. \\
+  \hline \\[-0.8em]
+        2     & Random$^{**}$ (20\% of total samples) & \glsreset{syn}\gls*{syn}, gradient step $2.0$, variance of update field $6.0mm$, variance of total field $10.0mm$. \\
+  \hline \\[-0.8em]
+        3     & Random$^{**}$ (20\% of total samples) & \gls*{syn}, gradient step $0.75$, variance of update field $4.0mm$, variance of total field $6.0mm$.  \\
+  \hline \\[-0.8em]
+        All   & -                              & Mutual information metric (``Mattes'' option in \gls*{ants}), with joint histogram of 64 bins. Preprocessing filters: histogram matching, intensity window at (25\%, 99.8\%) percentiles. \\
+        \end{tabular} %
+        }
+        { ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors
+           of the image's grid. \\
+           ($^{**}$) ``Random'' subsampling randomly draws
+           samples from the full grid without geometrical restrictions.}
+  \end{table*}
+  
+  
+We defined the following evaluation protocol:
+\begin{enumerate}
+\emitem{Initialization} (described in \autoref{sec:meth_initialization}).
+\emitem{Refinement}: at the evaluators digression the workflow can execute 
+  this step either by using  \gls*{pysbr} or \gls*{ants} .
+  The full description of the refinement step setup used to configure
+  \gls*{ants} is provided in \autoref{Tab:01}.
+\emitem{\Glspl{roi} mapping}: use the displacement field resulting from
+  the previous step to project the template's anatomical \glspl*{roi} to
+  subject's space.
+\emitem{Overlap computation}: Dice scores are obtained for the four
+  \glspl*{roi} (left and right caudates and putamenes) and a
+  volume-weighted average of them.
+\end{enumerate}
+
+In order to report the improvement of the refinement step,
+  the collected Dice indices are subtracted to the corresponding
+  scores obtained with the initialization mapping.
+  
+\subsubsection{Visual inspection}
+
+Real \glspl*{datscan} can only be validated visually due to the 
+  absence of structural \gls*{mri} data to precisely extract
+  the evaluation \glspl*{roi}.
+The cohort described in \autoref{sec:data_real}
+  is a subset from a pool of cases that were previously aligned with an
+  affine registration step, but rejected for quantification due to the
+  visual mismatch with the template.
+Additionally, as an exception one real study was acquired with its
+  corresponding \gls*{mri}.
+This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one real case,
+  implicitly assuming that the necessary image registration from the 
+  \gls*{spect} study to the reference T1 is error-free 
+  (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
+This case is used to produce the visual results illustrated in \autoref{fig:01}.
+
+\section{Software Description}
+\label{sec:software}
+\subsection{Design considerations}
+\label{sec:design}
+
+\Gls*{pysbr} is a medical image application software, created
+  in \emph{Python} and \emph{C++} with the following design aspects:
+
+\begin{itemize}
+  \emitem{Modularity} Using \gls*{nipype}, \gls*{pysbr} provides
+    several interfaces that encapsulate the unitary processing steps
+    and workflows that make use of these interfaces.
+
+  \emitem{Reusability} Along with the main parts of the software,
+    comprehensive workflows for evaluation and demonstration of the 
+    software capabilities are provided.
+
+  \emitem{Compatibility} Using \emph{Python} and \gls*{nipype}, the
+    software is intended to offer high interoperability with third party
+      packages.
+\end{itemize}
+
+Aside from \gls*{nipype}, \Gls*{pysbr} also relies on \emph{numpy},
+  \emph{nibabel}, and \emph{scipy} as main \emph{Python} dependencies.
+We also demonstrate the interoperability of \emph{Python} and \gls*{itk},
+  using the \gls*{itk}'s \emph{python wrapping} to integrate the
+  transformation model. %
+
+\Gls*{pysbr} consists of two logical parts.
+First, the template data that is used as the basis for the data normalization.
+Second, the software implementation that in itself is split into a plain
+  python code, and an extension implemented in C++.
+The python code is then structured into three major design elements (python modules):
+  \emph{Tools}, \emph{Interfaces}, and \emph{Workflows}.
+Within the \texttt{tools} module we implement auxiliary functions,
+    the core of shape evaluation, and registration routines.
+It also provides the interface to the C++ extensions
+    (implemented in this language for their high computational cost).
+The second abstraction level is offered by the \texttt{interfaces} module, and
+  the third level (end user applications) are encapsulated by the \texttt{workflows} module.
+Both \emph{Interfaces} and \emph{Workflows} levels strictly follow the
+  \gls*{nipype} specifications, and use the so-called \emph{Workflow Engine}
+  \citep{gorgolewski_nipype:_2011}.
+Consequently, the different processing units described in \autoref{fig:01} 
+  are implemented as \emph{Interfaces}. 
+They are fully functional to be used as stand-alone modules, or 
+  they can be \emph{Nodes} of higher level \emph{Workflows}.
+  
+In \autoref{sec:implementation_details} we describe the main \emph{Interfaces}
+  available to perform the unitary processing steps of \gls*{pysbr}.
+In \autoref{sec:user_interface} we introduce the main \emph{Workflows} that are
+  distributed under \gls*{pysbr}, especially the main application interface
+  for normalization of \gls*{datscan} studies in standardized
+  quantification of \gls*{spect} images.
+
+\subsection{Implementation details}
+\label{sec:implementation_details}
+
+All the interfaces present a uniform structure (input parameters, output parameters,
+  and functional body), and a uniform use (creation, input parameters setting, and
+  execution calling \texttt{run()}).
+This behavior is inherited from the \texttt{BaseInterface} class of \gls*{nipype}.
+We summarize here the most important interfaces,
+  presenting some examples of their use in \autoref{list:interfaces}.
+The presented code examples make use of the three modules of 
+  \gls*{pysbr}, that will be imported as given in \autoref{list:modules}.
+  
+  \begin{lstlisting}[float,numbers=none,caption={\label{list:modules}
+            Loading the three major elements of the python interface of PySBR}]
+  import pysbr.tools as sbrtools
+  import pysbr.interfaces as sbrifs
+  import pysbr.workflows as sbrwfs
+  \end{lstlisting}
+
+\subsubsection{Templates}
+\label{sec:templates}
+Templates are a fundamental part of the software, as they hold the reference shapes to
+  perform normalization.
+A template is defined by the reference \gls*{datscan} image, that
+  should be named as \texttt{template.nii.gz} and a corresponding brain mask (with name
+  \texttt{brainmask.nii.gz}).
+Once these two files are correctly placed in a folder
+  (e.g. \texttt{myTemplate/}) under the templates path (that can be moved from the
+  default setup at the user's convenience), the appropriate \gls*{nipype}-style
+  interface can be invoked to run the template feature extraction (see
+  \autoref{list:interfaces}, lines 2-3).
+On the first execution of the interface, the shape features extracted from
+  the template are cached for faster retrieval in subsequent calls to the interface. 
+When using \gls*{pysbr} for evaluation or quantification purposes, it is possible
+  to install additional files, e.g. the corresponding \glspl*{roi} extracted
+  from the anatomical reference.
+
+
+\subsubsection{Shape analysis interfaces}
+\label{sec:shapeanalysis}
+
+\Gls*{pysbr} provides several interfaces to perform shape-based analysis of \gls*{datscan}
+  images.
+The first interface is \texttt{FindPrincipalSpots} that segments the \acrlong*{dat} activity
+  associated to each nuclei (comprising caudate and putamen of each hemisphere),
+  as shown in \autoref{list:interfaces}, lines 6-9.
+As inputs, the interface requires the subject's \gls*{datscan} image and a ``search-\gls*{roi}'' or
+  bounding box.
+The extraction methodologies involved in this interface are described in \autoref{sec:shape_features}.
+
+A second interface performing shape-based registration is named \texttt{SBR}
+  (\autoref{list:interfaces}, lines 12-15).
+This interface takes the landmarks extracted previously and, finds
+  the shape-based mapping described in \autoref{sec:registration}.
+Input and output files make use of the \gls*{json} format
+  for interoperability reasons.
+
+\subsubsection{Transformation model} %
+Currently, only the \gls*{ebs} transform from \gls*{itk} is supported
+  (see \autoref{list:interfaces}, lines 18-24).
+The \texttt{EBSTransform} interface composes the initial affine transform
+  with the nonlinear transform found as described in \autoref{sec:deformation}
+  to project the moving inputs into reference space.
+In future versions of \gls*{pysbr}, other kernel interpolators implemented in \gls*{itk} 
+  will be also available.
+This interface extends a base class (\texttt{BaseTransform}) that is provided to
+  ease these future extensions.
+
+
+\glsreset{ibr}
+\subsection{User interface}
+\label{sec:user_interface}
+
+Here, We introduce two final user
+  applications released with \gls*{pysbr}: a registration workflow for
+  \gls*{spect} data quantification protocols, and an evaluation framework
+  to reproduce the experiments we used to validate the tool.
+These two workflows are also provided as command line interfaces.
+Additional workflows are released with \gls*{pysbr}, for instance
+  the workflow used to generate the synthetic datasets as described
+  in \autoref{sec:data_synthetic} and the refinement workflow using
+  nonlinear \gls*{ibr}, implemented using \gls*{ants}.
+
+\subsubsection{Normalization workflow} %
+The core interface for the user is offered by this workflow,
+  which implements the normalization of a given \gls*{spect} 
+  dataset to a selectable template.
+\begin{lstlisting}[float,caption={\label{list:fullreg}Running a full template-subject registration}]
+reg = sbrwfs.normalization()
+reg.inputs.inputnode.template = 'myTemplate'
+reg.inputs.inputnode.in_file = 'path/to/mySubject/datscan.nii.gz'
+reg.run()
+\end{lstlisting}
+The input value \texttt{template} must hold a valid name of an installed 
+  template (see \autoref{sec:templates}). 
+The input \texttt{in\_file} must be the path to an existing \gls*{spect} image.
+
+\subsubsection{Evaluation workflow} %
+The evaluation workflow implements the experiments presented in \autoref{sec:results}. 
+It creates the necessary registration workflows to perform the template-subject 
+  registration of one subject from a large database.
+Evaluation indices are reported for \gls*{pysbr}, \gls*{ibr} and the affine initialization,
+  storing them in \texttt{.csv} (comma-separated values) files. 
+It also offers a simple interface:
+\begin{lstlisting}[float,caption={\label{list:fullev}Running the evaluation pipeline}]
+ev = sbrwfs.evaluation()
+ev.inputs.inputnode.template = 'myTemplate'
+ev.inputs.inputnode.data_dir = '/path/to/database'
+ev.inputs.inputnode.subject_id = 'example_id_001'
+ev.inputs.inputnode.grade = 0
+ev.run()
+\end{lstlisting}
+
+\noindent 
+This workflow can be configured to operate in batch mode over a
+  set of cases, using the \emph{Iterables} feature from \gls*{nipype}.
+
+\section{Results and discussion}
+\label{sec:results}
+
+\subsection{Cross-validation}
+\label{sec:results_test}
+We use the evaluation workflow on both groups of datasets
+  for which we have a gold-standard (synthetic phantoms and simulated \gls*{spect}).
+Numerical results from this evaluation are presented in \autoref{fig:results}.
+
+%For the synthetic phantoms, 
+%In the case of simulated \gls*{spect} datasets, 
+%Fortunately, the caching and parallelizing features of \gls*{nipype} ease
+%  this burden significantly.
+
+\subsubsection{Evaluation on synthetic phantoms}
+\label{sec:results_phantoms}
+A total of 240 images, embodying the 4 different stages
+  of Parkinson's Disease for the 60 selected subjects
+  (\autoref{sec:data_synthetic}), were used to evaluate
+  the two methodologies (480 experiments in total).
+Quantitative results, grouped by grade of the stage of
+  syndrome and spatial normalization methodology, 
+  are given in \autoref{fig:results_a}.
+
+\glsreset{ibr}
+With the term \gls*{ibr}, we identify the spatial normalization
+  workflow implemented with \gls*{ants}.
+Results show that \gls*{ibr} behaves consistently,
+  but offers very small improvements of overlap with respect to the
+  initial mapping.
+From \autoref{fig:results_a} we can interpret that there is not 
+  a meaningful improvement on applying \gls*{ibr} solutions to 
+  the refinement problem.
+Moreover, subplots presented for ``grades'' 2 and 3 demonstrate the
+  impact of the progression of the syndromes described in 
+  \autoref{sec:intro}, i.e. that a number of negative samples fall 
+   statistically beyond the normal span of overlaps (marked with red ``+'' symbols).
+For the majority of the datasets only small improvements ($\approx1.00\%$)
+  with respect to the initial overlap could be achieved.
+Nonetheless, the number of statistical outliers with large degradations
+  (negative change of overlap) grows notably with the advance of the state of
+  pathology under study.
+The effect is particularly clear for ``grade 3'', for which the outliers are enough
+  to deviate the estimated mean increments (marked with stars) with respect to their
+  corresponding median.
+Although the appearance of negative ``outliers'' is boosted with the advance
+  of pathology, \gls*{ibr} maintains an acceptable level of accuracy as it keeps
+  a positive (although small) positive median increment for all the studied \glspl*{roi}.
+  
+Regarding the performance of \gls*{pysbr}, experiments show that the application of the tool
+  did not result in a reliable enhancement of the alignment.
+In fact, the estimated medians of each \gls*{roi} are always negative: i. e. in average
+  the normalization achieved with the initialization was not improved.
+Using the evaluation tool, we detected serious problems with the automatic 
+  estimation of the landmarks associated with the caudate and putamen.
+As it is clearly depicted in \autoref{fig:results_a}, this is especially true for the left-side
+  structures, which always scored much worse than their right-side counterparts.
+Notwithstanding, in some scarce cases notable improvements of the overlap measure could be achieved
+  --  when the landmarks could be located at their right positions.
+We interpret these results as promising for \gls*{pysbr}, as it shows that the proposed registration 
+  approach works well if the primary activation area landmarks can be detected properly.
+
+\subsubsection{Evaluation on simulated \gls*{spect} datasets}
+\label{sec:results_simulated}
+The equivalent box plot for this database is presented in \autoref{fig:results_b},
+  depicting very similar conclusions.
+This second database presents increased difficulties in terms of signal-to-noise
+  ratio, resolution, and other artifacts related to the simulated acquisition
+  procedure.
+These difficulties show a certain impact, especially on the robustness of the
+  methodologies under analysis.
+\Gls*{ibr} shows a similar performance as above, but in this second experiment the addition
+  of this refinement step does not improve the initial mapping at all.
+\Gls*{pysbr} also suffers from the additional difficulties, but the impact is
+  also limited.
+
+\begin{figure*}[ht]
+\centering 
+\begin{subfigure}[b]{0.61\linewidth}
+\insertgraphic{width=1.0\linewidth}{figures/05-results-phantoms}
+\caption{\label{fig:results_a}
+Synthetic phantoms.
+}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.33\linewidth}
+\insertgraphic{width=1.0\linewidth}{figures/05-results-simulated}
+\caption{\label{fig:results_b}
+Simulated \gls*{spect} datasets.
+}
+\end{subfigure}
+
+\caption{\label{fig:results}
+\textbf{Overlap improvement after refinement stage.}
+The box plots represent the Dice index increments with respect to the baseline overlap
+  indices set by the initial mapping. One box is presented for each \gls*{roi}:
+  left caudate (LCAU), left putamen (LPUT), right caudate (RCAU), right putamen (RPUT),
+  and the weighted average of them (``All''). Positive values represent improvement,
+  negative values represent deterioration.
+Presented plots are standard: boxes extend from the lower to upper quartile values
+  of the data, with a line at the median. The whiskers extend from the box to show
+  the range of the data. Flier points (red ``+'' symbols) are those past the end of
+  the whiskers.
+}
+\end{figure*}
+
+\subsection{Real datasets evaluation}
+\label{sec:results_real}
+Visual assessment by two experts is performed on the real datasets cohort,
+  validating the performance of the tool in all the cases.
+In \autoref{fig:real_dataset_result} we reproduce the results obtained
+  for the real dataset with paired anatomical reference (a T1 weighted \gls*{mri}),
+  and both tools under analysis.
+The benefits of shape-based registration were more clear on real \gls*{datscan}
+  images, for two reasons.
+First, the landmarks for the template computed from real datasets were 
+  better located.
+Second, the performance of the \gls*{ibr} approach was clearly worse on
+  real datasets than that for the previous experiments.
+
+\begin{figure}
+\centering 
+\insertgraphic{width=1.0\linewidth}{figures/06-results-mri-pysbr}
+\caption{ \label{fig:real_dataset_result} 
+  \textbf{Side-by-side view of the results obtained for a real dataset}.
+  Left figure shows the standard \gls*{ibr} using \gls*{ants}, reproduced from
+  \autoref{fig:01}, and the corresponding result achieved with \gls*{pysbr}
+  (right). Blue contours represent the ground-truth. Yellow contours represent
+  the result obtained by the two tools under evaluation.
+}
+\end{figure}
+
+\glsreset{nipype}
+\glsreset{pysbr}
+
+\section{Conclusion}
+\label{sec:conclusion}
+Within the framework of absolute quantification of \gls*{spect}
+  imaging studies for the evaluation and monitoring of movement
+  disorders, we propose a workflow implemented with \gls*{nipype}
+  to evaluate current spatial normalization techniques that are
+  crucial for the described applications.
+The evaluation workflow demonstrates the aptness of Python 
+  and \gls*{nipype} for the rapid development of new methodologies
+  and algorithms in image processing, while meeting
+  all the requirements to enable reproducible research.
+
+Spatial normalization of \gls*{spect} imaging studies is
+  usually performed by means of intensity-based registration
+  techniques in two steps.
+First step involves the affine mapping of the subject and the
+  reference template.
+The second, is a refinement using a nonlinear transformation.
+The evaluation framework enables to show 
+  how intensity-based normalization often fails
+  for advanced cases of Parkinson's Disease.
+
+We present \gls*{pysbr}, an alternative tool for the
+  spatial normalization using shape-features.
+\Gls*{pysbr} is also implemented in \emph{Python} using
+  \gls*{nipype}, and a number of publicly available tools
+  for computational science and image processing
+  (\emph{numpy}, \emph{scipy}, and \emph{nibabel}),
+  and data management and visualization (\emph{pandas},
+  \emph{matplotlib}).
+  
+Quantitative and qualitative results illustrate that registration approach
+  of \gls*{pysbr} is promising, but requires a significant improvement
+  in landmark detection for robustness.
+The location of these landmarks and the correct identification of
+  shapes is not trivial in \gls*{spect} images for a number of reasons,
+  for instance the low resolution and the loose representation of
+  underlying anatomy in \glspl*{datscan}.
+In addition, manually placing the landmarks in the anatomical reference of the 
+  templates could prove favorable for the template matching procedure.
+ 
+The code is publicly released along with this manuscript and
+  a number of datasets to help replicate our experiments and we
+  invite the community to collaborate improving and testing
+  the tool.
+Additionally, \gls*{pysbr} will be used in clinical studies 
+  at the Biophysics and Bioengineering Unit (Physiological 
+  Sciences Department I, School of Medicine, University of 
+  Barcelona, Barcelona, Spain), what ensures the
+  continuity of support for the tool and a comprehensive
+  testing for quality assessment.
+
+\section*{Information Sharing Statement}
+\label{sec:iss}
+
+\begin{itemize}
+\emitem{Availability} \gls*{pysbr} source code and datasets are
+  publicly available at \url{https://github.com/oesteban/PySBR}.
+
+\emitem{Requirements and specifications} A list of requirements and
+  specifications is published in the main website, along with
+  the necessary installation notes.
+
+\emitem{Licence} This software is released under BSD license.
+  A copy of the license is distributed along with \gls*{pysbr}.
+  A number of the datasets presented in this work is also
+  available under a Creative Commons licenses.
+\end{itemize}
+
+\section*{Conflict-of-Interest Statement}
+The authors declare that the research was conducted in the absence of any commercial or financial relationships 
+that could be construed as a potential conflict of interest.
+
+\section*{Author Contributions}
+OE designed the registration methodology, implemented the \gls*{nipype}-based code
+  as well as the shape-based registration tool, performed all the presented experiments
+  and lead the manuscript writing.
+GW developed the activation spot segmentation and landmark extraction
+  and worked on tuning the according parameters.
+ANB and BMF generated the templates and wrote the simulated and real data
+  descriptions in the manuscript.
+MJLC, XS and AS contributed with the application background and participated
+  in the analysis and interpretation of results.
+All authors read, contributed to, and approved the manuscript.
+
+\section*{Acknowledgement}
+The authors thank Judith Gallego from the Biophysics and Bioengineering Unit, Physiological Sciences Department I,
+School of Medicine, University of Barcelona, Barcelona, Spain, for the simulated \gls*{spect} database.
+\paragraph{Funding\textcolon} This work was supported in part by Multimodal Imaging tools for Neurological Diseases (MIND-t) 
+  project of Biomedical Research Networking center in Bioengineering, Biomaterials and Nanomedicine (CIBER-BBN), 
+  by Spain's Ministry of Science and Innovation (through SAF2009-08076, TEC2011-28972-C02-02, TEC2010-21619-C04-03,
+  IPT-2010-003-300000, IPT-2012-0401-300000), by CDTI-CENIT (AMIT project), and by Fondo de Investigaciones Sanitarias (PI12-00390).
+BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bioengineering of Catalonia (IBEC).
+
+%\section*{Supplemental Data}
+% enable if needed
+
+%\begin{figure}
+%\centering
+%\begin{minipage}[b]{0.45\linewidth}
+%\insertgraphic{width=1.0\linewidth}{figures/02-RegistrationFlowDiagram}
+%\end{minipage}
+%\quad
+%\begin{minipage}[b]{0.45\linewidth}
+%\insertgraphic{width=1.0\linewidth}{figures/04-nipype-workflow}
+%\end{minipage}
+%\caption{\label{fig:02}
+%\textbf{Internal design of \gls*{pysbr}}.
+%}
+%\end{figure}
+
+
+\bibliographystyle{myplainnat}
+%\bibliographystyle{frontiers}
+%\begin{thebibliography}{}
+\bibliography{references}
+%\end{thebibliography}
+
+\newpage
+
+\onecolumn
+\appendix
+\section*{Appendix}
+\subsection*{Algorithms used for extraction of shape features}
+\par
+
+\begin{myalgorithm}[Extraction of static landmarks across the surface of the brain\label{alg:lstatic}]
+\begin{enumerate}
+\emitem{Boundary}: the boundary of the brain mask corresponding to the template is
+  extracted, simply subtracting an eroded version of the mask to the original one.
+\emitem{Polar mapping}: the cartesian coordinates of the voxels contained in the boundary
+  are converted to spherical coordinates, setting the origin of the system on the center
+  of mass of the full brain mask.
+\emitem{Sampling}: then, a regular grid is defined on $(\theta,\phi)$ with a fixed number
+  of positions. This grid is used to sample the mapping obtained in the previous space.
+  By default, the sampling matrix is $9\times18$, with $9^{-1}\pi \times 9^{-1}\pi$ size
+  to sample the full sphere.
+  Drawing the nearest neighbors to the regular $(\theta,\phi)$ grid points from the spherical
+  coordinates of the boundary, we uniformly sub-sample the boundary.
+\emitem{Back-mapping}: we set as \lm{static} the cartesian coordinates of the
+  previously selected voxels.
+\end{enumerate}
+\end{myalgorithm}
+\begin{myalgorithm}[Extraction of landmarks related to activation areas\label{alg:lspots}]
+  \begin{enumerate}
+  \emitem{Hotpoint estimation}: Within the masked area two local intensity maxima or \emph{hotspots}  are searched as seeds 
+    for the segmentation of the activation areas. 
+  To ensure that the two hotspots are not found in the same activation area, the image is divided into the 
+    eight octants separated by the center of the image and the second hotspot is selected to be 
+    from another octant then the first one. 
+  \emitem{Activation area segmentation}: An intensity based region growing is used to extract the two activation 
+     areas simultaneously. 
+  The breaking condition for this region growing are set based on the minimum intensity of the image along the line 
+    connecting the two hotspots  \hp{1,l} and \hp{1,r} and the mean intensity of the masked input area.
+  As the result of this procedure two labeled regions $A_{\text{spot},*}$ are obtained. 
+  Here, if the volume $V_{\text{spot},*}$ of an extracted region exceeds a user set parameter $V_{\text{max}}$, 
+    the segmentation is considered to have failed and the registration method can not be applied.
+  \emitem{Landmark estimation}: The center $\pc$ of the Caudates are estimated as the primary activation area landmarks.
+    The procedure is run independently for the left and right Caudate:
+  \begin{enumerate}
+  \emitem{Thinning}: A number $n_{\text{thin}}$ of morphological thinning iterations \citep{lee_building_1994} is run on 
+    $A_{\text{spot},l}$ that is based on the volume $V_{\text{spot},l}$ of the segmented areas, 
+    resulting in an area $\hat{A}_{\text{spot},l}$. 
+  \emitem{Scanning}: In order to find the center of the left Caudate, its following properties are considered: 
+  It is located at an extreme location of the activation area, it is close to the other activation area, and 
+    its intensity in the activation image is relatively high. 
+  Based on this and given the boundary $B_l:= \partial A_{\text{spot},l}$, 
+     the quantity $\Delta_{\pc}$ is defined that weights the distance of a point $\pc \in \hat{A}_{\text{spot},l}$ 
+    with in the thinned region of the left hotspot area against its minimum distance from the right hotspot area, 
+    and the relative image intensity: 
+  \begin{equation}
+    \Delta_{\pc} := \frac{1}{V_{\text{spot},l}} \cdot 
+                   \frac{\sum_{\pa \in \hat{A}_{\text{spot},l}}(\|\pc-\pa\|) }{1 + \min_{\pr \in A_{\text{spot},r}}\|\pc-\pr\| } \cdot 
+                   \frac{I(\pc)}{I(\hp{1,l})}
+  \end{equation}
+  \noindent 
+  Then, the primary landmark \lm{1,l} is evaluated like follows: 
+  \begin{equation}
+    \lm{1,l} = \pc_{l} := \arg \max_{ \pc\in\hat{A}_{\text{spot},l}}\left( \min_{\pb \in B}\left(\|\pc-\pb\| \cdot  \Delta_\pb \right)\right)
+  \end{equation}
+  \end{enumerate}
+  \noindent 
+  The primary landmark \lm{1,r} within the right activation area is evaluated accordingly. 
+  \emitem{Center landmark}: A third  landmark is obtained as the point 
+  \begin{equation}
+  \label{eq:middle}
+  \lm{center} := \frac{1}{2}\left(\lm{1,l} + \lm{1,r}\right)
+  \end{equation}
+  in the middle between these two landmarks.
+  \emitem{Secondary landmarks}: Additional per-activation landmarks can then be evaluated as follows: 
+  \begin{enumerate}
+  \emitem{Evaluate principal direction}:
+  In order to estimate secondary landmarks, a \gls*{pca} of each region is run, using \lm{1,*} as reference point, 
+    to estimate its principle eigenvector $\vec{e}_{p,*}$, and the ratio $r_{\text{spot},*}$ of the two largest 
+    eigenvalues, which is used to rate the eccentricity of the activation area. 
+  \emitem{Quantity of landmarks}:
+  Then, given on the user set parameters minimum region volume $V_{\text{min}}$ and eigenvalue ratio $r_{\text{min},*}$, 
+    and based on the segmented activation volume $V_{\text{spot},*}$  and the spot eccentricity $r_{\text{spot},*}$
+    the number of additional landmarks is estimated according to
+  \begin{equation}
+  \label{eq:nlm}
+    N^+_{lm} := \min\left(  \left\lfloor \frac{ V_{\text{spot},*}}{V_{\text{min}}}\right\rfloor,
+                   \left\lfloor \frac{ r_{\text{spot},*}}{r_{\text{min}}} \right\rfloor, 2\right), 
+  \end{equation}
+  \noindent 
+  limiting this number to two at most. 
+  \emitem{Correcting the eigenvector}: Since the pointing direction of the eigenvector $\vec{e}_{p,*}$ is undetermined,
+    it is set so that 
+  \begin{equation}
+      \vec{e}_{p,*} \cdot \sum_{\vx \in \hat{A}_{\text{spot},*}}(\vx - \lm{1,*}) > 0. 
+  \end{equation}
+  \emitem{Adding landmarks}: 
+  These additional landmarks are then added along the direction of the principal eigenvector $\vec{e}_p$ scaled by a user 
+    provided scaling factor $s$ according to 
+  \begin{equation}
+  \label{eq:addlm}
+  \lm{k+1,*} := k * s * \vec{e}_{p,*} + \lm{1,*} \: \text{with} \: k\in[1, N^+_{lm}]\subset \mathbb{N}
+  \end{equation}
+  \end{enumerate}
+  \end{enumerate}
+\end{myalgorithm}
+
+\subsection*{Samples of Nipype Interfaces}
+
+\begin{lstlisting}[caption={\label{list:interfaces}\textbf{Exemplary execution
+  of individual Interfaces.} %
+For briefness, all the optional parameters have been omitted here, please refer
+   to the project's website for full documentation.}]
+# Interface wrapping template selection
+tpl_gen = sbrifs.TemplateSource(name='myTemplate')
+tpl_gen.run()
+
+# Interface to detect primary spots
+fspots = sbrifs.FindPrincipalSpots()
+fspots.inputs.in_file = 'path/to/mySubject/datscan.nii.gz'
+fspots.inputs.in_bbox = 'path/to/mySubject/searchROI.nii.gz'
+res1 = fspots.run()
+
+# Interface to shape-based registration of binary boundaries
+reg = sbrifs.SBR()
+reg.inputs.src_spots = 'path/to/myTemplate/landmarks.txt'
+reg.inputs.trg_spots = 'path/to/mySubject/landmarks.txt'
+reg.run()
+
+# Interface connecting ITK for elastic-body splines transforms
+tfm = sbrifs.EBSTransform()
+tfm.inputs.in_source = 'path/to/myTemplate/template.nii.gz'
+tfm.inputs.in_target = 'path/to/mySubject/datscan.nii.gz'
+tfm.inputs.in_initialization = [ 'transform1.mat', 'transform2.mat' ]
+tfm.inputs.in_transform = 'path/to/displacements.txt'
+tfm.inputs.in_apply = [ 'path/to/myTemplate/ROI1.nii.gz', 'path/to/myTemplate/ROI2.nii.gz']
+tfm.run()
+\end{lstlisting}
+
+\end{document}
