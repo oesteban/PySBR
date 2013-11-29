@@ -18,7 +18,7 @@
 % Set this to true if you submit the article
 %  it will put all the figures at the end 
 \newboolean{submit}
-\setboolean{submit}{false}
+\setboolean{submit}{true}
 
 
 \ifthenelse{\boolean{submit}}
@@ -28,7 +28,8 @@
   % images as separate files 
   \usepackage[nofiglist,figuresonly]{endfloat}
   \renewcommand{\efloatseparator}{\mbox{}}
-  \newcommand{\insertgraphic}[2]{}
+  %\newcommand{\insertgraphic}[2]{}
+  \newcommand{\insertgraphic}[2]{\includegraphics[#1]{#2}}
   \newcommand{\fixme}[1]{}
 }
 {
@@ -253,7 +254,7 @@ Nevertheless, \gls*{pysbr} shows potential for the use in a different
 
 
 \tiny
-  \section{Keywords:} non-linear registration, spect, pet, quantification, movement disorders
+  \section{Keywords:} nonlinear registration, spect, pet, quantification, movement disorders
 \end{abstract}
 
 %\twocolumn
