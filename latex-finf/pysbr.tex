@@ -18,7 +18,7 @@
 % Set this to true if you submit the article
 %  it will put all the figures at the end 
 \newboolean{submit}
-\setboolean{submit}{true}
+\setboolean{submit}{false}
 
 
 \ifthenelse{\boolean{submit}}
@@ -148,23 +148,7 @@
 
 \newcommand{\hp}[1]{\ensuremath{\mathbf{h}_{#1}}}
 
-
-\begin{document}
-\onecolumn
-\firstpage{1}
-
-\title[Evaluating normalization]%
-  {Evaluating spatial normalization in fully automated SPECT imaging quantification protocols}
-
-\author[\firstAuthorLast ]{\Authors}
-\address{}
-\correspondance{}
-\editor{}
-\topic{Python in Neuroscience II}
-
-\maketitle
-
-\makeglossaries
+\usepackage{changebar}
 
 \newglossaryentry{spm}{%
   name        = {SPM},%
@@ -201,6 +185,26 @@
   description = {Neuroimaging in Python, Pipelines and Interfaces},%
   first       = {\emph{nipype} (Neuroimaging in Python, Pipelines and Interfaces, \cite{gorgolewski_nipype:_2011})},%
 }
+
+\makeglossaries
+
+\begin{document}
+\onecolumn
+\firstpage{1}
+
+\title[Evaluating normalization]%
+  {Evaluating spatial normalization in fully automated SPECT imaging quantification protocols}
+
+\author[\firstAuthorLast ]{\Authors}
+\address{}
+\correspondance{}
+\editor{}
+\topic{Python in Neuroscience II}
+
+\maketitle
+
+
+
 
 \newacronym{mri}{MRI}{magnetic resonance imaging}
 \newacronym{montecarlo}{MC}{Monte-Carlo}
@@ -358,7 +362,7 @@ On the contrary, relaxing the regularization constraints may hinder the quantifi
   because ``comma-shaped'' patterns may be turned into ``point-like'' and vice-versa
   depending on the choice of the template (\autoref{fig:01}, right panel).
 
-In this work we present an evaluation framework of spatial normalization
+In this work we present an evaluation framework implemented in Python of spatial normalization
   applied in \gls*{datscan} absolute quantification protocols.
 The evaluation framework comprises the following parts: 
 (1) A workflow for generating very simplistic phantoms from
@@ -369,27 +373,15 @@ The evaluation framework comprises the following parts:
    where the tool under evaluation can be inserted; and
 (4) a benchmarking and reporting module to gather and present results.
 
-We created the evaluation framework as a test platform
-  to guide the development and validation of \gls*{pysbr}, a tool 
-  implemented in Python (with several C++ modules) that provides a novel
-  approach to achieve fully-automated spatial normalization.
-We propose a solution to the described normalization problem using a
-  shape-based registration metric that locates the centers of the caudates,
-  evaluates the eccentricity of the registered activity,
-  and individually orientates the left and right structures.
-Therefore, the hypothesis behind our approach is that it is possible to detect
-  an approximation of the underlying anatomy on the \gls*{spect} images, and
-  independently optimize the involved structures of each hemisphere for
-  an improved match.
+\cbstart
+In order to demonstrate the utility of the evaluation framework we compare 
+  two methods to achieve the final refinement in template matching: 
+On one hand, we use a standard spatial normalization 
+  approach,  referred to as \gls*{ibr}, 
+  and on the other hand, we us \gls*{pysbr}, a new shape based registration tool and 
+  work in progress introduced here.   
+\cbend
 
-We finally illustrate the use of evaluation framework,
-  conducting a number of experiments (described in
-  \autoref{sec:evaluation}) to cross-compare \gls*{pysbr}
-  to an implementation of the standard spatial normalization
-  approach.
-We will refer to these refinement approaches as \gls*{ibr},
-  in contrast to ``shape-based registration''.
-  
 Quantitative evaluation of the tools are performed on synthetic
   phantoms and simulated \gls*{spect} images (\autoref{sec:data}).
 Finally, the aptness of the tools is also tested on real datasets,
