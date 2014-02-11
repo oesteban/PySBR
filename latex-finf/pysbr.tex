@@ -186,6 +186,28 @@
   first       = {\emph{nipype} (Neuroimaging in Python, Pipelines and Interfaces, \cite{gorgolewski_nipype:_2011})},%
 }
 
+\newacronym{mri}{MRI}{magnetic resonance imaging}
+\newacronym{montecarlo}{MC}{Monte-Carlo}
+\newacronym[longplural={regions of interest}]{roi}{ROI}{region of interest}
+\newacronym{spect}{SPECT}{single photon emission computed tomography}
+\newacronym{pet}{PET}{positron emission tomography}
+\newacronym{mi}{MI}{mutual Information}
+\newacronym{nmi}{NMI}{normalized mutual information}
+\newacronym{dat}{DAT}{dopamine transporter}
+\newacronym{datscan}{DaTSCAN}{dopamine transporter imaging}
+\newacronym{t1}{T1w}{T1-weighted MRI}
+\newacronym{fov}{FoV}{field of view}
+\newacronym{pv}{PV}{partial volume effect}
+\newacronym{ebs}{EBS}{elastic body splines}
+\newacronym{pde}{PDE}{partial differential equation}
+\newacronym{pca}{PCA}{principal components analysis}
+\newacronym{lehr}{LEHR}{low-energy high-resolution}
+\newacronym{csf}{CSF}{cerebrospinal fluid}
+\newacronym{wm}{WM}{white matter}
+\newacronym{gm}{GM}{grey matter}
+\newacronym{json}{JSON}{JavaScript Object Notation}
+\newacronym{ibr}{IBR}{intensity-based registration}
+
 \makeglossaries
 
 \begin{document}
@@ -206,29 +228,6 @@
 
 
 
-\newacronym{mri}{MRI}{magnetic resonance imaging}
-\newacronym{montecarlo}{MC}{Monte-Carlo}
-\newacronym[longplural={regions of interest}]{roi}{ROI}{region of interest}
-\newacronym{spect}{SPECT}{single photon emission computed tomography}
-\newacronym{pet}{PET}{positron emission tomography}
-\newacronym{mi}{MI}{mutual Information}
-\newacronym{nmi}{NMI}{normalized mutual information}
-\newacronym{dat}{DAT}{dopamine transporter}
-\newacronym{datscan}{DaTSCAN}{dopamine transporter imaging}
-\newacronym{t1}{T1}{T1-weighted MRI}
-\newacronym{fov}{FoV}{field of view}
-\newacronym{pv}{PV}{partial volume effect}
-\newacronym{ebs}{EBS}{elastic body splines}
-\newacronym{pde}{PDE}{partial differential equation}
-\newacronym{pca}{PCA}{principal components analysis}
-\newacronym{lehr}{LEHR}{low-energy high-resolution}
-\newacronym{csf}{CSF}{cerebrospinal fluid}
-\newacronym{wm}{WM}{white matter}
-\newacronym{gm}{GM}{grey matter}
-\newacronym{json}{JSON}{JavaScript Object Notation}
-\newacronym{ibr}{IBR}{intensity-based registration}
-
-
 \begin{abstract}
 \section{}
 Absolute quantification of \gls*{spect} will
@@ -237,7 +236,7 @@ Absolute quantification of \gls*{spect} will
 In order to achieve this standardization, the full automation of the
   process requires precise image normalization to/from a standard space.
 However, quantification protocols generally lack of a structural reference
-  (e.g. T1-weighted MRI) for high-standard accuracy.
+  (e.g. \acrlong{t1}) for high-standard accuracy.
 In this paper, we present a new evaluation framework implemented with \emph{nipype},
   and we propose \gls*{pysbr}, a new spatial normalization tool implemented in Python for 
   its use in the described environment.
@@ -267,6 +266,9 @@ Nevertheless, \gls*{pysbr} shows potential for the use in a different
 
 \section{Introduction}
 \label{sec:intro}
+\fixme{Three sentences here introducing why the evaluation workflows
+  are important and why python is good to build them (right?)}
+
 \Gls*{spect} imaging of the dopaminergic system using
   specific agents (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
   value to discriminate parkinsonian syndromes from other movement
@@ -312,7 +314,7 @@ Firstly, given their low resolution  (typically around $2.5mm\times2.5mm\times2.
   and the imaged feature itself, \gls*{datscan} images retain little information about the
   underlying anatomical structure  (see \autoref{fig:01}). 
 In addition, since clinical protocols usually do not include the acquisition
-  of an anatomical image (e.g. T1 weighted \gls*{mri}), 
+  of an anatomical image (e.g. \gls*{t1}), 
   no structural reference is available.
 Secondly, the natural difficulty of subject-to-atlas image registration
   posed by severe pathologies (e.g. a tumor, resected tissues, etc.) 
@@ -362,6 +364,8 @@ On the contrary, relaxing the regularization constraints may hinder the quantifi
   because ``comma-shaped'' patterns may be turned into ``point-like'' and vice-versa
   depending on the choice of the template (\autoref{fig:01}, right panel).
 
+\fixme{These parts must be re-written almost at full.}
+{\color{red}
 In this work we present an evaluation framework implemented in Python of spatial normalization
   applied in \gls*{datscan} absolute quantification protocols.
 The evaluation framework comprises the following parts: 
@@ -389,15 +393,13 @@ Finally, the aptness of the tools is also tested on real datasets,
 The evaluation framework, \gls*{pysbr}, one template,
   and a representative subset of the presented data are publicly 
   available in \url{https://github.com/oesteban/PySBR}.
+  }
 
-\section{Material \& Methods} \label{sec:methods}
-
-\subsection{Data}\label{sec:data}
+\section{Materials}\label{sec:data}
  
-
-\subsubsection{Synthetic phantoms database} %
+\subsection{Synthetic phantoms database} %
 \label{sec:data_synthetic}
-We randomly selected 60 source T1 images from a publicly available
+We randomly selected 60 source \gls*{t1} images from a publicly available
   \gls*{mri} database \citep{hill_ixi_2006} of healthy volunteers.
 The striatal cavities and a brain mask were obtained from each dataset
   using \emph{Freesurfer} \citep{fischl_freesurfer_2012}.
@@ -410,7 +412,7 @@ Finally, all the synthetic phantoms were downsampled and cropped to the characte
   grid and \acrlong*{fov} of typical \glspl*{datscan} ($100\times100\times100$ matrix,
   $2.56mm\times2.56mm\times2.56mm$ voxel size).
 
-\subsubsection{Simulated \gls*{spect} database} %
+\subsection{Simulated database} %
 \label{sec:data_simulated}
 A cohort of 23 datasets was simulated from real \gls*{mri} data.
   \Gls*{spect} projections were simulated  for a Siemens E-CAM gamma
@@ -446,8 +448,7 @@ Projections were filtered with a 2D-Butterworth filter ($0.64cm^{-1}$,
   order 5). Finally, reconstruction was performed by using filtered 
   back-projection algorithm with a ramp filter.
 
-
-\subsubsection{Real datasets} %
+\subsection{Real datasets} %
 \label{sec:data_real}
 \Gls*{spect} acquisition was undertaken $4h$
   after injection  of $185$\textit{MBq} of $^{123}$I-ioflupane
@@ -462,7 +463,7 @@ The parameters of acquisition were: radius of rotation of $15cm$,
 At least 2 million counts per acquisition were obtained in all cases.
 Reconstruction was performed as described for simulated studies.
 
-\subsubsection{Templates} %
+\subsection{Templates} %
 \label{sec:data_templates}
 
 Two templates were built using subsets of cases of the simulated and real
@@ -471,7 +472,7 @@ For the experiments using synthetic phantoms (\autoref{sec:data_synthetic}),
   we used the template generated for the simulated database.
 The simulated template was created averaging 14 ``healthy'' subjects drawn from
   the numerical simulations.
-All the subjects were normalized to the T1 \gls*{mri} template distributed with
+All the subjects were normalized to the \gls*{t1} template distributed with
   \gls*{spm}2.
 This normalization step was validated by visual inspection.
 The normalized \glspl*{mri} were resampled to have a matrix size of
@@ -485,16 +486,120 @@ The final template was obtained by averaging the normalized \gls*{spect} studies
   full width at half maximum.
 The real template was obtained with a very similar procedure. 
 First, we selected 10 real datasets from a healthy volunteers database, acquired
-  with a T1 \gls*{mri} reference and a coupled \gls*{spect} study obtained as
+  with a \gls*{t1} reference and a coupled \gls*{spect} study obtained as
   described in \autoref{sec:data_real}.
-Second, the \gls*{mri} were normalized to the T1 \gls*{mri} template of \gls*{spm}2.
-Third, the \gls*{spect} studies were rigidly registered to their corresponding T1, 
+Second, the \gls*{mri} were normalized to the \gls*{t1} template of \gls*{spm}2.
+Third, the \gls*{spect} studies were rigidly registered to their corresponding \gls*{t1}, 
   and then the normalization transform was applied.
 Finally, the resampling, the normalization of \gls*{spect} counts, and the final
   smoothing filter were applied as explained for the simulated template.
 
-\subsection{Computational methods}
-\label{sec:sub_methods}
+\section{Methods}
+\label{sec:methods}
+
+
+\subsection{Nipype-based evaluation workflow}
+\label{sec:evaluation}
+
+Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
+  of signal processing methods are notoriously difficult tasks.
+In order to produce a trustful benchmarking framework, we generate two cohorts
+  of datasets from real \gls*{mri} scans (\autoref{sec:data_synthetic}
+  and \autoref{sec:data_simulated}) that can be used as gold standard, 
+  because they retain the relevant information about the underlying anatomy.
+
+\paragraph{Evaluation criteria} %
+In order to quantitatively evaluate the accuracy improvement of
+  the tool with respect to the affine registration, we use the 
+  workflows described in \autoref{sec:user_interface}.
+We also performed the same task with an alternative registration
+  tool, the \gls*{ants} package, to evaluate the impact of
+  \gls*{ibr} itself and to compare the
+  standard methodologies with our tool.
+As we introduced in \autoref{sec:intro}, we are evaluating the
+  refinement step after an ubiquitous affine initialization. 
+We defined the following evaluation protocol:
+\begin{enumerate}
+\emitem{Initialization} (described in \autoref{sec:meth_initialization}).
+\emitem{Refinement}: at the evaluators digression the workflow can execute 
+  this step either by using  \gls*{pysbr} or \gls*{ants} .
+  The full description of the refinement step setup used to configure
+  \gls*{ants} is provided in \autoref{Tab:01}.
+\emitem{\Glspl{roi} mapping}: use the displacement field resulting from
+  the previous step to project the template's anatomical \glspl*{roi} to
+  subject's space.
+\emitem{Overlap computation}: Dice scores are obtained for the four
+  \glspl*{roi} (left and right caudates and putamenes) and a
+  volume-weighted average of them.
+\end{enumerate}
+
+In order to report the improvement of the refinement step,
+  the collected Dice indices are subtracted to the corresponding
+  scores obtained with the initialization mapping.
+  
+\paragraph{Visual inspection} %
+Real \glspl*{datscan} can only be validated visually due to the 
+  absence of structural \gls*{mri} data to precisely extract
+  the evaluation \glspl*{roi}.
+The cohort described in \autoref{sec:data_real}
+  is a subset from a pool of cases that were previously aligned with an
+  affine registration step, but rejected for quantification due to the
+  visual mismatch with the template.
+Additionally, as an exception one real study was acquired with its
+  corresponding \gls*{mri}.
+This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one real case,
+  implicitly assuming that the necessary image registration from the 
+  \gls*{spect} study to the reference \gls*{t1} is error-free 
+  (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
+This case is used to produce the visual results illustrated in \autoref{fig:01}.
+
+\subsubsection{Common initialization}
+\label{sec:meth_initialization}
+The initial step performs a preliminary affine approximation of the selected
+  template to the subject's image as explained in \autoref{sec:intro}.
+To this end, a fast registration approach is implemented using \gls*{ants}.
+We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
+  mutual information as cost function; the detailed parameter description 
+  is given in \autoref{Tab:01}.
+The resulting affine matrix is then applied to project the search-\gls*{roi}
+  and the landmarks associated with the template in
+  subject's space (see \autoref{fig:02}).
+
+
+\subsection{IBR: intensity-based registration}
+  \begin{table*}[!t]
+  \processtable{\textbf{Configuration of initialization and \gls*{ibr}}.
+                Table presents registration levels and corresponding parameters
+                for \Gls*{ants}.
+                Levels 0 and 1 implement to the \emph{Initialization} step, shared
+                by \gls*{ibr} and \gls*{pysbr}.
+                Remaining levels correspond to the \emph{refinement} step using
+                a nonlinear \gls*{ibr} algorithm.\label{Tab:01}} %
+        {
+        \begin{tabular}{llp{11cm}}
+        Level & Sub-sampling                   & Parameters configuration     \\
+  \hline 
+  \hline  \\[-0.8em]
+        0     & Regular$^{*}$ ($4\times4\times4$)    & Rigid (6 parameters) transformation, pre-smoothing of $\sigma=8.0mm$. 
+                                                 Initialized with a translation mapping geometrical centers of template and subject's images.\\
+  \hline \\[-0.8em]
+        1     & Regular$^{*}$ ($2\times2\times2$)    & Affine (12 parameters) transformation, pre-smoothing of $\sigma=4.0mm$. \\
+  \hline \\[-0.8em]
+        2     & Random$^{**}$ (20\% of total samples) & \glsreset{syn}\gls*{syn}, gradient step $2.0$, variance of update field $6.0mm$, variance of total field $10.0mm$. \\
+  \hline \\[-0.8em]
+        3     & Random$^{**}$ (20\% of total samples) & \gls*{syn}, gradient step $0.75$, variance of update field $4.0mm$, variance of total field $6.0mm$.  \\
+  \hline \\[-0.8em]
+        All   & -                              & Mutual information metric (``Mattes'' option in \gls*{ants}), with joint histogram of 64 bins. Preprocessing filters: histogram matching, intensity window at (25\%, 99.8\%) percentiles. \\
+        \end{tabular} %
+        }
+        { ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors
+           of the image's grid. \\
+           ($^{**}$) ``Random'' subsampling randomly draws
+           samples from the full grid without geometrical restrictions.}
+  \end{table*}
+
+
+\subsection{PySBR: Shape-based registration}
 A flowchart to overview \gls*{pysbr} is presented in \autoref{fig:02},
   and described hereafter.
 Shape-based registration is initialized with an affine transform matrix
@@ -506,18 +611,6 @@ Then, the shape-matching function evaluates the similarity between features.
 Finally, we apply a kernel transform to propagate the local displacements of
   the features along the coordinate system of the template, obtaining the final
   projection of the template onto the subject's image.
-
-\subsubsection{Initialization}
-\label{sec:meth_initialization}
-The initial step performs a preliminary affine approximation of the selected
-  template to the subject's image as explained in \autoref{sec:intro}.
-To this end, a fast registration approach is implemented using \gls*{ants}.
-We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
-  mutual information as cost function; the detailed parameter description 
-  is given in \autoref{Tab:01}.
-The resulting affine matrix is then applied to project the search-\gls*{roi}
-  and the landmarks associated with the template in
-  subject's space (see \autoref{fig:02}).
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % TODO: remove the figure environment
@@ -614,96 +707,6 @@ Once the landmarks have been extracted and mapped, a dense deformation field of 
 
 Therefore, the $\vect{u}(\vect{x})$ found is the solution to our problem and
   can be used to project the quantification \glspl*{roi} to the subject's image.
-
-
-\subsection{Evaluation}
-\label{sec:evaluation}
-
-Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
-  of signal processing methods are notoriously difficult tasks.
-In order to produce a trustful benchmarking framework, we generate two cohorts
-  of datasets from real \gls*{mri} scans (\autoref{sec:data_synthetic}
-  and \autoref{sec:data_simulated}) that can be used as gold standard, 
-  because they retain the relevant information about the underlying anatomy.
-
-\subsubsection{Evaluation criteria} %
-In order to quantitatively evaluate the accuracy improvement of
-  the tool with respect to the affine registration, we use the 
-  workflows described in \autoref{sec:user_interface}.
-We also performed the same task with an alternative registration
-  tool, the \gls*{ants} package, to evaluate the impact of
-  \gls*{ibr} itself and to compare the
-  standard methodologies with our tool.
-As we introduced in \autoref{sec:intro}, we are evaluating the
-  refinement step after an ubiquitous affine initialization.
-  
-  \begin{table*}[!t]
-  \processtable{\textbf{Configuration of initialization and \gls*{ibr}}.
-                Table presents registration levels and corresponding parameters
-                for \Gls*{ants}.
-                Levels 0 and 1 implement to the \emph{Initialization} step, shared
-                by \gls*{ibr} and \gls*{pysbr}.
-                Remaining levels correspond to the \emph{refinement} step using
-                a nonlinear \gls*{ibr} algorithm.\label{Tab:01}} %
-        {
-        \begin{tabular}{llp{11cm}}
-        Level & Sub-sampling                   & Parameters configuration     \\
-  \hline 
-  \hline  \\[-0.8em]
-        0     & Regular$^{*}$ ($4\times4\times4$)    & Rigid (6 parameters) transformation, pre-smoothing of $\sigma=8.0mm$. 
-                                                 Initialized with a translation mapping geometrical centers of template and subject's images.\\
-  \hline \\[-0.8em]
-        1     & Regular$^{*}$ ($2\times2\times2$)    & Affine (12 parameters) transformation, pre-smoothing of $\sigma=4.0mm$. \\
-  \hline \\[-0.8em]
-        2     & Random$^{**}$ (20\% of total samples) & \glsreset{syn}\gls*{syn}, gradient step $2.0$, variance of update field $6.0mm$, variance of total field $10.0mm$. \\
-  \hline \\[-0.8em]
-        3     & Random$^{**}$ (20\% of total samples) & \gls*{syn}, gradient step $0.75$, variance of update field $4.0mm$, variance of total field $6.0mm$.  \\
-  \hline \\[-0.8em]
-        All   & -                              & Mutual information metric (``Mattes'' option in \gls*{ants}), with joint histogram of 64 bins. Preprocessing filters: histogram matching, intensity window at (25\%, 99.8\%) percentiles. \\
-        \end{tabular} %
-        }
-        { ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors
-           of the image's grid. \\
-           ($^{**}$) ``Random'' subsampling randomly draws
-           samples from the full grid without geometrical restrictions.}
-  \end{table*}
-  
-  
-We defined the following evaluation protocol:
-\begin{enumerate}
-\emitem{Initialization} (described in \autoref{sec:meth_initialization}).
-\emitem{Refinement}: at the evaluators digression the workflow can execute 
-  this step either by using  \gls*{pysbr} or \gls*{ants} .
-  The full description of the refinement step setup used to configure
-  \gls*{ants} is provided in \autoref{Tab:01}.
-\emitem{\Glspl{roi} mapping}: use the displacement field resulting from
-  the previous step to project the template's anatomical \glspl*{roi} to
-  subject's space.
-\emitem{Overlap computation}: Dice scores are obtained for the four
-  \glspl*{roi} (left and right caudates and putamenes) and a
-  volume-weighted average of them.
-\end{enumerate}
-
-In order to report the improvement of the refinement step,
-  the collected Dice indices are subtracted to the corresponding
-  scores obtained with the initialization mapping.
-  
-\subsubsection{Visual inspection}
-
-Real \glspl*{datscan} can only be validated visually due to the 
-  absence of structural \gls*{mri} data to precisely extract
-  the evaluation \glspl*{roi}.
-The cohort described in \autoref{sec:data_real}
-  is a subset from a pool of cases that were previously aligned with an
-  affine registration step, but rejected for quantification due to the
-  visual mismatch with the template.
-Additionally, as an exception one real study was acquired with its
-  corresponding \gls*{mri}.
-This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one real case,
-  implicitly assuming that the necessary image registration from the 
-  \gls*{spect} study to the reference T1 is error-free 
-  (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
-This case is used to produce the visual results illustrated in \autoref{fig:01}.
 
 \section{Software Description}
 \label{sec:software}
@@ -988,7 +991,7 @@ Presented plots are standard: boxes extend from the lower to upper quartile valu
 Visual assessment by two experts is performed on the real datasets cohort,
   validating the performance of the tool in all the cases.
 In \autoref{fig:real_dataset_result} we reproduce the results obtained
-  for the real dataset with paired anatomical reference (a T1 weighted \gls*{mri}),
+  for the real dataset with paired anatomical reference (a \gls*{t1}),
   and both tools under analysis.
 The benefits of shape-based registration were more clear on real \gls*{datscan}
   images, for two reasons.
