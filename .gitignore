@@ -71,6 +71,8 @@ nosetests.xml
 *.synctex.gz
 *.pdf
 *.fff
+*.cb
+*.cb2
 
 #Backup files 
 *~

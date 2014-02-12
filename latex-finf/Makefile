@@ -24,7 +24,7 @@ $(SUBDIRS):
 	$(MAKE) -C $@
 
 cleanall: clean
-	rm -f *.pdf *.acn *.glo *.ist *.toc *.spl *.dvi *.ps *.fff
+	rm -f *.pdf *.acn *.glo *.ist *.toc *.spl *.dvi *.ps *.fff *.cb *.cb2
 
 clean:
 	rm -f *.aux *.log *.out *.blg *.bbl

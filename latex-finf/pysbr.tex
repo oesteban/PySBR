@@ -266,9 +266,31 @@ Nevertheless, \gls*{pysbr} shows potential for the use in a different
 
 \section{Introduction}
 \label{sec:intro}
-\fixme{Three sentences here introducing why the evaluation workflows
-  are important and why python is good to build them (right?)}
 
+\cbstart
+Image processing is witnessing the proliferation of computational tools
+  providing general and problem-specific solutions.
+As a consequence, the number of evaluation and comparison papers is
+  also rapidly increasing.
+\citeauthor{tustison_instrumentation_2013} described
+  the importance of the assessment of brain imaging methods
+  \citep{tustison_instrumentation_2013}, and 
+  adapted the concept of \emph{instrumentation bias} to the field.
+We consider that the principles described in their work are not only
+  important for the design of evaluations and comparisons, 
+  and they can be also applied in the development stage of image processing
+  methods in \emph{functional-test driven} strategies.
+The second edition of the \emph{Python in Neuroscience} Research Topic,
+  to which this paper belongs, is a confirmation of the trends described
+  above.
+Under this topic, we show how rigorous evaluation pipelines can be designed
+  \emph{before} the development of problem-specific solutions with readily
+  available software in Python.
+We use a clinical application, the fully automated quantification of \gls*{datscan},
+  as a vessel to illustrate how this approach is
+  easily implementable using \gls*{nipype}.
+\cbend
+  
 \Gls*{spect} imaging of the dopaminergic system using
   specific agents (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
   value to discriminate parkinsonian syndromes from other movement
@@ -282,7 +304,7 @@ Quantification protocols typically define a set of \glspl*{roi} along the
   striatum structures to measure the uptake and characterize the pattern.
 
 Some efforts have been made to help automate the process and standardize
-  the outcome \citep{calvini_basal_2007,badiavas_spect_2011}.
+  the outcome \citep{calvini_basal_2007,badiavas_spect_2011,ciarmiello_weighted_2013}.
 A first automation step requires finding the mapping between the subject's
   study and an appropriate template, on which the quantification \glspl*{roi}
   are defined.
