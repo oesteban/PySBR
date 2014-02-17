@@ -150,41 +150,32 @@
 
 \usepackage{changebar}
 
-\newglossaryentry{spm}{%
-  name        = {SPM},%
-  description = {Statistical Parametric Mapping},%
-  first       = {\emph{SPM} (Statistical Parametric Mapping, \cite{ashburner_unified_2005})},%
-}
+\newacronym[first={\emph{SPM} (Statistical Parametric Mapping, \cite{ashburner_unified_2005})}]%
+{spm}{\emph{SPM}}{Statistical Parametric Mapping}
 
-\newglossaryentry{syn}{%
-  name        = {SyN},%
-  description = {Symmetric Normalization transformation model},%
-  first       = {Symmetric Normalization (SyN) transformation model \citep{avants_symmetric_2008}},%
-}
+\newacronym[first={Symmetric Normalization (\emph{SyN}) transformation model \citep{avants_symmetric_2008}}]%
+{syn}{\emph{SyN}}{Symmetric Normalization transformation model}
 
-\newglossaryentry{ants}{%
-  name        = {ANTS},%
-  description = {Advanced Normalization tools},%
-  first       = {\emph{ANTS} (Advanced Normalization tools, \cite{avants_ants:_2013})},%
-}
+\newacronym[first={\emph{ANTS} (Advanced Normalization tools, \cite{avants_ants:_2013})}]%
+{ants}{\emph{ANTS}}{Advanced Normalization tools}
 
-\newglossaryentry{itk}{%
-  name        = {ITK},%
-  description = {Insight Registration \& Segmentation Toolkit},%
-  first       = {\emph{ITK} (the Insight Registration \& Segmentation Toolkit, \url{http://www.itk.org})},%
-}
+\newacronym[first={\emph{ITK} (the Insight Registration \& Segmentation Toolkit, \url{http://www.itk.org})}]%
+{itk}{\emph{ITK}}{Insight Registration \& Segmentation Toolkit}
 
-\newglossaryentry{pysbr}{%
-  name        = {PySBR},%
-  description = {Shape-based registration in Python},%
-  first       = {\emph{PySBR} (shape-based registration in Python)},%
-}
+\newacronym[first={\emph{PySBR} (shape-based registration in Python)}]%
+{pysbr}{\emph{PySBR}}{Shape-based registration in Python}
 
-\newglossaryentry{nipype}{%
-  name        = {\emph{nipype}},%
-  description = {Neuroimaging in Python, Pipelines and Interfaces},%
-  first       = {\emph{nipype} (Neuroimaging in Python, Pipelines and Interfaces, \cite{gorgolewski_nipype:_2011})},%
-}
+\newacronym[first={\emph{nipype} (Neuroimaging in Python, Pipelines and Interfaces, \cite{gorgolewski_nipype:_2011})}]%
+{nipype}{\emph{nipype}}{Neuroimaging in Python, Pipelines and Interfaces}
+
+\newacronym[first={\emph{NeSt} (\url{www.brainnest.org}, \cite{ciarmiello_weighted_2013})}]%
+{brainnest}{\emph{NeSt}}{BrainNest neuroimaging platform}
+
+\newacronym[first={\emph{BasGan} (\url{http://www.aimn.it/struttura/gruppi/gs_neuro.php}, \cite{calvini_basal_2007})}]%
+{basgan}{\emph{BasGan}}{BrainNest neuroimaging platform}
+
+\newacronym[first={intensity-based registration (which we will refer to as IBR in the following)}]%
+{ibr}{IBR}{intensity-based registration}
 
 \newacronym{mri}{MRI}{magnetic resonance imaging}
 \newacronym{montecarlo}{MC}{Monte-Carlo}
@@ -206,7 +197,6 @@
 \newacronym{wm}{WM}{white matter}
 \newacronym{gm}{GM}{grey matter}
 \newacronym{json}{JSON}{JavaScript Object Notation}
-\newacronym{ibr}{IBR}{intensity-based registration}
 
 \makeglossaries
 
@@ -268,6 +258,8 @@ Nevertheless, \gls*{pysbr} shows potential for the use in a different
 \label{sec:intro}
 
 \cbstart
+\subsection{Assessment of processing software}
+\label{sec:intro_software}
 Image processing is witnessing the proliferation of computational tools
   providing general and problem-specific solutions.
 As a consequence, the number of evaluation and comparison papers is
@@ -280,17 +272,15 @@ We consider that the principles described in their work are not only
   important for the design of evaluations and comparisons, 
   and they can be also applied in the development stage of image processing
   methods in \emph{functional-test driven} strategies.
-The second edition of the \emph{Python in Neuroscience} Research Topic,
-  to which this paper belongs, is a confirmation of the trends described
-  above.
-Under this topic, we show how rigorous evaluation pipelines can be designed
+In this Research Topic, we show how rigorous evaluation pipelines can be designed
   \emph{before} the development of problem-specific solutions with readily
   available software in Python.
 We use a clinical application, the fully automated quantification of \gls*{datscan},
   as a vessel to illustrate how this approach is
   easily implementable using \gls*{nipype}.
+
+\subsection{Clinical problem}\label{sec:intro_problem}
 \cbend
-  
 \Gls*{spect} imaging of the dopaminergic system using
   specific agents (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
   value to discriminate parkinsonian syndromes from other movement
@@ -298,20 +288,17 @@ We use a clinical application, the fully automated quantification of \gls*{datsc
 Quantification of \gls*{datscan} can facilitate early 
   diagnosis, progression follow-up, and assessment of treatment
   strategies. In clinical routine, this application is generally
-  performed by visual evaluation of the \gls*{spect} images
+  performed by visual inspection of regions corresponding to the
+  striatal structures in the \gls*{datscan}
   (see \autoref{fig:01}, subfigure A).
-Quantification protocols typically define a set of \glspl*{roi} along the
-  striatum structures to measure the uptake and characterize the pattern.
-
-Some efforts have been made to help automate the process and standardize
-  the outcome \citep{calvini_basal_2007,badiavas_spect_2011,ciarmiello_weighted_2013}.
-A first automation step requires finding the mapping between the subject's
-  study and an appropriate template, on which the quantification \glspl*{roi}
-  are defined.
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-% TODO: remove the figure environment
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+Specifically, due to the predominant uptake that occurs at caudal and putaminal areas,
+  \gls*{datscan} images of healthy subjects present two
+  ``comma-shaped'' patterns at the locations of the striatum nuclei
+  (\autoref{fig:01}, A0).
+However, in subjects affected by parkinsonian syndromes, the associated
+  neuronal degeneration results in a lower uptake in the putamen.
+Therefore, the activity registered by the corresponding \gls*{datscan} presents
+  ``point-like'' patterns located at the areas of caudates (\autoref{fig:01}, A1-A3).
 \begin{figure*}[ht]
 \insertgraphic{width=1.0\linewidth}{figures/01-ProblemStatement}
 \caption{\label{fig:01} \textbf{Problem statement.} 
@@ -331,72 +318,61 @@ In yellow, the corresponding contours from the template projected into the subje
 }
 \end{figure*}
 
-This image registration process is challenging for two reasons:
-Firstly, given their low resolution  (typically around $2.5mm\times2.5mm\times2.5mm$)
-  and the imaged feature itself, \gls*{datscan} images retain little information about the
-  underlying anatomical structure  (see \autoref{fig:01}). 
-In addition, since clinical protocols usually do not include the acquisition
-  of an anatomical image (e.g. \gls*{t1}), 
-  no structural reference is available.
-Secondly, the natural difficulty of subject-to-atlas image registration
-  posed by severe pathologies (e.g. a tumor, resected tissues, etc.) 
-  is boosted in this application by the fact that the information 
-  contained in the images dramatically changes with the advance of
-  the imaged disorder.
-Specifically, due to the predominant uptake that occurs at caudal and putaminal areas,
-  \gls*{datscan} images of healthy subjects present two
-  ``comma-shaped'' patterns at the locations of the striatum nuclei
-  (\autoref{fig:01}, A0).
-  However, in subjects affected by parkinsonian syndromes, the associated
-  neuronal degeneration results in a lower uptake in the putamen.
-Therefore, the activity registered by the corresponding \gls*{datscan} presents
-  ``point-like'' patterns located at the areas of caudates (\autoref{fig:01}, A1-A3).
-The alignment problem between the subject's \gls*{spect} image and the
-  \gls*{datscan} template is solved with acceptable accuracy by standard
-  intensity-based registration restricted to affine transformations (12 parameters).
-Such algorithms maximize the image overlap and are able to find a reasonable solution
-  to the rigid-body mapping (i.e. head location and 3D rotations) and the head size matching.
-Even though the subject's \gls*{spect} is globally aligned with respect to the
-  template, many cases present \gls*{datscan} activity patterns that do
-  not match the locations in the template, thereby misleading quantification.
-This anatomical variability could easily be overcome by using a structural
-  reference, but this is not available.
-A common solution is to refine the affine mapping with a second
-  non-linear registration step. 
-Many standardized and readily available tools for image registration include a wide range 
-  of intensity-based matching metrics  and deformation models.
-However, standard intensity-based non-linear registration are rather ill-posed for 
-  this application, because their included metrics do not take the shape of the registered
-  features into account. 
-The problem is more prominent in subjects with advanced progression of
-  the disorder: as their patterns are ``point-like'', the registration
-  methodology converts them into ``comma-like'' patterns to match the template,
-  introducing an artificial ``stretching''.
-To make the registration problem more tractable, non-linear registration 
-  methodologies generally include regularization constraints that help
-  find plausible solutions.
-For the problem at hand, very strong regularization conditions may not 
-  capture the anatomical variability of the subject with respect to the 
-  template (i.e. left-right structures are not symmetrically located),
-  and the outcome is not very different from the mapping
-  obtained with registration procedures restricted to affine
-  transformations (which are an extreme case of very strong
-  regularization).
-On the contrary, relaxing the regularization constraints may hinder the quantification 
-  because ``comma-shaped'' patterns may be turned into ``point-like'' and vice-versa
-  depending on the choice of the template (\autoref{fig:01}, right panel).
+\subsection{State of art}\label{sec:state-of-art}
+Some efforts have been made to help automate the quantification process 
+  and standardize the outcome \citep{calvini_basal_2007,badiavas_spect_2011}.
+Automated protocols typically use a template created by averaging a healthy
+  population (see \autoref{fig:01}, box B0).
+Then, a number of \glspl*{roi} are defined along the resulting striatum 
+  structures in the template, that will be used to quantify the uptake and characterize the
+  pattern present in the image under study.
+Therefore, the key processing step to automate quantification is the
+  spatial mapping (or \emph{spatial normalization}) of the subject's image and
+  the template.
+This alignment implies an image registration process, which is challenging for two reasons.
+The first drawback is the scarce information that \gls*{datscan} images 
+  retain about the underlying anatomical structures (see \autoref{fig:01}),
+  what is importantly affected by the typically low resolution of
+  \gls*{datscan} images (around $2.5mm\times2.5mm\times2.5mm$).
+Since clinical protocols usually do not include the acquisition of anatomical images
+  (e.g. \gls*{t1}), no structural reference is generally available.
+The second drawback is the implicit hardness of \emph{subject-to-atlas} registration
+  (or subject-to-template in this case), due to the unpredictable variability posed by
+  severe pathologies (e.g. tumors, resected tissues, etc.).
+In \gls*{datscan} quantification, the uptake pattern dramatically changes 
+  with the progression of the disorder (see \autoref{fig:01}, boxes A0-A3).
 
-\fixme{These parts must be re-written almost at full.}
-{\color{red}
-In this work we present an evaluation framework implemented in Python of spatial normalization
-  applied in \gls*{datscan} absolute quantification protocols.
+The standard approach to solving the alignment problem between the subject's
+  \gls*{spect} image and the \gls*{datscan} template is splitted in two parts.
+The first step (\emph{Initialization}) finds an affine subject-to-template mapping.
+This initial affine registration is aimed to linearly align template and subject's
+  image (i.e. head location and 3D rotations), capturing also the scaling 
+  transformation that matches head sizes.
+The second step is a \emph{Refinement} stage, that optimizes the local aligment of
+  the uptake foci present in the image.
+Some software tools have been proposed for this purpose.
+For instance, \gls*{basgan} proposes a local registration scheme clipping the 
+  uptake foci and using cross-correletion between the subject's image and 
+  the template as objective function.
+Other solutions are implemented adapting the nonlinear registration tools included
+  with \gls*{spm}, using the \emph{spatial normalisation} module and settings
+  imposing a strong regularisation penalty \fixme{reference needed}.
+\citeauthor{ciarmiello_weighted_2013} recently proposed \gls*{brainnest}, which
+  generates a \emph{weighted} image enhancing the putaminal uptake in
+  subjects with advanced progression of disease.
+The assessment of these solutions has been, mainly, phantom-based
+  and semi-automated \citep{skanjeti_assessing_2013}.
+To our knowledge, no cross-comparison study has been published so far.
+
+Therefore, we propose an evaluation framework implemented in Python for the
+  spatial normalization of \gls*{datscan} images required by absolute quantification
+  protocols.
 The evaluation framework comprises the following parts: 
 (1) A workflow for generating very simplistic phantoms from
    \gls*{mri} data, to be used in the evaluation framework;
-(2) a fast intensity-based registration process to search for an affine
-   transformation that initializes the spatial normalization;
-(3) a template-to-image registration process to refine normalization,
-   where the tool under evaluation can be inserted; and
+(2) a fast \emph{Initialization stage}, common for all the spatial
+    normalization packages under comparison;
+(3) a \emph{Refinement stage} where the tool under evaluation can be inserted; and
 (4) a benchmarking and reporting module to gather and present results.
 
 \cbstart
@@ -408,14 +384,13 @@ On one hand, we use a standard spatial normalization
   work in progress introduced here.   
 \cbend
 
-Quantitative evaluation of the tools are performed on synthetic
-  phantoms and simulated \gls*{spect} images (\autoref{sec:data}).
+Quantitative results of the assessment are reported for the synthetic
+  phantoms and simulated \gls*{spect} images described in \autoref{sec:data}.
 Finally, the aptness of the tools is also tested on real datasets,
   assessed by visual inspection (see \autoref{sec:results_real}).
 The evaluation framework, \gls*{pysbr}, one template,
   and a representative subset of the presented data are publicly 
   available in \url{https://github.com/oesteban/PySBR}.
-  }
 
 \section{Materials}\label{sec:data}
  
