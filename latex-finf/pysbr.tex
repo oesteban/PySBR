@@ -18,7 +18,7 @@
 % Set this to true if you submit the article
 %  it will put all the figures at the end 
 \newboolean{submit}
-\setboolean{submit}{false}
+\setboolean{submit}{true}
 
 
 \ifthenelse{\boolean{submit}}
@@ -254,10 +254,8 @@ Nevertheless, \gls*{pysbr} shows potential for the use in a different
 
 \glsresetall[\acronymtype]
 
-\section{Introduction}
-\label{sec:intro}
+\section{Introduction}\label{sec:intro}
 
-\cbstart
 \subsection{Assessment of processing software}
 \label{sec:intro_software}
 Image processing is witnessing the proliferation of computational tools
@@ -280,7 +278,6 @@ We use a clinical application, the fully automated quantification of \gls*{datsc
   easily implementable using \gls*{nipype}.
 
 \subsection{Clinical problem}\label{sec:intro_problem}
-\cbend
 \Gls*{spect} imaging of the dopaminergic system using
   specific agents (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
   value to discriminate parkinsonian syndromes from other movement
@@ -375,14 +372,12 @@ The evaluation framework comprises the following parts:
 (3) a \emph{Refinement stage} where the tool under evaluation can be inserted; and
 (4) a benchmarking and reporting module to gather and present results.
 
-\cbstart
 In order to demonstrate the utility of the evaluation framework we compare 
   two methods to achieve the final refinement in template matching: 
 On one hand, we use a standard spatial normalization 
   approach,  referred to as \gls*{ibr}, 
   and on the other hand, we us \gls*{pysbr}, a new shape based registration tool and 
   work in progress introduced here.   
-\cbend
 
 Quantitative results of the assessment are reported for the synthetic
   phantoms and simulated \gls*{spect} images described in \autoref{sec:data}.
@@ -393,6 +388,13 @@ The evaluation framework, \gls*{pysbr}, one template,
   available in \url{https://github.com/oesteban/PySBR}.
 
 \section{Materials}\label{sec:data}
+
+Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
+  of signal processing methods are notoriously difficult tasks.
+In order to produce a trustful benchmarking framework, we generate two 
+  \gls*{datscan} databases from real \gls*{mri} scans (\autoref{sec:data_synthetic}
+  and \autoref{sec:data_simulated}) that can be used as gold standard, 
+  because they retain the relevant information about the underlying anatomy.
  
 \subsection{Synthetic phantoms database} %
 \label{sec:data_synthetic}
@@ -494,34 +496,15 @@ Finally, the resampling, the normalization of \gls*{spect} counts, and the final
 \section{Methods}
 \label{sec:methods}
 
-
 \subsection{Nipype-based evaluation workflow}
 \label{sec:evaluation}
-
-Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
-  of signal processing methods are notoriously difficult tasks.
-In order to produce a trustful benchmarking framework, we generate two cohorts
-  of datasets from real \gls*{mri} scans (\autoref{sec:data_synthetic}
-  and \autoref{sec:data_simulated}) that can be used as gold standard, 
-  because they retain the relevant information about the underlying anatomy.
-
-\paragraph{Evaluation criteria} %
-In order to quantitatively evaluate the accuracy improvement of
-  the tool with respect to the affine registration, we use the 
-  workflows described in \autoref{sec:user_interface}.
-We also performed the same task with an alternative registration
-  tool, the \gls*{ants} package, to evaluate the impact of
-  \gls*{ibr} itself and to compare the
-  standard methodologies with our tool.
-As we introduced in \autoref{sec:intro}, we are evaluating the
-  refinement step after an ubiquitous affine initialization. 
-We defined the following evaluation protocol:
+\paragraph{Software design}\label{sec:workflow}
+We propose an evaluation workflow with the following structure:
 \begin{enumerate}
-\emitem{Initialization} (described in \autoref{sec:meth_initialization}).
-\emitem{Refinement}: at the evaluators digression the workflow can execute 
-  this step either by using  \gls*{pysbr} or \gls*{ants} .
-  The full description of the refinement step setup used to configure
-  \gls*{ants} is provided in \autoref{Tab:01}.
+\emitem{Initialization stage} (described in \autoref{sec:meth_initialization}).
+\emitem{Refinement stage}: at the evaluators digression the workflow can execute 
+  this step either by using \gls*{pysbr} or \gls*{ants}, as
+  introduced in \autoref{sec:meth_refinement}.
 \emitem{\Glspl{roi} mapping}: use the displacement field resulting from
   the previous step to project the template's anatomical \glspl*{roi} to
   subject's space.
@@ -529,11 +512,26 @@ We defined the following evaluation protocol:
   \glspl*{roi} (left and right caudates and putamens) and a
   volume-weighted average of them.
 \end{enumerate}
+We selected \gls*{nipype} to build up the system for its unique properties for
+  the construction of processing pipelines for neuroimage (i.e. flexibility,
+  comprehensive interfaces to widely-used toolboxes, efficient batch processing,
+  track of provenance, etc.).
+Particularly, the use of \gls*{nipype} helps ensure the repeatability of
+  experiments (provided with open-data) and enables fast algorithm prototyping
+  as we illustrate with the \gls*{pysbr} tool.
+The workflow graph (automatically generated by \gls*{nipype}) is depicted in 
+  \autoref{fig:02-new}.
 
-In order to report the improvement of the refinement step,
-  the collected Dice indices are subtracted to the corresponding
-  scores obtained with the initialization mapping.
-  
+\begin{figure*}[!ht]
+  \centering
+    \insertgraphic{width=\linewidth}{figures/04-nipype-workflow}
+  \caption{\label{fig:02-new}
+  \textbf{Evaluation workflow}. Automatically generated graph 
+  representing all the software elements (as nodes) necessary
+  for the assessment of the proposed tools.}
+\end{figure*}
+
+
 \paragraph{Visual inspection} %
 Real \glspl*{datscan} can only be validated visually due to the 
   absence of structural \gls*{mri} data to precisely extract
@@ -548,9 +546,30 @@ This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one re
   implicitly assuming that the necessary image registration from the 
   \gls*{spect} study to the reference \gls*{t1} is error-free 
   (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
-This case is used to produce the visual results illustrated in \autoref{fig:01}.
+This case is used to produce the visual results illustrated in
+  \autoref{fig:real_dataset_result}.
 
-\subsubsection{Common initialization}
+\paragraph{Implementation} %
+The evaluation workflow implements the assessment of the objective tool on the three different
+  databases presented in \autoref{sec:data}. 
+It creates the necessary registration workflows to perform the template-subject 
+  registration of one subject from a large database.
+Evaluation indices are reported for \gls*{pysbr}, \gls*{ibr} and the affine initialization,
+  storing them in \texttt{.csv} (comma-separated values) files. 
+It also offers a simple interface (see \autoref{list:fullev}).
+\begin{lstlisting}[float,caption={\label{list:fullev}Running the evaluation pipeline}]
+ev = sbrwfs.evaluation()
+ev.inputs.inputnode.template = 'myTemplate'
+ev.inputs.inputnode.data_dir = '/path/to/database'
+ev.inputs.inputnode.subject_id = 'example_id_001'
+ev.inputs.inputnode.grade = 0
+ev.run()
+\end{lstlisting}
+\noindent 
+This workflow can be configured to operate in batch mode over a
+  set of cases, using the \emph{Iterables} feature from \gls*{nipype}.
+
+\subsection{Initialization stage}
 \label{sec:meth_initialization}
 The initial step performs a preliminary affine approximation of the selected
   template to the subject's image as explained in \autoref{sec:intro}.
@@ -558,19 +577,33 @@ To this end, a fast registration approach is implemented using \gls*{ants}.
 We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
   mutual information as cost function; the detailed parameter description 
   is given in \autoref{Tab:01}.
-The resulting affine matrix is then applied to project the search-\gls*{roi}
-  and the landmarks associated with the template in
-  subject's space (see \autoref{fig:02}).
+The resulting affine matrix is then applied to project information defined on
+  the template's space into the \gls*{datscan} image.
 
+\subsection{Refinement stage}\label{sec:meth_refinement}
+As introduced before, this stage is defined with a certain interface where the
+  tool under study can be plugged-in.
+To demonstrate the fast prototyping and \emph{functional-test driven} development
+  we promote, we provide two built-in refinement tools.
+On one side, our aim was to include any of aforementioned normalization tools.
+Unfortunately, at the time of writing, the \gls*{basgan} software was not available
+  on the URLs provided in \cite{calvini_basal_2007,skanjeti_assessing_2013}.
+Although we were able to download \gls*{brainnest} binaries, as they are compiled 
+  only for Windows platforms we could not integrate it in our pipeline.
+Additionally, both tools are not conceived to be easily integrated into third-party
+  workflows due to their design as standalone and visual programs.
+Therefore, we propose as reference methodology the \acrfull*{ibr}.
+Even though these spatial normalization approaches are usually performed with \gls*{spm}
+  (to be consistent with the template generation methodology), we propose here 
+  a normalization scheme based on the comprehensive and fairly new tool called \gls*{ants}.
+The full description of the settings for \gls*{ants} are provided in \autoref{Tab:01}.
 
-\subsection{IBR: intensity-based registration}
-  \begin{table*}[!t]
-  \processtable{\textbf{Configuration of initialization and \gls*{ibr}}.
-                Table presents registration levels and corresponding parameters
-                for \Gls*{ants}.
-                Levels 0 and 1 implement to the \emph{Initialization} step, shared
-                by \gls*{ibr} and \gls*{pysbr}.
-                Remaining levels correspond to the \emph{refinement} step using
+\begin{table*}[!t]
+  \processtable{\textbf{Configuration of Initialization and Refinement stages using \gls*{ibr}}.
+                Registration levels and corresponding settings of \gls*{ants} are summarized.
+                Levels 0 and 1 implement to the \emph{Initialization stage}, shared
+                for all \emph{Refinement} modules under study.
+                Remaining levels correspond to the \emph{Refinement stage} using
                 a nonlinear \gls*{ibr} algorithm.\label{Tab:01}} %
         {
         \begin{tabular}{llp{11cm}}
@@ -593,15 +626,14 @@ The resulting affine matrix is then applied to project the search-\gls*{roi}
            of the image's grid. \\
            ($^{**}$) ``Random'' subsampling randomly draws
            samples from the full grid without geometrical restrictions.}
-  \end{table*}
+\end{table*}
 
 
-\subsection{PySBR: Shape-based registration}
+\section{PySBR: Shape-based registration prototype}
+\subsection{Methods}
 A flowchart to overview \gls*{pysbr} is presented in \autoref{fig:02},
   and described hereafter.
-Shape-based registration is initialized with an affine transform matrix
-  obtained by means of intensity-based registration.
-After this step, the pre-cached features in the template space are projected
+After the \emph{Initialization stage}, the pre-cached features in the template space are projected
   onto the subject's coordinate system and fed to a shape-matching function.
 On the subject's branch, the corresponding features are detected.
 Then, the shape-matching function evaluates the similarity between features.
@@ -634,7 +666,7 @@ Finally, we apply a kernel transform to propagate the local displacements of
 \end{figure*}
 
 
-\subsubsection{Shape features extraction}
+\paragraph{Shape features extraction}
 \label{sec:shape_features}
 
 The shape features used for registration are two-fold:
@@ -667,7 +699,7 @@ In summary, this feature extraction results in tree landmark sets: the static la
   and the  landmark centered between the two activation centers \lm{center} that are then used for the 
   feature based non-linear registration described below.
 
-\subsubsection{Registration methodology}
+\paragraph{Registration methodology}
 \label{sec:registration}
 In order to correct for location and orientation of the segmented nuclei, we
   perform a registration step in spherical coordinates. We extract the boundary of
@@ -685,7 +717,7 @@ Registration is then performed to the corresponding boundary-profiles cached fro
   the relative angular missalignment of each nuclei (i.e. correction of
   azimuth and elevation of the putaminal tails \emph{seen} from the caudate heads).
 
-\subsubsection{Deformation model}
+\paragraph{Deformation model}
 \label{sec:deformation}
 Once the landmarks have been extracted and mapped, a dense deformation field of the image
   is generated, using \gls*{ebs}. \gls*{ebs} makes use the Navier 
@@ -705,9 +737,9 @@ Once the landmarks have been extracted and mapped, a dense deformation field of 
 Therefore, the $\vect{u}(\vect{x})$ found is the solution to our problem and
   can be used to project the quantification \glspl*{roi} to the subject's image.
 
-\section{Software Description}
+\subsection{Software Description}
 \label{sec:software}
-\subsection{Design considerations}
+\paragraph{Design considerations}
 \label{sec:design}
 
 \Gls*{pysbr} is a medical image application software, created
@@ -759,123 +791,6 @@ In \autoref{sec:user_interface} we introduce the main \emph{Workflows} that are
   distributed under \gls*{pysbr}, especially the main application interface
   for normalization of \gls*{datscan} studies in standardized
   quantification of \gls*{spect} images.
-
-\subsection{Implementation details}
-\label{sec:implementation_details}
-
-All the interfaces present a uniform structure (input parameters, output parameters,
-  and functional body), and a uniform use (creation, input parameters setting, and
-  execution calling \texttt{run()}).
-This behavior is inherited from the \texttt{BaseInterface} class of \gls*{nipype}.
-We summarize here the most important interfaces,
-  presenting some examples of their use in \autoref{list:interfaces}.
-The presented code examples make use of the three modules of 
-  \gls*{pysbr}, that will be imported as given in \autoref{list:modules}.
-  
-  \begin{lstlisting}[float,numbers=none,caption={\label{list:modules}
-            Loading the three major elements of the python interface of PySBR}]
-  import pysbr.tools as sbrtools
-  import pysbr.interfaces as sbrifs
-  import pysbr.workflows as sbrwfs
-  \end{lstlisting}
-
-\subsubsection{Templates}
-\label{sec:templates}
-Templates are a fundamental part of the software, as they hold the reference shapes to
-  perform normalization.
-A template is defined by the reference \gls*{datscan} image, that
-  should be named as \texttt{template.nii.gz} and a corresponding brain mask (with name
-  \texttt{brainmask.nii.gz}).
-Once these two files are correctly placed in a folder
-  (e.g. \texttt{myTemplate/}) under the templates path (that can be moved from the
-  default setup at the user's convenience), the appropriate \gls*{nipype}-style
-  interface can be invoked to run the template feature extraction (see
-  \autoref{list:interfaces}, lines 2-3).
-On the first execution of the interface, the shape features extracted from
-  the template are cached for faster retrieval in subsequent calls to the interface. 
-When using \gls*{pysbr} for evaluation or quantification purposes, it is possible
-  to install additional files, e.g. the corresponding \glspl*{roi} extracted
-  from the anatomical reference.
-
-
-\subsubsection{Shape analysis interfaces}
-\label{sec:shapeanalysis}
-
-\Gls*{pysbr} provides several interfaces to perform shape-based analysis of \gls*{datscan}
-  images.
-The first interface is \texttt{FindPrincipalSpots} that segments the \acrlong*{dat} activity
-  associated to each nuclei (comprising caudate and putamen of each hemisphere),
-  as shown in \autoref{list:interfaces}, lines 6-9.
-As inputs, the interface requires the subject's \gls*{datscan} image and a ``search-\gls*{roi}'' or
-  bounding box.
-The extraction methodologies involved in this interface are described in \autoref{sec:shape_features}.
-
-A second interface performing shape-based registration is named \texttt{SBR}
-  (\autoref{list:interfaces}, lines 12-15).
-This interface takes the landmarks extracted previously and, finds
-  the shape-based mapping described in \autoref{sec:registration}.
-Input and output files make use of the \gls*{json} format
-  for interoperability reasons.
-
-\subsubsection{Transformation model} %
-Currently, only the \gls*{ebs} transform from \gls*{itk} is supported
-  (see \autoref{list:interfaces}, lines 18-24).
-The \texttt{EBSTransform} interface composes the initial affine transform
-  with the nonlinear transform found as described in \autoref{sec:deformation}
-  to project the moving inputs into reference space.
-In future versions of \gls*{pysbr}, other kernel interpolators implemented in \gls*{itk} 
-  will be also available.
-This interface extends a base class (\texttt{BaseTransform}) that is provided to
-  ease these future extensions.
-
-
-\glsreset{ibr}
-\subsection{User interface}
-\label{sec:user_interface}
-
-Here, We introduce two final user
-  applications released with \gls*{pysbr}: a registration workflow for
-  \gls*{spect} data quantification protocols, and an evaluation framework
-  to reproduce the experiments we used to validate the tool.
-These two workflows are also provided as command line interfaces.
-Additional workflows are released with \gls*{pysbr}, for instance
-  the workflow used to generate the synthetic datasets as described
-  in \autoref{sec:data_synthetic} and the refinement workflow using
-  nonlinear \gls*{ibr}, implemented using \gls*{ants}.
-
-\subsubsection{Normalization workflow} %
-The core interface for the user is offered by this workflow,
-  which implements the normalization of a given \gls*{spect} 
-  dataset to a selectable template.
-\begin{lstlisting}[float,caption={\label{list:fullreg}Running a full template-subject registration}]
-reg = sbrwfs.normalization()
-reg.inputs.inputnode.template = 'myTemplate'
-reg.inputs.inputnode.in_file = 'path/to/mySubject/datscan.nii.gz'
-reg.run()
-\end{lstlisting}
-The input value \texttt{template} must hold a valid name of an installed 
-  template (see \autoref{sec:templates}). 
-The input \texttt{in\_file} must be the path to an existing \gls*{spect} image.
-
-\subsubsection{Evaluation workflow} %
-The evaluation workflow implements the experiments presented in \autoref{sec:results}. 
-It creates the necessary registration workflows to perform the template-subject 
-  registration of one subject from a large database.
-Evaluation indices are reported for \gls*{pysbr}, \gls*{ibr} and the affine initialization,
-  storing them in \texttt{.csv} (comma-separated values) files. 
-It also offers a simple interface:
-\begin{lstlisting}[float,caption={\label{list:fullev}Running the evaluation pipeline}]
-ev = sbrwfs.evaluation()
-ev.inputs.inputnode.template = 'myTemplate'
-ev.inputs.inputnode.data_dir = '/path/to/database'
-ev.inputs.inputnode.subject_id = 'example_id_001'
-ev.inputs.inputnode.grade = 0
-ev.run()
-\end{lstlisting}
-
-\noindent 
-This workflow can be configured to operate in batch mode over a
-  set of cases, using the \emph{Iterables} feature from \gls*{nipype}.
 
 \section{Results and discussion}
 \label{sec:results}
@@ -1235,6 +1150,105 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 \end{myalgorithm}
 
 \subsection*{Samples of Nipype Interfaces}
+\cbstart
+\fixme{this area with the gray bar should be re-written. It has been taken from the body}
+\paragraph{Implementation details}
+\label{sec:implementation_details}
+
+All the interfaces present a uniform structure (input parameters, output parameters,
+  and functional body), and a uniform use (creation, input parameters setting, and
+  execution calling \texttt{run()}).
+This behavior is inherited from the \texttt{BaseInterface} class of \gls*{nipype}.
+We summarize here the most important interfaces,
+  presenting some examples of their use in \autoref{list:interfaces}.
+The presented code examples make use of the three modules of 
+  \gls*{pysbr}, that will be imported as given in \autoref{list:modules}.
+  
+  \begin{lstlisting}[float,numbers=none,caption={\label{list:modules}
+            Loading the three major elements of the python interface of PySBR}]
+  import pysbr.tools as sbrtools
+  import pysbr.interfaces as sbrifs
+  import pysbr.workflows as sbrwfs
+  \end{lstlisting}
+
+\paragraph{Templates}
+\label{sec:templates}
+Templates are a fundamental part of the software, as they hold the reference shapes to
+  perform normalization.
+A template is defined by the reference \gls*{datscan} image, that
+  should be named as \texttt{template.nii.gz} and a corresponding brain mask (with name
+  \texttt{brainmask.nii.gz}).
+Once these two files are correctly placed in a folder
+  (e.g. \texttt{myTemplate/}) under the templates path (that can be moved from the
+  default setup at the user's convenience), the appropriate \gls*{nipype}-style
+  interface can be invoked to run the template feature extraction (see
+  \autoref{list:interfaces}, lines 2-3).
+On the first execution of the interface, the shape features extracted from
+  the template are cached for faster retrieval in subsequent calls to the interface. 
+When using \gls*{pysbr} for evaluation or quantification purposes, it is possible
+  to install additional files, e.g. the corresponding \glspl*{roi} extracted
+  from the anatomical reference.
+
+
+\paragraph{Shape analysis interfaces}
+\label{sec:shapeanalysis}
+
+\Gls*{pysbr} provides several interfaces to perform shape-based analysis of \gls*{datscan}
+  images.
+The first interface is \texttt{FindPrincipalSpots} that segments the \acrlong*{dat} activity
+  associated to each nuclei (comprising caudate and putamen of each hemisphere),
+  as shown in \autoref{list:interfaces}, lines 6-9.
+As inputs, the interface requires the subject's \gls*{datscan} image and a ``search-\gls*{roi}'' or
+  bounding box.
+The extraction methodologies involved in this interface are described in \autoref{sec:shape_features}.
+
+A second interface performing shape-based registration is named \texttt{SBR}
+  (\autoref{list:interfaces}, lines 12-15).
+This interface takes the landmarks extracted previously and, finds
+  the shape-based mapping described in \autoref{sec:registration}.
+Input and output files make use of the \gls*{json} format
+  for interoperability reasons.
+
+\paragraph{Transformation model} %
+Currently, only the \gls*{ebs} transform from \gls*{itk} is supported
+  (see \autoref{list:interfaces}, lines 18-24).
+The \texttt{EBSTransform} interface composes the initial affine transform
+  with the nonlinear transform found as described in \autoref{sec:deformation}
+  to project the moving inputs into reference space.
+In future versions of \gls*{pysbr}, other kernel interpolators implemented in \gls*{itk} 
+  will be also available.
+This interface extends a base class (\texttt{BaseTransform}) that is provided to
+  ease these future extensions.
+
+
+\glsreset{ibr}
+\paragraph{User interface}
+\label{sec:user_interface}
+
+Here, We introduce two final user
+  applications released with \gls*{pysbr}: a registration workflow for
+  \gls*{spect} data quantification protocols, and an evaluation framework
+  to reproduce the experiments we used to validate the tool.
+These two workflows are also provided as command line interfaces.
+Additional workflows are released with \gls*{pysbr}, for instance
+  the workflow used to generate the synthetic datasets as described
+  in \autoref{sec:data_synthetic} and the refinement workflow using
+  nonlinear \gls*{ibr}, implemented using \gls*{ants}.
+
+\paragraph{Normalization workflow} %
+The core interface for the user is offered by this workflow,
+  which implements the normalization of a given \gls*{spect} 
+  dataset to a selectable template.
+\begin{lstlisting}[float,caption={\label{list:fullreg}Running a full template-subject registration}]
+reg = sbrwfs.normalization()
+reg.inputs.inputnode.template = 'myTemplate'
+reg.inputs.inputnode.in_file = 'path/to/mySubject/datscan.nii.gz'
+reg.run()
+\end{lstlisting}
+The input value \texttt{template} must hold a valid name of an installed 
+  template (see \autoref{sec:templates}). 
+The input \texttt{in\_file} must be the path to an existing \gls*{spect} image.
+\cbend
 
 \begin{lstlisting}[caption={\label{list:interfaces}\textbf{Exemplary execution
   of individual Interfaces.} %

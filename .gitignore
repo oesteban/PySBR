@@ -80,3 +80,6 @@ nosetests.xml
 
 # temporary folders and files
 temp/
+
+# SublimeText editor files
+*.sublime-*
