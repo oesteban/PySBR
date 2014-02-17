@@ -204,8 +204,8 @@
 \onecolumn
 \firstpage{1}
 
-\title[Evaluating normalization]%
-  {Evaluating spatial normalization in fully automated SPECT imaging quantification protocols}
+\title[Evaluating normalisation]%
+  {Evaluating spatial normalisation in fully automated SPECT imaging quantification protocols}
 
 \author[\firstAuthorLast ]{\Authors}
 \address{}
@@ -224,22 +224,22 @@ Absolute quantification of \gls*{spect} will
   provide the necessary standardization for the diagnosis and monitoring
   of movement disorders and a number of related diseases.
 In order to achieve this standardization, the full automation of the
-  process requires precise image normalization to/from a standard space.
+  process requires precise image normalisation to/from a standard space.
 However, quantification protocols generally lack of a structural reference
   (e.g. \acrlong{t1}) for high-standard accuracy.
 In this paper, we present a new evaluation framework implemented with \emph{nipype},
-  and we propose \gls*{pysbr}, a new spatial normalization tool implemented in Python for 
+  and we propose \gls*{pysbr}, a new spatial normalisation tool implemented in Python for 
   its use in the described environment.
 \gls*{pysbr} detects particular shape-features in the SPECT images and
   minimizes a distance to the corresponding features in standard space.
 Densification of the resulting sparse displacements field is achieved by using
   Elastic-body splines as deformation model.
-We use the evaluation tool to study \gls*{pysbr} and a standard normalization
+We use the evaluation tool to study \gls*{pysbr} and a standard normalisation
   scheme employing intensity-based non-linear image registration, both starting 
   from an affine initialization. 
 The evaluation was run on 60 synthetic  phantoms and 23 realistic datasets simulated 
   for a gamma-camera commonly-used in the clinical routine.
-Finally, we compare the proposed tools on the normalization of 5 real datasets.
+Finally, we compare the proposed tools on the normalisation of 5 real datasets.
 Results show that both approaches on average do not offer significant improvements over 
   the affine initialization.
 Nevertheless, \gls*{pysbr} shows potential for the use in a different
@@ -327,7 +327,7 @@ Then, a number of \glspl*{roi} are defined along the resulting striatum
   structures in the template, that will be used to quantify the uptake and characterize the
   pattern present in the image under study.
 Therefore, the key processing step to automate quantification is the
-  spatial mapping (or \emph{spatial normalization}) of the subject's image and
+  spatial mapping (or \emph{spatial normalisation}) of the subject's image and
   the template.
 This alignment implies an image registration process, which is challenging for two reasons.
 The first drawback is the scarce information that \gls*{datscan} images 
@@ -365,20 +365,20 @@ The assessment of these solutions has been, mainly, phantom-based
 To our knowledge, no cross-comparison study has been published so far.
 
 Therefore, we propose an evaluation framework implemented in Python for the
-  spatial normalization of \gls*{datscan} images required by absolute quantification
+  spatial normalisation of \gls*{datscan} images required by absolute quantification
   protocols.
 The evaluation framework comprises the following parts: 
 (1) A workflow for generating very simplistic phantoms from
    \gls*{mri} data, to be used in the evaluation framework;
 (2) a fast \emph{Initialization stage}, common for all the spatial
-    normalization packages under comparison;
+    normalisation packages under comparison;
 (3) a \emph{Refinement stage} where the tool under evaluation can be inserted; and
 (4) a benchmarking and reporting module to gather and present results.
 
 \cbstart
 In order to demonstrate the utility of the evaluation framework we compare 
   two methods to achieve the final refinement in template matching: 
-On one hand, we use a standard spatial normalization 
+On one hand, we use a standard spatial normalisation 
   approach,  referred to as \gls*{ibr}, 
   and on the other hand, we us \gls*{pysbr}, a new shape based registration tool and 
   work in progress introduced here.   
@@ -471,7 +471,7 @@ The simulated template was created averaging 14 ``healthy'' subjects drawn from
   the numerical simulations.
 All the subjects were normalized to the \gls*{t1} template distributed with
   \gls*{spm}2.
-This normalization step was validated by visual inspection.
+This normalisation step was validated by visual inspection.
 The normalized \glspl*{mri} were resampled to have a matrix size of
   $111\times134\times102$ and a voxel size of $2.0mm\times2.0mm\times2.0mm$.
 \Gls*{spect} studies were simulated (as described in \autoref{sec:data_simulated})
@@ -487,8 +487,8 @@ First, we selected 10 real datasets from a healthy volunteers database, acquired
   described in \autoref{sec:data_real}.
 Second, the \gls*{mri} were normalized to the \gls*{t1} template of \gls*{spm}2.
 Third, the \gls*{spect} studies were rigidly registered to their corresponding \gls*{t1}, 
-  and then the normalization transform was applied.
-Finally, the resampling, the normalization of \gls*{spect} counts, and the final
+  and then the normalisation transform was applied.
+Finally, the resampling, the normalisation of \gls*{spect} counts, and the final
   smoothing filter were applied as explained for the simulated template.
 
 \section{Methods}
@@ -621,7 +621,7 @@ Finally, we apply a kernel transform to propagate the local displacements of
   \begin{minipage}[bt]{0.30\textwidth}
   \caption{\label{fig:02}
   \textbf{Internal design of \gls*{pysbr}}. \Gls*{pysbr} follows a rather standard
-  registration pattern for spatial normalization, replacing the intensity-based
+  registration pattern for spatial normalisation, replacing the intensity-based
   metric by a shape-based one. In the \emph{Initialization} step (yellow box),
   a global alignment is found, and the shape-descriptors from the template
   are projected onto subject's space. Also, image data is masked outside the
@@ -734,7 +734,7 @@ We also demonstrate the interoperability of \emph{Python} and \gls*{itk},
   transformation model. %
 
 \Gls*{pysbr} consists of two logical parts.
-First, the template data that is used as the basis for the data normalization.
+First, the template data that is used as the basis for the data normalisation.
 Second, the software implementation that in itself is split into a plain
   python code, and an extension implemented in C++.
 The python code is then structured into three major design elements (python modules):
@@ -757,7 +757,7 @@ In \autoref{sec:implementation_details} we describe the main \emph{Interfaces}
   available to perform the unitary processing steps of \gls*{pysbr}.
 In \autoref{sec:user_interface} we introduce the main \emph{Workflows} that are
   distributed under \gls*{pysbr}, especially the main application interface
-  for normalization of \gls*{datscan} studies in standardized
+  for normalisation of \gls*{datscan} studies in standardized
   quantification of \gls*{spect} images.
 
 \subsection{Implementation details}
@@ -782,7 +782,7 @@ The presented code examples make use of the three modules of
 \subsubsection{Templates}
 \label{sec:templates}
 Templates are a fundamental part of the software, as they hold the reference shapes to
-  perform normalization.
+  perform normalisation.
 A template is defined by the reference \gls*{datscan} image, that
   should be named as \texttt{template.nii.gz} and a corresponding brain mask (with name
   \texttt{brainmask.nii.gz}).
@@ -843,12 +843,12 @@ Additional workflows are released with \gls*{pysbr}, for instance
   in \autoref{sec:data_synthetic} and the refinement workflow using
   nonlinear \gls*{ibr}, implemented using \gls*{ants}.
 
-\subsubsection{Normalization workflow} %
+\subsubsection{Normalisation workflow} %
 The core interface for the user is offered by this workflow,
-  which implements the normalization of a given \gls*{spect} 
+  which implements the normalisation of a given \gls*{spect} 
   dataset to a selectable template.
 \begin{lstlisting}[float,caption={\label{list:fullreg}Running a full template-subject registration}]
-reg = sbrwfs.normalization()
+reg = sbrwfs.normalisation()
 reg.inputs.inputnode.template = 'myTemplate'
 reg.inputs.inputnode.in_file = 'path/to/mySubject/datscan.nii.gz'
 reg.run()
@@ -898,11 +898,11 @@ A total of 240 images, embodying the 4 different stages
   (\autoref{sec:data_synthetic}), were used to evaluate
   the two methodologies (480 experiments in total).
 Quantitative results, grouped by grade of the stage of
-  syndrome and spatial normalization methodology, 
+  syndrome and spatial normalisation methodology, 
   are given in \autoref{fig:results_a}.
 
 \glsreset{ibr}
-With the term \gls*{ibr}, we identify the spatial normalization
+With the term \gls*{ibr}, we identify the spatial normalisation
   workflow implemented with \gls*{ants}.
 Results show that \gls*{ibr} behaves consistently,
   but offers very small improvements of overlap with respect to the
@@ -929,7 +929,7 @@ Although the appearance of negative ``outliers'' is boosted with the advance
 Regarding the performance of \gls*{pysbr}, experiments show that the application of the tool
   did not result in a reliable enhancement of the alignment.
 In fact, the estimated medians of each \gls*{roi} are always negative: i. e. in average
-  the normalization achieved with the initialization was not improved.
+  the normalisation achieved with the initialization was not improved.
 Using the evaluation tool, we detected serious problems with the automatic 
   estimation of the landmarks associated with the caudate and putamen.
 As it is clearly depicted in \autoref{fig:results_a}, this is especially true for the left-side
@@ -1017,25 +1017,25 @@ Second, the performance of the \gls*{ibr} approach was clearly worse on
 Within the framework of absolute quantification of \gls*{spect}
   imaging studies for the evaluation and monitoring of movement
   disorders, we propose a workflow implemented with \gls*{nipype}
-  to evaluate current spatial normalization techniques that are
+  to evaluate current spatial normalisation techniques that are
   crucial for the described applications.
 The evaluation workflow demonstrates the aptness of Python 
   and \gls*{nipype} for the rapid development of new methodologies
   and algorithms in image processing, while meeting
   all the requirements to enable reproducible research.
 
-Spatial normalization of \gls*{spect} imaging studies is
+Spatial normalisation of \gls*{spect} imaging studies is
   usually performed by means of intensity-based registration
   techniques in two steps.
 First step involves the affine mapping of the subject and the
   reference template.
 The second, is a refinement using a nonlinear transformation.
 The evaluation framework enables to show 
-  how intensity-based normalization often fails
+  how intensity-based normalisation often fails
   for advanced cases of Parkinson's Disease.
 
 We present \gls*{pysbr}, an alternative tool for the
-  spatial normalization using shape-features.
+  spatial normalisation using shape-features.
 \Gls*{pysbr} is also implemented in \emph{Python} using
   \gls*{nipype}, and a number of publicly available tools
   for computational science and image processing
