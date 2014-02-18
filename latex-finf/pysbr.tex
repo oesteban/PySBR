@@ -269,7 +269,7 @@ As a consequence, the number of evaluation and comparison papers is
 We consider that the principles described in their work are not only
   important for the design of evaluations and comparisons, 
   but that they can  also be applied in the development stage of image processing
-  methods, i.e. in \emph{functional-test driven} strategies \fixme{add a reference to FTD}.
+  methods, i.e. in \emph{functional-test driven} strategies \citep{andrea_envisioning_2007}.
 In this Research Topic, we show how a rigorous  evaluation pipelines can be designed
   with readily available software in Python \emph{before} the development of 
   problem-specific solutions .
@@ -1148,10 +1148,13 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
   \end{enumerate}
 \end{myalgorithm}
 
-\subsection*{Samples of Nipype Interfaces}
-\cbstart
-\fixme{this area with the gray bar should be re-written. It has been taken from the body}
-\paragraph{Implementation details}
+\newpage
+\appendix
+\setcounter{page}{1}
+\renewcommand*{\thepage}{Suplemental Material - \arabic{page}}
+\section*{Suplemental Material}
+
+\subsection*{PySBR Implementation details}
 \label{sec:implementation_details}
 
 All the interfaces present a uniform structure (input parameters, output parameters,
@@ -1161,16 +1164,9 @@ This behavior is inherited from the \texttt{BaseInterface} class of \gls*{nipype
 We summarize here the most important interfaces,
   presenting some examples of their use in \autoref{list:interfaces}.
 The presented code examples make use of the three modules of 
-  \gls*{pysbr}, that will be imported as given in \autoref{list:modules}.
-  
-  \begin{lstlisting}[float,numbers=none,caption={\label{list:modules}
-            Loading the three major elements of the python interface of PySBR}]
-  import pysbr.tools as sbrtools
-  import pysbr.interfaces as sbrifs
-  import pysbr.workflows as sbrwfs
-  \end{lstlisting}
+  \gls*{pysbr}, that will be imported as given in \autoref{list:interfaces}.
 
-\paragraph{Templates}
+\subsection*{Templates}
 \label{sec:templates}
 Templates are a fundamental part of the software, as they hold the reference shapes to
   perform normalization.
@@ -1189,7 +1185,7 @@ When using \gls*{pysbr} for evaluation or quantification purposes, it is possibl
   from the anatomical reference.
 
 
-\paragraph{Shape analysis interfaces}
+\subsection*{Shape analysis interfaces}
 \label{sec:shapeanalysis}
 
 \Gls*{pysbr} provides several interfaces to perform shape-based analysis of \gls*{datscan}
@@ -1208,7 +1204,7 @@ This interface takes the landmarks extracted previously and, finds
 Input and output files make use of the \gls*{json} format
   for interoperability reasons.
 
-\paragraph{Transformation model} %
+\subsection*{Transformation model} %
 Currently, only the \gls*{ebs} transform from \gls*{itk} is supported
   (see \autoref{list:interfaces}, lines 18-24).
 The \texttt{EBSTransform} interface composes the initial affine transform
@@ -1221,7 +1217,7 @@ This interface extends a base class (\texttt{BaseTransform}) that is provided to
 
 
 \glsreset{ibr}
-\paragraph{User interface}
+\subsection*{PySBR User interface}
 \label{sec:user_interface}
 
 Here, We introduce two final user
@@ -1234,25 +1230,27 @@ Additional workflows are released with \gls*{pysbr}, for instance
   in \autoref{sec:data_synthetic} and the refinement workflow using
   nonlinear \gls*{ibr}, implemented using \gls*{ants}.
 
-\paragraph{Normalization workflow} %
+\subsubsection*{Normalization workflow} %
 The core interface for the user is offered by this workflow,
   which implements the normalization of a given \gls*{spect} 
   dataset to a selectable template.
-\begin{lstlisting}[float,caption={\label{list:fullreg}Running a full template-subject registration}]
+
+The input value \texttt{template} must hold a valid name of an installed 
+  template (see \autoref{sec:templates}). 
+The input \texttt{in\_file} must be the path to an existing \gls*{spect} image.
+
+\begin{lstlisting}[caption={\label{list:interfaces}\textbf{Execution samples.}}]
+# Loading the three major elements of the python interface of PySBR
+import pysbr.tools as sbrtools
+import pysbr.interfaces as sbrifs
+import pysbr.workflows as sbrwfs
+
+# Running a full template-subject registration
 reg = sbrwfs.normalization()
 reg.inputs.inputnode.template = 'myTemplate'
 reg.inputs.inputnode.in_file = 'path/to/mySubject/datscan.nii.gz'
 reg.run()
-\end{lstlisting}
-The input value \texttt{template} must hold a valid name of an installed 
-  template (see \autoref{sec:templates}). 
-The input \texttt{in\_file} must be the path to an existing \gls*{spect} image.
-\cbend
 
-\begin{lstlisting}[caption={\label{list:interfaces}\textbf{Exemplary execution
-  of individual Interfaces.} %
-For briefness, all the optional parameters have been omitted here, please refer
-   to the project's website for full documentation.}]
 # Interface wrapping template selection
 tpl_gen = sbrifs.TemplateSource(name='myTemplate')
 tpl_gen.run()
