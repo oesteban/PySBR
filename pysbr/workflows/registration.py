@@ -168,7 +168,7 @@ def initialization( name='Initialization' ):
     return reg
 
 
-def ants_normalization( name='ANTs_Normalization' ):
+def ants_normalization_1( name='ANTs_Normalization_v1' ):
     """
     Creates the main ANTs non-linear, intensity-based registration workflow
 
@@ -219,6 +219,70 @@ def ants_normalization( name='ANTs_Normalization' ):
                          ( inputnode,     tmpl_src, [ ('template','name') ])
                         ,( inputnode,          reg, [(('in_file',_aslist),'moving_image'), ('initial_transforms','initial_moving_transform') ])
                         ,( tmpl_src,           reg, [(('out_file',_aslist),'fixed_image') ])
+                        ,( reg,         outputnode, [ ('forward_transforms','out_transforms' ) ])
+                        ,( inputnode,     applytfm, [ ('in_file','reference_image') ])
+                        ,( tmpl_src,      applytfm, [ ('out_file', 'input_image') ])
+                        ,( reg,           applytfm, [ ('reverse_transforms','transforms'),('reverse_invert_flags','invert_transform_flags') ])
+                        ,( applytfm,    outputnode, [ ('output_image', 'out_registered' ) ])
+                        ,( inputnode,     tfm_bbox, [ ('in_file','reference_image') ])
+                        ,( tmpl_src,      tfm_bbox, [ ('out_rois', 'input_image') ])
+                        ,( reg,           tfm_bbox, [ ('reverse_transforms','transforms'),('reverse_invert_flags','invert_transform_flags') ])
+                        ,( tfm_bbox,    outputnode, [ ('output_image', 'out_rois' ) ])
+
+                    ])
+    return pipeline
+
+def ants_normalization_2( name='ANTs_Normalization_v2' ):
+    """
+    Creates the main ANTs non-linear, intensity-based registration workflow
+
+    """
+
+    pipeline = pe.Workflow( name=name )
+
+    def _aslist( tname ):
+        import numpy as np
+        return np.atleast_1d( tname ).tolist()
+
+    inputnode = pe.Node( niu.IdentityInterface(
+                fields=[ 'in_file', 'template', 'initial_transforms' ] ),
+                name='inputnode' )
+
+    outputnode = pe.Node( niu.IdentityInterface(
+                 fields=[ 'out_registered', 
+                          'out_transforms',
+                          'out_rois' ] ),
+                 name='outputnode' )
+
+    tdir = op.join( sbrifs.get_datapath(), 'template' )
+    tmpl_src = pe.Node( sbrifs.TemplateSource(base_dir=tdir), name='Template' )   
+
+
+    reg = pe.Node( ants.Registration() , name="NonlinearRefinement" )
+    reg.inputs.transforms= [ 'SyN', 'SyN', 'SyN' ]
+    reg.inputs.transform_parameters = [(1.0,4.0,6.0),(1.0,2.5,3.0),(0.5,0.8,1.0) ]
+    reg.inputs.number_of_iterations = [ [20],[15],[15] ]
+    reg.inputs.metric= [ ['CC'], ['CC'] ]
+    reg.inputs.metric_weight= [ [1.0] , [1.0], [1.0] ]
+    reg.inputs.radius_or_number_of_bins= [[6],[3],[3]]
+    reg.inputs.sampling_strategy= [ ['Regular'], ['Regular'] ]
+    reg.inputs.sampling_percentage= [ [1.0], [1.0] ]
+    reg.inputs.convergence_threshold= [ 1.e-7, 1.e-8]
+    reg.inputs.convergence_window_size= [ 20, 10 ]
+    reg.inputs.smoothing_sigmas= [ [4.0], [1.0]  ]
+    reg.inputs.sigma_units= [ 'mm', 'mm' ]
+    reg.inputs.shrink_factors= [ [1],[1]]
+    reg.inputs.use_estimate_learning_rate_once= [True]*3
+    reg.inputs.use_histogram_matching= [True]*3
+    reg.inputs.winsorize_lower_quantile = 0.15
+
+    applytfm = pe.Node( ants.ApplyTransforms(dimension=3), name='Apply' )
+    tfm_bbox = pe.MapNode( ants.ApplyTransforms(dimension=3), iterfield=['input_image'], name='ApplyROIs' )
+
+    pipeline.connect([
+                         ( inputnode,     tmpl_src, [ ('template','name') ])
+                        ,( inputnode,          reg, [(('in_file',_aslist),'moving_image'), ('initial_transforms','initial_moving_transform') ])
+                        ,( tmpl_src,           reg, [(('out_file',_aslist),'fixed_image'), ('out_bbox', 'fixed_image_mask') ])
                         ,( reg,         outputnode, [ ('forward_transforms','out_transforms' ) ])
                         ,( inputnode,     applytfm, [ ('in_file','reference_image') ])
                         ,( tmpl_src,      applytfm, [ ('out_file', 'input_image') ])

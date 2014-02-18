@@ -1,3 +1,6 @@
+# do not upload templates by default
+data/
+
 *.py[cod]
 
 # Binary files
