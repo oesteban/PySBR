@@ -112,6 +112,7 @@ class TemplateSource(BaseInterface):
         import numpy as np
         import os.path as op
         import sbr
+        from pysbr.tools.sbr_get_area_stats import adjust_spot_positions
         from math import sin, cos, asin, acos, atan
         from scipy.interpolate import griddata
         from scipy.stats import scoreatpercentile
@@ -122,7 +123,7 @@ class TemplateSource(BaseInterface):
         mskfname = op.join( tmpl_dir, 'anat', 'brainmask.nii.gz' )
 
         if not ( op.exists( tplfname ) and op.exists( mskfname ) ):
-            raise RuntimeError( 'A template cannot be generated if either template data or corresponding brainmask are not present' )
+            raise RuntimeError( 'A template cannot be generated if either template data [%s] or corresponding brainmask [%s] are not present' % (tplfname,mskfname) )
        
 
         # Read template in ITK
@@ -190,7 +191,7 @@ class TemplateSource(BaseInterface):
                                                  rspotmeanlimit=self.inputs.rmeanspotratio, 
                                                  rspotbridgelimit=self.inputs.rbridgespotratio, 
                                                  maxvolume=self.inputs.maxvolume)
-        hotvox = adjust_spot_positions(image, labels, hotvox)
+        hotvox = adjust_spot_positions(im_data, labels, hotvox)
         
         vol_check = np.all( [v>0 for v in volumes] )
 

@@ -259,19 +259,19 @@ def ants_normalization_2( name='ANTs_Normalization_v2' ):
 
 
     reg = pe.Node( ants.Registration() , name="NonlinearRefinement" )
-    reg.inputs.transforms= [ 'SyN', 'SyN', 'SyN' ]
-    reg.inputs.transform_parameters = [(1.0,4.0,6.0),(1.0,2.5,3.0),(0.5,0.8,1.0) ]
-    reg.inputs.number_of_iterations = [ [20],[15],[15] ]
+    reg.inputs.transforms= [ 'SyN' ] * 2
+    reg.inputs.transform_parameters = [(1.0,2.5,3.0),(0.5,0.8,1.0) ]
+    reg.inputs.number_of_iterations = [ [20],[15] ]
     reg.inputs.metric= [ ['CC'], ['CC'] ]
-    reg.inputs.metric_weight= [ [1.0] , [1.0], [1.0] ]
-    reg.inputs.radius_or_number_of_bins= [[6],[3],[3]]
+    reg.inputs.metric_weight= [ [1.0],[1.0] ]
+    reg.inputs.radius_or_number_of_bins= [[6],[3]]
     reg.inputs.sampling_strategy= [ ['Regular'], ['Regular'] ]
     reg.inputs.sampling_percentage= [ [1.0], [1.0] ]
     reg.inputs.convergence_threshold= [ 1.e-7, 1.e-8]
     reg.inputs.convergence_window_size= [ 20, 10 ]
     reg.inputs.smoothing_sigmas= [ [4.0], [1.0]  ]
     reg.inputs.sigma_units= [ 'mm', 'mm' ]
-    reg.inputs.shrink_factors= [ [1],[1]]
+    reg.inputs.shrink_factors= [ [1], [1] ]
     reg.inputs.use_estimate_learning_rate_once= [True]*3
     reg.inputs.use_histogram_matching= [True]*3
     reg.inputs.winsorize_lower_quantile = 0.15
