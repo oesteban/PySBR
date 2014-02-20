@@ -35,18 +35,18 @@ import nipype.interfaces.freesurfer as fs
 import nipype.algorithms.misc as misc
 
 import pysbr.interfaces as sbrifs
-from pysbr.workflows.registration import normalization,ants_normalization
+from pysbr.workflows.registration import normalization,ants_normalization_2
 
 
-def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} ):
+def evaluation_workflow( name='DaTSCAN_Evaluation' ):
     """
-    Creates the main PySBR evaluation workflow
+    Creates the main DaTSCAN evaluation workflow
 
     """
 
     pipeline = pe.Workflow( name=name )
 
-    def _append_csv( in_row11, in_row12, in_row21, in_row22, in_row31, in_row32, subject_id, grade, out_file=None ):
+    def _append_csv( in_row11, in_row12, in_row21, in_row22, in_row31, in_row32, subject_id, out_file=None ):
         import csv
         import os.path as op
         import numpy as np
@@ -54,9 +54,9 @@ def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} )
         if out_file is None:
             out_file = op.abspath( 'stats.csv' )
 
-        row1 = [ 'PySBR', subject_id, '%d' % grade ] + np.atleast_1d( in_row11 ).tolist() + np.atleast_1d( in_row12 ).tolist()
-        row2 = [ 'ANTS' , subject_id, '%d' % grade ] + np.atleast_1d( in_row21 ).tolist() + np.atleast_1d( in_row22 ).tolist()
-        row3 = [ 'Init' , subject_id, '%d' % grade ] + np.atleast_1d( in_row31 ).tolist() + np.atleast_1d( in_row32 ).tolist()
+        row1 = [ 'PySBR', subject_id ] + np.atleast_1d( in_row11 ).tolist() + np.atleast_1d( in_row12 ).tolist()
+        row2 = [ 'ANTS' , subject_id ] + np.atleast_1d( in_row21 ).tolist() + np.atleast_1d( in_row22 ).tolist()
+        row3 = [ 'Init' , subject_id ] + np.atleast_1d( in_row31 ).tolist() + np.atleast_1d( in_row32 ).tolist()
 
         with open( out_file, 'a' ) as f:
             w = csv.writer( f )
@@ -66,16 +66,16 @@ def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} )
 
         return out_file
 
-    def _build_paths( data_dir, subject_id, grade=0 ):
+    def _build_paths( data_dir, subject_id ):
         import os.path as op
-        in_file = op.join( data_dir, subject_id, 'dat_phantom_grad%d_out.nii.gz' % grade )
-        in_rois = [ op.join( data_dir, subject_id, 'dat_phantom_roi_%s_out.nii.gz' % t ) for t in [ 'c_l', 'p_l', 'c_r', 'p_r' ] ]
+        in_file = op.join( data_dir, subject_id, 'spect.nii.gz' )
+        in_rois = [ op.join( data_dir, subject_id, 'roi_%s.nii.gz' % t ) for t in [ 'c_l', 'p_l', 'c_r', 'p_r' ] ]
         return (in_file,in_rois)
 
     inputnode = pe.Node( niu.IdentityInterface(
-                fields=[ 'data_dir', 'subject_id', 'grade', 'template' ] ),
+                fields=[ 'data_dir', 'subject_id', 'template' ] ),
                 name='inputnode' )
-    ds = pe.Node( niu.Function( input_names=['data_dir','subject_id','grade'], output_names=['in_file','in_rois'], function=_build_paths),
+    ds = pe.Node( niu.Function( input_names=['data_dir','subject_id'], output_names=['in_file','in_rois'], function=_build_paths),
                   name='GrabSubject' )
 
     outputnode = pe.Node( niu.IdentityInterface(
@@ -88,10 +88,10 @@ def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} )
                  name='outputnode' )
 
     # Create ANTS non-linear registration workflow
-    ants_reg = ants_normalization()
+    ants_reg = ants_normalization_2( name='IBR2')
 
     # Create PySBR non-linear registration workflow
-    pysbr_reg = normalization( evaluate=True, seg_params=seg_params, reg_params=reg_params )
+    pysbr_reg = normalization( evaluate=True, name='PySBR' )
 
     select = pe.Node( niu.Select( index=[0] ), name='GetFirst')
     selectROI = pe.Node( niu.Select( index=[0] ), name='GetFirstROI')
@@ -106,12 +106,12 @@ def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} )
     overlap3 = pe.Node( misc.FuzzyOverlap(), name='OverlapInit' )
 
     # Connect to csvwriter
-    tocsv = pe.Node( niu.Function( input_names=['in_row11','in_row21','in_row12','in_row22', 'in_row31', 'in_row32', 'subject_id','grade'], output_names=['out_file'], function=_append_csv ), name='OutputStats' )
+    tocsv = pe.Node( niu.Function( input_names=['in_row11','in_row21','in_row12','in_row22', 'in_row31', 'in_row32', 'subject_id'], output_names=['out_file'], function=_append_csv ), name='OutputStats' )
 
     pipeline.connect([
                          ( inputnode,    pysbr_reg, [ ('template','inputnode.template')])
                         ,( inputnode,     ants_reg, [ ('template','inputnode.template')])
-                        ,( inputnode,           ds, [ ('data_dir','data_dir'),('subject_id','subject_id'),('grade','grade')])
+                        ,( inputnode,           ds, [ ('data_dir','data_dir'),('subject_id','subject_id')])
                         ,( ds,           pysbr_reg, [ ('in_file','inputnode.in_file' ) ])
                         ,( ds,            ants_reg, [ ('in_file','inputnode.in_file' ) ])
                         ,( pysbr_reg,       select, [ ('outputnode.out_init_transform', 'inlist' ) ])
@@ -135,7 +135,7 @@ def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} )
                         ,( overlap1,         tocsv, [ ('dice','in_row11'),('class_fdi','in_row12') ])
                         ,( overlap2,         tocsv, [ ('dice','in_row21'),('class_fdi','in_row22') ])
                         ,( overlap3,         tocsv, [ ('dice','in_row31'),('class_fdi','in_row32') ])
-                        ,( inputnode,        tocsv, [ ('subject_id','subject_id'),('grade','grade') ])
+                        ,( inputnode,        tocsv, [ ('subject_id','subject_id') ])
                         ,( tocsv,       outputnode, [ ('out_file','out_stats') ])
                     ])
     return pipeline
@@ -150,15 +150,14 @@ if __name__== '__main__':
 
     parser = ArgumentParser(description='Run registration for one case', 
                             formatter_class=RawTextHelpFormatter)
-
+    
     g_input = parser.add_argument_group('Input')
-
-
+    
     g_input.add_argument( '-S', '--subjects_dir', action='store',
                           default=os.getenv( 'PYSBR_SUBJECTS_DIR', '/media/mnemea/MINDt-Quantidopa/PySBR-PhantomImages/Phantoms' ),
                           help='directory where subjects should be found' )
 
-    g_input.add_argument( '-s', '--subject', action='store', required=True,
+    g_input.add_argument( '-s', '--subject', action='store',
                           default='S*', help='subject id or pattern' )
 
     g_input.add_argument( "-T", "--template",  action="store",  choices=['simulated', 'normal'], 
@@ -167,51 +166,8 @@ if __name__== '__main__':
     g_input.add_argument( '-w', '--work_dir', action='store', default=os.getcwd(),
                           help='directory to store intermediate results' )
 
-    g_input.add_argument( '-N', '--name', action='store', default='Evaluation',
+    g_input.add_argument( '-N', '--name', action='store', default='PythonInNeuroscience2',
                           help='default workflow name, it will create a new folder' )
-
-
-    group_seg = parser.add_argument_group('Segmentation')
-
-    group_seg.add_argument("-g", "--gauss-prefilter-sigma",  action="store", default=0.0, 
-                       type=float, dest='gauss_sigma', 
-                       help="Prefilter the image with this gaussian.")
-
-    group_seg.add_argument("-P", "--spot-mean-intensity-ratio",  action="store", 
-                           type=float, default=1.6, dest='rspotmeanlimit', 
-                           help="threshold to stop region growing with respect "
-                           "to the ROI mean intensity ")
-
-    group_seg.add_argument("-B", "--spot-bridge-intensity-ratio",  action="store", 
-                           type=float, default=0.7, dest='rspotbridgelimit', 
-                           help="threshold to stop region growing with respect to"
-                           " the minimum intensity found on the line connecting the two hotspots")
-    
-    volume_group = group_seg.add_mutually_exclusive_group()
-    
-    volume_group.add_argument("-V", "--max-volume",  action="store", type=int, dest='maxvolume', 
-                       help="Maximum volume (in pixel) to which a hot spot region can grow during during segmentation")
-    
-    volume_group.add_argument("-c", "--max-acceptable-volume",  action="store", type=int, 
-                              dest='max_acceptable_volume', help="Maximum activation volume (in pixel) "
-                              "to accept for a segmentation, if larger, segmentation should be considered to have failed")
-
-    
-    group_reg = parser.add_argument_group('Registration')
-    
-    group_reg.add_argument("-f", "--stiffness", action="store", type=float, default="0.001", 
-                           help='Stiffness of the spline. A stiffness of 0.0 results '
-                                    'in the standard interpolating spline. A non-zero stiffness '
-                                    'allows the spline to approximate rather than interpolate the '
-                                    'landmarks. Stiffness values are usually rather small, '
-                                    'typically in the range of 0.001 to 0.1. The approximating '
-                                    'spline formulation is based on the short paper by R. Sprengel, '
-                                    'K. Rohr, H. Stiehl. "Thin-Plate Spline Approximation for Image '
-                                    'Registration". In 18th International Conference of the IEEE '
-                                    'Engineering in Medicine and Biology Society. 1996.')
-    group_reg.add_argument("-a", "--alpha", action="store", type=float, default="10.0", 
-                           help="Alpha is related to Poisson's Ratio (\\nu) as "
-                           "\\alpha = 12 (1-\\nu)-1. \\nu_{gold} ~ 0.43; \\nu_{foam} ~ 0.30")
 
     
     g_output = parser.add_argument_group( 'Output' )
@@ -226,47 +182,32 @@ if __name__== '__main__':
 
     if not op.exists( options.work_dir ):
         os.makedirs( options.work_dir )
+  
+    subjects = [ op.basename( sub ) for sub in glob.glob( op.join( options.subjects_dir, options.subject ) ) ] 
 
-    single_subject = op.join( options.subjects_dir, options.subject )
-    print(single_subject)
-    subjects = [ op.basename( sub ) for sub in glob.glob( single_subject  ) ]
-    grades=range(4)
-    
-    if len(subjects) == 0:
-        print("No subjects found with path '", single_subject, "'") 
-        exit(-1)
- 
+    # Limit execution (only debugging)
+    #subjects = [ subjects[0] ]
+
     wf = pe.Workflow( name=options.name )
     wf.base_dir = options.work_dir
 
 
-    infosource = pe.Node( niu.IdentityInterface(fields=['subject_id','grade']),
+    infosource = pe.Node( niu.IdentityInterface(fields=['subject_id']),
                           name="infosource")
 
-    # copy segmentation params 
-    segmentation_params = {}
-    if options.maxvolume is not None:
-        segmentation_params['maxvolume'] = options.maxvolume
-    if options.max_acceptable_volume is not None:
-        segmentation_params['maxacceptablevol'] = options.max_acceptable_volume
-    segmentation_params['gauss_sigma'] = options.gauss_sigma
-    segmentation_params['rspotmeanlimit'] = options.rspotmeanlimit
-    segmentation_params['rspotbridgelimit'] = options.rspotbridgelimit
-
-    # copy registration params 
-    registration_params = {}
-    registration_params['stiffness'] = options.stiffness
-    registration_params['alpha'] = options.alpha
-
-    grades = range(4)
-    infosource.iterables = [('subject_id', subjects),('grade',grades)]
+    infosource.iterables = [('subject_id', subjects)]
   
-    ev = evaluation_workflow(seg_params=segmentation_params, reg_params=registration_params)
+    ev = evaluation_workflow()
     ev.inputs.inputnode.template = 'simulated'
     ev.inputs.inputnode.data_dir = options.subjects_dir
     wf.connect([
-                 ( infosource, ev, [ ('subject_id','inputnode.subject_id'),('grade','inputnode.grade') ])
+                 ( infosource, ev, [ ('subject_id','inputnode.subject_id') ])
                ])
+
+    try:
+        wf.write_graph( graph2use='hierarchical', format='pdf', simple_form=True )
+    except RuntimeError as e:
+        print e
 
     try:
         wf.run()
@@ -274,13 +215,9 @@ if __name__== '__main__':
         print e
 
     csv_paths = []
+    out_csv = op.join( options.work_dir, options.name, options.out_csv )
 
-    if (options.out_csv[0] == '.') or (options.out_csv[0] == '/'):
-        out_csv = options.out_csv
-    else: 
-        out_csv = op.join( options.work_dir, options.out_csv )
-
-    open( out_csv, 'w').close() # empty existing file
+    open( out_csv, 'w').close()
 
     for root, dirs, files, in os.walk( op.join( options.work_dir, options.name ) ):
         for name in files:
@@ -295,15 +232,14 @@ if __name__== '__main__':
                     copyfileobj( f, of )
 
 
-        grade_list = [ 'normal' ] + [ 'grade %d' % x for x in range(1,4) ] 
-        grade_list = [ grade_list[i] for i in grades ]
+        grade_list = [ 'Simulated' ]
 
             
         out_pdf = options.out_pdf
         if op.basename( out_pdf ) == out_pdf:
             out_pdf = op.join( options.work_dir, options.name, out_pdf )
 
-        out = fig.plot_boxplot( out_csv, out_file=out_pdf, grade_names=grade_list )
+        out = fig.plot_boxplot( out_csv, out_file=out_pdf, grade_names=grade_list, nograde=True, legend=False )
         print 'PDF file written: ' + out
 
 
