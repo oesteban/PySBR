@@ -158,7 +158,7 @@ if __name__== '__main__':
                           default=os.getenv( 'PYSBR_SUBJECTS_DIR', '/media/mnemea/MINDt-Quantidopa/PySBR-PhantomImages/Phantoms' ),
                           help='directory where subjects should be found' )
 
-    g_input.add_argument( '-s', '--subject', action='store', required=True,
+    g_input.add_argument( '-s', '--subject', action='store',
                           default='S*', help='subject id or pattern' )
 
     g_input.add_argument( "-T", "--template",  action="store",  choices=['simulated', 'normal'], 
