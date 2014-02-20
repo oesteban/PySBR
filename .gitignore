@@ -1,3 +1,6 @@
+# do not upload templates by default
+data/
+
 *.py[cod]
 
 # Binary files
@@ -71,6 +74,8 @@ nosetests.xml
 *.synctex.gz
 *.pdf
 *.fff
+*.cb
+*.cb2
 
 #Backup files 
 *~
@@ -78,3 +83,6 @@ nosetests.xml
 
 # temporary folders and files
 temp/
+
+# SublimeText editor files
+*.sublime-*

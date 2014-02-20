@@ -154,7 +154,7 @@ if __name__== '__main__':
     g_input = parser.add_argument_group('Input')
     
     g_input.add_argument( '-S', '--subjects_dir', action='store',
-                          default=os.getenv( 'PYSBR_SUBJECTS_DIR', '/media/mnemea/MINDt-Quantidopa/PySBR-PhantomImages/Phantoms' ),
+                          default=os.getenv( 'PYSBR_SUBJECTS_DIR', '/media/mnemea/MINDt-Quantidopa/PySBR-SimulatedData/' ),
                           help='directory where subjects should be found' )
 
     g_input.add_argument( '-s', '--subject', action='store',
@@ -166,7 +166,7 @@ if __name__== '__main__':
     g_input.add_argument( '-w', '--work_dir', action='store', default=os.getcwd(),
                           help='directory to store intermediate results' )
 
-    g_input.add_argument( '-N', '--name', action='store', default='PythonInNeuroscience2',
+    g_input.add_argument( '-N', '--name', action='store', default='PythonInNeuroscience2-Simulated',
                           help='default workflow name, it will create a new folder' )
 
     
