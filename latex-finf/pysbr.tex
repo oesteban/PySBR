@@ -6,6 +6,7 @@
 % Total length: <12.001 words
 % Final PDF length: <13 pages
 
+
 \usepackage{url}
 \usepackage[acronym]{glossaries}
 \usepackage[hidelinks]{hyperref}
@@ -75,7 +76,8 @@
   backgroundcolor=\color{gray!10}
 }
 
-\usepackage{algorithm}
+%\usepackage{algorithm}
+
 \usepackage{mdframed}
 
 \mdfdefinestyle{algstyle}{%
@@ -91,6 +93,7 @@
   font=\footnotesize
   %subtitlebelowline=true
 }
+
 
 \mdtheorem[style=algstyle]{myalgorithm}{Algorithm}
 \def\myalgorithmautorefname{Algorithm}
@@ -235,10 +238,10 @@ In this paper, we present a new evaluation framework implemented with \emph{nipy
 Densification of the resulting sparse displacements field is achieved by using
   Elastic-body splines as deformation model.
 We use the evaluation tool to study \gls*{pysbr} and a standard normalization
-  scheme employing intensity-based non-linear image registration, both starting 
+  scheme employing intensity-based nonlinear image registration, both starting 
   from an affine initialization. 
 The evaluation was run on 60 synthetic  phantoms and 23 realistic datasets simulated 
-  for a gamma-camera commonly-used in the clinical routine.
+  for a gamma-camera widely used in the clinical routine.
 Finally, we compare the proposed tools on the normalization of 5 real datasets.
 Results show that both approaches on average do not offer significant improvements over 
   the affine initialization.
@@ -268,9 +271,9 @@ As a consequence, the number of evaluation and comparison papers is
   and the publication of such evaluations of brain image processing methods is imperative. 
 We consider that the principles described in \cite{tustison_instrumentation_2013} are not only
   important for the design of evaluations and comparisons, 
-  but that they can  also be applied in the development stage of image processing
+  but that they can also be applied to the development of new image processing
   methods, i.e. in \emph{functional-test driven} strategies \citep{andrea_envisioning_2007}.
-In this Research Topic, we show how a rigorous  evaluation pipelines can be designed
+In this Research Topic, we show how rigorous evaluation pipelines can be designed
   with readily available software in Python \emph{before} the development of 
   problem-specific solutions .
 We use a clinical application, the fully automated quantification of \gls*{datscan},
@@ -304,12 +307,12 @@ On the left panel, A sub-figures show the standard classification by
   (reproduced from \cite{center_for_drug_evaluation_and_research_fda_2011}).
 On the right panel, B0 is a close-up of the template to which the subjects are registered, B1 depicts 
   one pathologic subject (grade 1) for which a corresponding \gls*{mri} scan was available, 
-  and B2 is the resulting template non-linearly mapped onto subject's space using a standard 
+  and B2 is the resulting template nonlinearly mapped onto subject's space using a standard 
   image registration procedure.
 Finally, C shows the \gls*{mri} scan corresponding to B1.
 In blue color, the contour of \glspl*{roi} of caudate and putamen structures.
 In yellow, the corresponding contours from the template projected into the subject's space through 
-  the deformation field obtained with non-linear registration, showing the problematic matching
+  the deformation field obtained with nonlinear registration, showing the problematic matching
   or the underlying anatomy.
 }
 \end{figure*}
@@ -323,16 +326,16 @@ Then, a number of \glspl*{roi} are defined along the resulting striatum
   structures in the template, that will be used to quantify the uptake and characterize the
   pattern present in the image under study.
 Therefore, the key processing step to automate quantification is the
-  spatial mapping (or \emph{spatial normalization}) of the subject's image and
-  the template.
+  spatial mapping (or \emph{spatial normalization}) of the subject's image into 
+  the template space.
 This alignment implies an image registration process, which is challenging for two reasons.
-The first drawback is the scarce information that \gls*{datscan} images 
+The first caveat  is the scarce information that \gls*{datscan} images 
   retain from the underlying anatomical structures (see \autoref{fig:01}),
   also resulting from the typically low resolution of
-  \gls*{datscan} images (around $2.5mm\times2.5mm\times2.5mm$).
+  \gls*{datscan} images (approximately $2.5mm\times2.5mm\times2.5mm$).
 Since clinical protocols usually do not include the acquisition of anatomical images
-  (e.g. \gls*{t1}), no structural reference is generally available.
-The second drawback is the implicit hardness of \emph{subject-to-atlas} 
+  (e.g. \gls*{t1}), in general no structural reference is available.
+The second caveat is the implicit difficulty of \emph{subject-to-atlas} 
   --or, in this case, subject-to-template-- registration, due to the unpredictable 
   variability posed by severe pathologies (e.g. tumors, resected tissues, etc.).
 In \gls*{datscan} quantification, the uptake pattern dramatically changes 
@@ -341,9 +344,8 @@ In \gls*{datscan} quantification, the uptake pattern dramatically changes
 The standard approach to solving the alignment problem between the subject's
   \gls*{spect} image and the \gls*{datscan} template is split in two parts.
 The first step (\emph{Initialization stage}) aims at finding an affine subject-to-template mapping.
-This initial affine registration linearly aligns the images
-  (i.e. head location and 3D rotations), capturing also the scaling 
-  transformation that matches head sizes.
+This initial affine registration linearly aligns the images to normalize for 
+   head location, orientation, and head sizes.
 The second step is a \emph{Refinement stage} that optimizes the local alignment of
   the uptake foci present in the image.
 Some software tools have been proposed for this purpose.
@@ -360,6 +362,8 @@ The assessment of these solutions has been, mainly, phantom-based
   and semi-automated \citep{skanjeti_assessing_2013}.
 To our knowledge, no cross-comparison study has been published so far.
 
+
+\subsection{Our contribution}\label{sec:our-contrib}
 Therefore, we propose an evaluation framework implemented in Python for the
   spatial normalization of \gls*{datscan} images required by absolute quantification
   protocols.
@@ -606,25 +610,27 @@ The full description of the settings for \gls*{ants} are provided in \autoref{Ta
                 a nonlinear \gls*{ibr} algorithm.\label{Tab:01}} %
         {
         \begin{tabular}{llp{11cm}}
-        Level & Sub-sampling                   & Parameters configuration     \\
+        Level & Sub-sampling                   & Settings     \\
   \hline 
   \hline  \\[-0.8em]
         0     & Regular$^{*}$ ($4\times4\times4$)    & Rigid (6 parameters) transformation, pre-smoothing of $\sigma=8.0mm$. 
                                                  Initialized with a translation mapping geometrical centers of template and subject's images.\\
   \hline \\[-0.8em]
-        1     & Regular$^{*}$ ($2\times2\times2$)    & Affine (12 parameters) transformation, pre-smoothing of $\sigma=4.0mm$. \\
+        1     & Regular$^{*}$ ($2\times2\times2$) & Affine (12 parameters) transformation, pre-smoothing of $\sigma=4.0mm$. \\
   \hline \\[-0.8em]
-        2     & Random$^{**}$ (20\% of total samples) & \glsreset{syn}\gls*{syn}, gradient step $2.0$, variance of update field $6.0mm$, variance of total field $10.0mm$. \\
+        2     & Regular$^{*}$ ($1\times1\times1$) & Cross-correlation metric (``CC'' option in \gls*{ants}) with 6 pixels radius, \glsreset{syn}\gls*{syn}, $\tau_g = 2.0$, $\sigma^2_u = 6.0mm$, $\sigma^2_f = 10.0mm$. Fixed-image masked with ``Search-ROI''. \\
   \hline \\[-0.8em]
-        3     & Random$^{**}$ (20\% of total samples) & \gls*{syn}, gradient step $0.75$, variance of update field $4.0mm$, variance of total field $6.0mm$.  \\
+        3     & Regular$^{*}$ ($1\times1\times1$) & ``CC'' metric with 1 pixel radius, \gls*{syn} transformation model, $\tau_g = 0.75$, $\sigma^2_u = 4.0mm$, $\sigma^2_f = 6.0mm$. Fixed-image masked with ``Search-ROI''. \\
   \hline \\[-0.8em]
-        All   & -                              & Mutual information metric (``Mattes'' option in \gls*{ants}), with joint histogram of 64 bins. Preprocessing filters: histogram matching, intensity window at (25\%, 99.8\%) percentiles. \\
+        All   & -                              & Default metric is mutual information (``Mattes''), with joint histogram of 64 bins. Preprocessing filters: histogram matching, intensity window at (15\%, 100\%) percentiles. \\
         \end{tabular} %
         }
-        { ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors
-           of the image's grid. \\
-           ($^{**}$) ``Random'' subsampling randomly draws
-           samples from the full grid without geometrical restrictions.}
+        { where $\tau_g$ is gradient step, $\sigma^2_u$ is the variance of the update field, and $\sigma^2_f$ is the variance of the total field. \\
+          ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors
+           of the image's grid.}% 
+%           \\
+%           ($^{**}$) ``Random'' subsampling randomly draws
+%           samples from the full grid without geometrical restrictions.}
 \end{table*}
 
 
@@ -669,7 +675,7 @@ Finally, we apply a kernel transform to propagate the local displacements of
 \label{sec:shape_features}
 
 The shape features used for registration are two-fold:
-On one hand, landmarks on the brain surface are used as boundary condition to limit the non-linear 
+On one hand, landmarks on the brain surface are used as boundary condition to limit the nonlinear 
   transformation of the test image. 
 On the other hand, landmarks are extracted from the activation areas. 
 
@@ -696,7 +702,7 @@ The detailed description of the procedure is found in \autoref{alg:lspots}.
 In summary, this feature extraction results in tree landmark sets: the static landmarks \lm{static} on the 
   brain surface, the landmarks related to the left \lm{*,l} and right \lm{*,l} activation area, 
   and the  landmark centered between the two activation centers \lm{center} that are then used for the 
-  feature based non-linear registration described below.
+  feature based nonlinear registration described below.
 
 \paragraph{Registration methodology}
 \label{sec:registration}
@@ -1050,7 +1056,6 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 \appendix
 \section*{Appendix}
 \subsection*{Algorithms used for extraction of shape features}
-\par
 
 \begin{myalgorithm}[Extraction of static landmarks across the surface of the brain\label{alg:lstatic}]
 \begin{enumerate}
