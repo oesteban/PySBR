@@ -161,6 +161,9 @@ if __name__== '__main__':
     g_input.add_argument( '-s', '--subject', action='store',
                           default='S*', help='subject id or pattern' )
 
+    g_input.add_argument( '-G', '--grade', nargs='+', type=int, action='store',
+                          default=range(4), help='specify grade' )
+
     g_input.add_argument( "-T", "--template",  action="store",  choices=['simulated', 'normal'], 
                           help="template to be used", default='simulated')
 
@@ -230,8 +233,10 @@ if __name__== '__main__':
     single_subject = op.join( options.subjects_dir, options.subject )
     print(single_subject)
     subjects = [ op.basename( sub ) for sub in glob.glob( single_subject  ) ]
-    grades=range(4)
-    
+
+
+    grades= options.grade
+
     if len(subjects) == 0:
         print("No subjects found with path '", single_subject, "'") 
         exit(-1)
@@ -258,7 +263,6 @@ if __name__== '__main__':
     registration_params['stiffness'] = options.stiffness
     registration_params['alpha'] = options.alpha
 
-    grades = range(4)
     infosource.iterables = [('subject_id', subjects),('grade',grades)]
   
     ev = evaluation_workflow(seg_params=segmentation_params, reg_params=registration_params)
