@@ -311,13 +311,15 @@ In yellow, the corresponding contours from the template projected into the subje
 \end{figure*}
 
 \subsection{State of art}\label{sec:state-of-art}
-Some efforts have been made to help automate the quantification process 
-  and standardize the outcome \citep{calvini_basal_2007,badiavas_spect_2011}.
+Even though diagnosis is broadly based on experienced observers' visual
+  assesment, some efforts have been made to help automate the quantification
+  process and standardize the outcome (we refer the reader to
+  \citep{badiavas_spect_2011} for an overview).
 Automated protocols typically use a template created by averaging a healthy
   population (see \autoref{fig:01}, box B0).
 Then, a number of \glspl*{roi} are defined along the resulting striatum 
   structures in the template, that will be used to quantify the uptake and characterize the
-  pattern present in the image under study.
+  pattern present in the image under analysis.
 Therefore, the key processing step to automate quantification is the
   spatial mapping (or \emph{spatial normalization}) of the subject's image and
   the template.
@@ -476,7 +478,7 @@ The final template was obtained by averaging the normalized \gls*{spect} studies
   full width at half maximum.
 The real template was obtained with a very similar procedure. 
 First, we selected 10 real datasets from a healthy volunteers database, acquired
-  with a \gls*{t1} reference and a coupled \gls*{spect} study obtained as
+  with a \gls*{t1} reference and a coupled \gls*{spect} image obtained as
   described in \autoref{sec:data_real}.
 Second, the \gls*{mri} were normalized to the \gls*{t1} template of \gls*{spm}2.
 Third, the \gls*{spect} studies were rigidly registered to their corresponding \gls*{t1}, 
@@ -538,11 +540,11 @@ The cohort described in \autoref{sec:data_real}
   is a subset from a pool of cases that were previously aligned with an
   affine registration step, but rejected for quantification due to the
   visual mismatch with the template.
-Additionally, as an exception one real study was acquired with its
+Additionally, as an exception, one real dataset was acquired with its
   corresponding \gls*{mri}.
 This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one real case,
   implicitly assuming that the necessary image registration from the 
-  \gls*{spect} study to the reference \gls*{t1} is error-free 
+  \gls*{spect} image to the reference \gls*{t1} is error-free 
   (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
 This case is used to produce the visual results illustrated in
   \autoref{fig:real_dataset_result}.
@@ -580,7 +582,7 @@ The resulting affine matrix is then applied to project information defined on
 
 \subsection{Refinement stage}\label{sec:meth_refinement}
 As introduced before, this stage is defined with a certain interface where the
-  tool under study can be plugged-in.
+  tool under evaluation can be plugged-in.
 To demonstrate the fast prototyping and \emph{functional-test driven} development
   we promote, we provide two built-in refinement tools.
 On one side, our aim was to include any of the normalization tools introduced in
@@ -600,10 +602,10 @@ The full description of the settings for \gls*{ants} are provided in \autoref{Ta
 \begin{table*}[!t]
   \processtable{\textbf{Configuration of Initialization and Refinement stages using \gls*{ibr}}.
                 Registration levels and corresponding settings of \gls*{ants} are summarized.
-                Levels 0 and 1 implement to the \emph{Initialization stage}, shared
-                for all \emph{Refinement} modules under study.
-                Remaining levels correspond to the \emph{Refinement stage} using
-                a nonlinear \gls*{ibr} algorithm.\label{Tab:01}}%
+                Levels 0 and 1 implement to the \emph{Initialization stage}, common
+                for all the tools evaluated.
+                The remaining two levels correspond describe the \emph{Refinement stage} details
+                of the nonlinear \gls*{ibr} algorithm.\label{Tab:01}}%
     {\begin{tabular}{lp{2cm}p{11cm}}
         Level & Sub-sampling                   & Settings     \\
         \hline 
