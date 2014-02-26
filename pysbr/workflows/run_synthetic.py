@@ -35,12 +35,12 @@ import nipype.interfaces.freesurfer as fs
 import nipype.algorithms.misc as misc
 
 import pysbr.interfaces as sbrifs
-from pysbr.workflows.registration import normalization,ants_normalization
+from pysbr.workflows.registration import normalization,ants_normalization_2
 
 
-def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} ):
+def evaluation_workflow( name='DaTSCAN_Evaluation', seg_params={}, reg_params={} ):
     """
-    Creates the main PySBR evaluation workflow
+    Creates the main DaTSCAN evaluation workflow
 
     """
 
@@ -88,7 +88,7 @@ def evaluation_workflow( name='PySBR_Evaluation', seg_params={}, reg_params={} )
                  name='outputnode' )
 
     # Create ANTS non-linear registration workflow
-    ants_reg = ants_normalization()
+    ants_reg = ants_normalization_2()
 
     # Create PySBR non-linear registration workflow
     pysbr_reg = normalization( evaluate=True, seg_params=seg_params, reg_params=reg_params )
@@ -158,8 +158,11 @@ if __name__== '__main__':
                           default=os.getenv( 'PYSBR_SUBJECTS_DIR', '/media/mnemea/MINDt-Quantidopa/PySBR-PhantomImages/Phantoms' ),
                           help='directory where subjects should be found' )
 
-    g_input.add_argument( '-s', '--subject', action='store', required=True,
+    g_input.add_argument( '-s', '--subject', action='store',
                           default='S*', help='subject id or pattern' )
+
+    g_input.add_argument( '-G', '--grade', nargs='+', type=int, action='store',
+                          default=range(4), help='specify grade' )
 
     g_input.add_argument( "-T", "--template",  action="store",  choices=['simulated', 'normal'], 
                           help="template to be used", default='simulated')
@@ -167,7 +170,7 @@ if __name__== '__main__':
     g_input.add_argument( '-w', '--work_dir', action='store', default=os.getcwd(),
                           help='directory to store intermediate results' )
 
-    g_input.add_argument( '-N', '--name', action='store', default='Evaluation',
+    g_input.add_argument( '-N', '--name', action='store', default='PythonInNeuroscience2-Synthetic',
                           help='default workflow name, it will create a new folder' )
 
 
@@ -230,8 +233,10 @@ if __name__== '__main__':
     single_subject = op.join( options.subjects_dir, options.subject )
     print(single_subject)
     subjects = [ op.basename( sub ) for sub in glob.glob( single_subject  ) ]
-    grades=range(4)
-    
+
+
+    grades= options.grade
+
     if len(subjects) == 0:
         print("No subjects found with path '", single_subject, "'") 
         exit(-1)
@@ -258,7 +263,6 @@ if __name__== '__main__':
     registration_params['stiffness'] = options.stiffness
     registration_params['alpha'] = options.alpha
 
-    grades = range(4)
     infosource.iterables = [('subject_id', subjects),('grade',grades)]
   
     ev = evaluation_workflow(seg_params=segmentation_params, reg_params=registration_params)

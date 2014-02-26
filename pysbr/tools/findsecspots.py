@@ -292,7 +292,7 @@ def evaluate_main_direction_and_rate_it(area, spot):
         if vol == 1:
             return (np.array([1.0,0.0,0.0]), 0, 0)
 
-        coords -= spot
+        coords = coords - spot
         
         maindir = np.sum(coords, 0)
         #print("main direction:", maindir)

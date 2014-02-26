@@ -8,7 +8,7 @@
 
 
 \usepackage{url}
-\usepackage[acronym]{glossaries}
+\usepackage[acronym,nowarn,nomain]{glossaries}
 \usepackage[hidelinks]{hyperref}
 
 %\usepackage[boxed,lined,commentsnumbered]{algorithm2e}
@@ -20,7 +20,6 @@
 %  it will put all the figures at the end 
 \newboolean{submit}
 \setboolean{submit}{false}
-
 
 \ifthenelse{\boolean{submit}}
 {
@@ -156,7 +155,7 @@
 \newacronym[first={\emph{SPM} (Statistical Parametric Mapping, \cite{ashburner_unified_2005})}]%
 {spm}{\emph{SPM}}{Statistical Parametric Mapping}
 
-\newacronym[first={Symmetric Normalization (\emph{SyN}) transformation model \citep{avants_symmetric_2008}}]%
+\newacronym[first={Symmetric Normalization (\emph{SyN}, \cite{avants_symmetric_2008})}]%
 {syn}{\emph{SyN}}{Symmetric Normalization transformation model}
 
 \newacronym[first={\emph{ANTS} (Advanced Normalization tools, \cite{avants_ants:_2013})}]%
@@ -217,8 +216,6 @@
 \topic{Python in Neuroscience II}
 
 \maketitle
-
-
 
 
 \begin{abstract}
@@ -310,21 +307,23 @@ On the right panel, B0 is a close-up of the template to which the subjects are r
   and B2 is the resulting template nonlinearly mapped onto subject's space using a standard 
   image registration procedure.
 Finally, C shows the \gls*{mri} scan corresponding to B1.
-In blue color, the contour of \glspl*{roi} of caudate and putamen structures.
+In blue color, the contours delineating caudates and putamens extracted from the \acrlong*{t1}.
 In yellow, the corresponding contours from the template projected into the subject's space through 
-  the deformation field obtained with nonlinear registration, showing the problematic matching
+  the deformation field obtained with nonlinear registration, showing the poor matching
   or the underlying anatomy.
 }
 \end{figure*}
 
 \subsection{State of art}\label{sec:state-of-art}
-Some efforts have been made to help automate the quantification process 
-  and standardize the outcome \citep{calvini_basal_2007,badiavas_spect_2011}.
+Even though diagnosis is broadly based on experienced observers' visual
+  assesment, some efforts have been made to help automate the quantification
+  process and standardize the outcome (we refer the reader to
+  \citep{badiavas_spect_2011} for an overview).
 Automated protocols typically use a template created by averaging a healthy
   population (see \autoref{fig:01}, box B0).
 Then, a number of \glspl*{roi} are defined along the resulting striatum 
   structures in the template, that will be used to quantify the uptake and characterize the
-  pattern present in the image under study.
+  pattern present in the image under analysis.
 Therefore, the key processing step to automate quantification is the
   spatial mapping (or \emph{spatial normalization}) of the subject's image into 
   the template space.
@@ -349,43 +348,38 @@ This initial affine registration linearly aligns the images to normalize for
 The second step is a \emph{Refinement stage} that optimizes the local alignment of
   the uptake foci present in the image.
 Some software tools have been proposed for this purpose.
-For instance, \gls*{basgan} proposes a local registration scheme clipping the 
+For instance, \gls*{basgan} proposes a local registration scheme, clipping the 
   uptake foci and using cross-correlation between the subject's image and 
   the template as objective function.
-Other solutions are implemented adapting the nonlinear registration tools included
-  with \gls*{spm}, using the \emph{spatial normalization} module and settings
-  imposing a strong regularization penalty \fixme{reference needed}.
 \citeauthor{ciarmiello_weighted_2013} recently proposed \gls*{brainnest}, which
-  generates a \emph{weighted} image enhancing the putaminal uptake in
-  subjects with advanced progression of disease.
-The assessment of these solutions has been, mainly, phantom-based
+  generates a \emph{weighted} image with enhanced putaminal uptake in
+  subjects that present an advanced grade of disease.
+\cbstart
+Currently, our \emph{in-house} approach is implemented adapting the nonlinear registration
+  tools included with \gls*{spm}.
+We use the \emph{spatial normalization} module configured to impose a strong regularization penalty,
+  that needs to be manually fine-tuned.
+Therefore, visual inspection of the results is mandatory in these settings.
+\cbend
+The assessment of aforementioned solutions has been, mainly, phantom-based
   and semi-automated \citep{skanjeti_assessing_2013}.
 To our knowledge, no cross-comparison study has been published so far.
 
 
-\subsection{Our contribution}\label{sec:our-contrib}
-Therefore, we propose an evaluation framework implemented in Python for the
+\cbstart
+In this work, we propose an evaluation framework implemented in Python for the
   spatial normalization of \gls*{datscan} images required by absolute quantification
   protocols.
-The evaluation framework comprises the following parts: 
-(1) A workflow for generating very simplistic phantoms from
-   \gls*{mri} data, to be used in the evaluation framework;
-(2) a fast \emph{Initialization stage}, common for all the spatial
-    normalization packages under comparison;
-(3) a \emph{Refinement stage} where the tool under evaluation can be inserted; and
-(4) a benchmarking and reporting module to gather and present results.
-
-In order to demonstrate the utility of the evaluation framework we compare 
-  two methods, delivering the source code and data necessary to run the tests.
-The first methodology under comparison is one among currently standard approaches,
-  that use \gls*{ibr}.
-The second method is called \gls*{pysbr}, a new shape based registration tool and
-  work in progress introduced here.
-
 Quantitative results of the assessment are reported for the synthetic
   phantoms and simulated \gls*{spect} images described in \autoref{sec:data}.
 Finally, the aptness of the tools is also tested on real datasets,
   assessed by visual inspection (see \autoref{sec:results_real}).
+In order to demonstrate the utility of the evaluation framework, we compare 
+  two methods:
+(1) an implementation of our \emph{in-house} method, which uses \gls*{ibr};
+(2) \gls*{pysbr}, a new shape-based registration tool and
+  work in progress described in \autoref{sec:pysbr}.
+\cbend
 The evaluation framework, \gls*{pysbr}, one template,
   and a representative subset of the presented data are publicly 
   available in \url{https://github.com/oesteban/PySBR}.
@@ -394,6 +388,7 @@ The evaluation framework, \gls*{pysbr}, one template,
 
 Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
   of signal processing methods are notoriously difficult tasks.
+\fixme{pg5. ‘In order to produce a trustful benchmarking framework, …’: are those gold standard for general/universal use? or are those designed to use for your evaluation? what do you mean ‘trustful’?}
 In order to produce a trustful benchmarking framework, we generate two 
   \gls*{datscan} databases from real \gls*{mri} scans (\autoref{sec:data_synthetic}
   and \autoref{sec:data_simulated}) that can be used as gold standard, 
@@ -416,6 +411,8 @@ Finally, all the synthetic phantoms were downsampled and cropped to the characte
 
 \subsection{Simulated database} %
 \label{sec:data_simulated}
+\fixme{revise use of ``cohort''}
+\fixme{pg3: ‘we generated very simplistic SPECT-like images mimicking disease in four stages of severity’: This is not clear how SPECT-like images are created.}
 A cohort of 23 datasets was simulated from real \gls*{mri} data.
   \Gls*{spect} projections were simulated  for a Siemens E-CAM gamma
   camera equipped with a \acrlong*{lehr} parallel-hole collimator.
@@ -452,6 +449,7 @@ Projections were filtered with a 2D-Butterworth filter ($0.64cm^{-1}$,
 
 \subsection{Real datasets} %
 \label{sec:data_real}
+\fixme{how many datasets?}
 \Gls*{spect} acquisition was undertaken $4h$
   after injection  of $185$\textit{MBq} of $^{123}$I-ioflupane
   (\Gls*{datscan}, GE Healthcare, Eindhoven, The Netherlands),
@@ -467,14 +465,14 @@ Reconstruction was performed as described for simulated studies.
 
 \subsection{Templates} %
 \label{sec:data_templates}
-
+\fixme{pg4: Section 2.1.4 Templates: What is template? Can you define more precisely? Are you using atlas and template interchangeably? or is the template a set of images including ROIs and landmarks?}
 Two templates were built using subsets of cases of the simulated and real
   databases (\autoref{sec:data_simulated} and \autoref{sec:data_real}), respectively.
 For the experiments using synthetic phantoms (\autoref{sec:data_synthetic}),
   we used the template generated for the simulated database.
-The simulated template was created averaging 14 ``healthy'' subjects drawn from
+The simulated template was created averaging 14 ``healthy'' subjects selected randomly from
   the numerical simulations.
-All the subjects were normalized to the \gls*{t1} template distributed with
+All the subjects were spatially normalized to the \gls*{t1} template distributed with
   \gls*{spm}2.
 This normalization step was validated by visual inspection.
 The normalized \glspl*{mri} were resampled to have a matrix size of
@@ -488,7 +486,7 @@ The final template was obtained by averaging the normalized \gls*{spect} studies
   full width at half maximum.
 The real template was obtained with a very similar procedure. 
 First, we selected 10 real datasets from a healthy volunteers database, acquired
-  with a \gls*{t1} reference and a coupled \gls*{spect} study obtained as
+  with a \gls*{t1} reference and a coupled \gls*{spect} image obtained as
   described in \autoref{sec:data_real}.
 Second, the \gls*{mri} were normalized to the \gls*{t1} template of \gls*{spm}2.
 Third, the \gls*{spect} studies were rigidly registered to their corresponding \gls*{t1}, 
@@ -502,18 +500,25 @@ Finally, the resampling, the normalization of \gls*{spect} counts, and the final
 \subsection{Nipype-based evaluation workflow}
 \label{sec:evaluation}
 \paragraph{Software design}\label{sec:workflow}
-We propose an evaluation workflow with the following structure:
+The evaluation framework comprises the following parts: 
 \begin{enumerate}
-\emitem{Initialization stage} (described in \autoref{sec:meth_initialization}).
-\emitem{Refinement stage}: at the evaluators digression the workflow can execute 
-  this step either by using \gls*{pysbr} or \gls*{ants}, as
-  introduced in \autoref{sec:meth_refinement}.
+\emitem{Initialization stage}: a fast registration process shared by the
+  spatial normalization packages under comparison. This module is described
+  in \autoref{sec:meth_initialization}.
+\emitem{Refinement stage}: where the tools under evaluation can be inserted.
+  The workflow relased can execute this step either by using \gls*{pysbr} 
+  or \gls*{ants} at the evaluators digression. This module is described
+  in \autoref{sec:meth_refinement}.
 \emitem{\Glspl{roi} mapping}: use the displacement field resulting from
   the previous step to project the template's anatomical \glspl*{roi} to
   subject's space.
-\emitem{Overlap computation}: Dice scores are obtained for the four
-  \glspl*{roi} (left and right caudates and putamens) and a
-  volume-weighted average of them.
+\emitem{Benchmarking and reporting}: overlap scores (Dice indices) are
+  computed for the four \glspl*{roi} (left and right caudates and putamens)
+  and a volume-weighted average of them. Also, plots presented in
+  \autoref{fig:results} are automatically generated.
+\emitem{Synthetic phantom generator}: an additional workflow is released
+  implementing the procedure described in \autoref{sec:data_synthetic} to
+  generate the synthetic phantoms database.
 \end{enumerate}
 We selected \gls*{nipype} to build up the system for its unique properties for
   the construction of processing pipelines for neuroimage (i.e. flexibility,
@@ -529,9 +534,9 @@ The workflow graph (automatically generated by \gls*{nipype}) is depicted in
   \centering
     \insertgraphic{width=\linewidth}{figures/04-nipype-workflow}
   \caption{\label{fig:02-new}
-  \textbf{Evaluation workflow}. Automatically generated graph 
+  \textbf{Proposed evaluation workflow}. Automatically generated graph 
   representing all the software elements (as nodes) necessary
-  for the assessment of the proposed tools.}
+  for the assessment of \gls*{datscan} quantification tools.}
 \end{figure*}
 
 
@@ -543,11 +548,11 @@ The cohort described in \autoref{sec:data_real}
   is a subset from a pool of cases that were previously aligned with an
   affine registration step, but rejected for quantification due to the
   visual mismatch with the template.
-Additionally, as an exception one real study was acquired with its
+Additionally, as an exception, one real dataset was acquired with its
   corresponding \gls*{mri}.
 This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one real case,
   implicitly assuming that the necessary image registration from the 
-  \gls*{spect} study to the reference \gls*{t1} is error-free 
+  \gls*{spect} image to the reference \gls*{t1} is error-free 
   (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
 This case is used to produce the visual results illustrated in
   \autoref{fig:real_dataset_result}.
@@ -572,23 +577,27 @@ ev.run()
 This workflow can be configured to operate in batch mode over a
   set of cases, using the \emph{Iterables} feature from \gls*{nipype}.
 
+\fixme{pg5. ‘… to compare the standard methodologies with our tool.’: what is the standard methodologies? the ANTs is the standard in the field?}
+\fixme{pg4. Section 2.2.2: Terms are confusing: Are three terminologies of Feature= Shape Feature = Landmarks indicate identical ‘feature’?}
+
 \subsection{Initialization stage}
 \label{sec:meth_initialization}
 The initial step performs a preliminary affine approximation of the selected
   template to the subject's image as explained in \autoref{sec:intro}.
 To this end, a fast registration approach is implemented using \gls*{ants}.
-We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
+\fixme{We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
   mutual information as cost function; the detailed parameter description 
-  is given in \autoref{Tab:01}.
+  is given in \autoref{Tab:01}. \#11}
 The resulting affine matrix is then applied to project information defined on
   the template's space into the \gls*{datscan} image.
 
 \subsection{Refinement stage}\label{sec:meth_refinement}
 As introduced before, this stage is defined with a certain interface where the
-  tool under study can be plugged-in.
+  tool under evaluation can be plugged-in.
 To demonstrate the fast prototyping and \emph{functional-test driven} development
   we promote, we provide two built-in refinement tools.
-On one side, our aim was to include any of aforementioned normalization tools.
+On one side, our aim was to include any of the normalization tools introduced in
+  \autoref{sec:intro}.
 Unfortunately, at the time of writing, the \gls*{basgan} software was not available
   on the URLs provided in \cite{calvini_basal_2007,skanjeti_assessing_2013}.
 Although we were able to download \gls*{brainnest} binaries, as they are compiled 
@@ -604,37 +613,37 @@ The full description of the settings for \gls*{ants} are provided in \autoref{Ta
 \begin{table*}[!t]
   \processtable{\textbf{Configuration of Initialization and Refinement stages using \gls*{ibr}}.
                 Registration levels and corresponding settings of \gls*{ants} are summarized.
-                Levels 0 and 1 implement to the \emph{Initialization stage}, shared
-                for all \emph{Refinement} modules under study.
-                Remaining levels correspond to the \emph{Refinement stage} using
-                a nonlinear \gls*{ibr} algorithm.\label{Tab:01}} %
-        {
-        \begin{tabular}{llp{11cm}}
+                Levels 0 and 1 implement to the \emph{Initialization stage}, common
+                for all the tools evaluated.
+                The remaining two levels correspond describe the \emph{Refinement stage} details
+                of the nonlinear \gls*{ibr} algorithm.\label{Tab:01}}%
+    {\begin{tabular}{lp{2cm}p{11cm}}
         Level & Sub-sampling                   & Settings     \\
-  \hline 
-  \hline  \\[-0.8em]
-        0     & Regular$^{*}$ ($4\times4\times4$)    & Rigid (6 parameters) transformation, pre-smoothing of $\sigma=8.0mm$. 
-                                                 Initialized with a translation mapping geometrical centers of template and subject's images.\\
-  \hline \\[-0.8em]
-        1     & Regular$^{*}$ ($2\times2\times2$) & Affine (12 parameters) transformation, pre-smoothing of $\sigma=4.0mm$. \\
-  \hline \\[-0.8em]
-        2     & Regular$^{*}$ ($1\times1\times1$) & Cross-correlation metric (``CC'' option in \gls*{ants}) with 6 pixels radius, \glsreset{syn}\gls*{syn}, $\tau_g = 2.0$, $\sigma^2_u = 6.0mm$, $\sigma^2_f = 10.0mm$. Fixed-image masked with ``Search-ROI''. \\
-  \hline \\[-0.8em]
-        3     & Regular$^{*}$ ($1\times1\times1$) & ``CC'' metric with 1 pixel radius, \gls*{syn} transformation model, $\tau_g = 0.75$, $\sigma^2_u = 4.0mm$, $\sigma^2_f = 6.0mm$. Fixed-image masked with ``Search-ROI''. \\
-  \hline \\[-0.8em]
-        All   & -                              & Default metric is mutual information (``Mattes''), with joint histogram of 64 bins. Preprocessing filters: histogram matching, intensity window at (15\%, 100\%) percentiles. \\
-        \end{tabular} %
-        }
-        { where $\tau_g$ is gradient step, $\sigma^2_u$ is the variance of the update field, and $\sigma^2_f$ is the variance of the total field. \\
-          ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors
-           of the image's grid.}% 
-%           \\
-%           ($^{**}$) ``Random'' subsampling randomly draws
-%           samples from the full grid without geometrical restrictions.}
+        \hline 
+        \hline  \\[-0.8em]
+        0     & Regular$^{*}$ \mbox{($4\times4\times4$)}    & Mutual information metric (``Mattes'' option in \gls*{ants}) with joint histogram of 64 bins,
+                                                       rigid (6 parameters) transformation model, $\sigma_s=8.0mm$, $w=\left[25,95\right]$.
+                                                       Initialized with a translation mapping geometrical centers of template and subject's images.\\
+        \hline \\[-0.8em]
+        1     & Regular$^{*}$ \mbox{($2\times2\times2$)} & ``Mattes'' (64 bins), affine transform (12 parameters), $\sigma_s=4.0mm$, $w=\left[25,95\right]$. \\
+        \hline \\[-0.8em]
+        2     & Mask$^{**}$ \mbox{($1\times1\times1$)}   & Cross-correlation metric (``CC'' option in \gls*{ants}) with 6 pixels radius,
+                                                    \glsreset{syn}\gls*{syn} transformation model, $w=\left[15,100\right]$, $\tau_g = 2.0$, $\sigma^2_u = 6.0mm$, $\sigma^2_f = 10.0mm$. \\
+        \hline \\[-0.8em]
+        3     & Mask$^{**}$ \mbox{($1\times1\times1$)}   & ``CC'' (1 pixel radius), \gls*{syn}, $w=\left[15,100\right]$, $\tau_g = 0.75$, $\sigma^2_u = 4.0mm$,
+                                                    $\sigma^2_f = 6.0mm$. \\
+        \hline \\[-0.8em]
+        All   & -                                 & Images preprocessed with: histogram matching filter, pre-smoothing gaussian filter of standard deviation $\sigma_s$,
+                                                    winsorised intensity with window at $w = \left[ w_{low}, w_{high}\right]$ percentiles. \\
+    \end{tabular}}%
+    { where $\tau_g$ is gradient step, $\sigma^2_u$ is the variance of the update field, and $\sigma^2_f$ is the variance of the total field. \\
+      ($^{*}$) ``Regular'' subsampling stands for decimation by integer factors of the image's grid. \\
+      ($^{**}$) ``Mask'' indicates that a ``Regular'' subsampling was used, with ``Search-ROI'' as mask on the fixed image data.%
+    }%
 \end{table*}
 
 
-\section{PySBR: Shape-based registration prototype}
+\section{PySBR: Shape-based registration prototype}\label{sec:pysbr}
 \subsection{Methods}
 A flowchart to overview \gls*{pysbr} is presented in \autoref{fig:02},
   and described hereafter.
@@ -679,8 +688,8 @@ On one hand, landmarks on the brain surface are used as boundary condition to li
   transformation of the test image. 
 On the other hand, landmarks are extracted from the activation areas. 
 
-As all the affine mismatch between template and subject should be captured by the initialization
-  step, we define a number of \emph{static} landmarks (\lm{static}).
+\fixme{As all the affine mismatch between template and subject should be captured by the initialization
+  step, we define a number of \emph{static} landmarks (\lm{static}). (Re-write in understandable English)}
 These \lm{static} are intended to prevent the 
   transformation change the scale of the imaged whole brain.
 To this end, \lm{static} should be uniformly located on the brain surface and present
@@ -699,6 +708,7 @@ To obtain the \emph{mapping} landmarks (along the activation areas), the procedu
   outlined in Figure \ref{fig:featlmextract} is used.
 The detailed description of the procedure is found in \autoref{alg:lspots}.
 
+\fixme{pg4: this feature extraction results…’ → this shape feature extraction results…?}
 In summary, this feature extraction results in tree landmark sets: the static landmarks \lm{static} on the 
   brain surface, the landmarks related to the left \lm{*,l} and right \lm{*,l} activation area, 
   and the  landmark centered between the two activation centers \lm{center} that are then used for the 
@@ -706,11 +716,12 @@ In summary, this feature extraction results in tree landmark sets: the static la
 
 \paragraph{Registration methodology}
 \label{sec:registration}
+\fixme{pg5: ‘In order to correct for location…’ : What is wrong for location and orientation??? Why do we need a correction?}
 In order to correct for location and orientation of the segmented nuclei, we
   perform a registration step in spherical coordinates. We extract the boundary of
   each label extracted from the \gls*{spect} images. The cartesian pixel coordinates are
   transformed to a spherical coordinates system centered at the primary 
-  landmark, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
+  landmark \fixme{pg5. ‘the primary landmark’: what is the primary landmark???}, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
   of the objects \citep{davies_computer_2012}.
 This profile shows a flat surface for point-like shapes (typically
   present in patients with grade 2 and 3) and a characteristic distribution for
@@ -738,7 +749,6 @@ Once the landmarks have been extracted and mapped, a dense deformation field of 
   is de divergence of the displacement field; $\vect{f}(\vect{x})$ is the force
   field defined by the landmarks mapping, and $\mu$ and $\lambda$ are the Lam\'e
   coefficients, which describe the physical properties of the elastic material.
-
 Therefore, the $\vect{u}(\vect{x})$ found is the solution to our problem and
   can be used to project the quantification \glspl*{roi} to the subject's image.
 

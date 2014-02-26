@@ -145,12 +145,12 @@ def initialization( name='Initialization' ):
 
     """
     reg = pe.Node( ants.Registration() , name=name )
-    reg.inputs.transforms = ['Rigid','Affine']
-    reg.inputs.transform_parameters = [(1.0,),(2.0,), (1.0,)]
-    reg.inputs.number_of_iterations = [[200],[100], [50] ]
+    reg.inputs.transforms = ['Rigid', 'Affine', 'Affine' ]
+    reg.inputs.transform_parameters = [ (1.0,), (2.0,), (1.0,) ]
+    reg.inputs.number_of_iterations = [ [200],[100], [50] ]
     reg.inputs.dimension = 3
-    reg.inputs.metric = ['Mattes']*2
-    reg.inputs.metric_weight = [1.0]*2
+    reg.inputs.metric = ['Mattes']*3
+    reg.inputs.metric_weight = [1.0]*3
     reg.inputs.radius_or_number_of_bins = [64]*3
     reg.inputs.sampling_strategy = ['Regular','Regular','Random']
     reg.inputs.sampling_percentage = [None,None,0.2]
@@ -163,7 +163,7 @@ def initialization( name='Initialization' ):
     reg.inputs.use_histogram_matching = [True]*3
     reg.inputs.winsorize_lower_quantile = 0.25
     reg.inputs.winsorize_upper_quantile = 0.95
-    reg.inputs.initial_moving_transform_com = False
+    reg.inputs.initial_moving_transform_com = 0 # Align center of volume
     reg.inputs.collapse_output_transforms = True
     return reg
 
@@ -211,6 +211,7 @@ def ants_normalization_1( name='ANTs_Normalization_v1' ):
     reg.inputs.use_estimate_learning_rate_once= [True]*3
     reg.inputs.use_histogram_matching= [True]*3
     reg.inputs.winsorize_lower_quantile = 0.15
+    reg.inputs.invert_initial_moving_transform = False
 
     applytfm = pe.Node( ants.ApplyTransforms(dimension=3), name='Apply' )
     tfm_bbox = pe.MapNode( ants.ApplyTransforms(dimension=3), iterfield=['input_image'], name='ApplyROIs' )
@@ -259,12 +260,12 @@ def ants_normalization_2( name='ANTs_Normalization_v2' ):
 
 
     reg = pe.Node( ants.Registration() , name="NonlinearRefinement" )
-    reg.inputs.transforms= [ 'SyN', 'SyN', 'SyN' ]
-    reg.inputs.transform_parameters = [(1.0,4.0,6.0),(1.0,2.5,3.0),(0.5,0.8,1.0) ]
-    reg.inputs.number_of_iterations = [ [20],[15],[15] ]
+    reg.inputs.transforms= [ 'SyN', 'SyN' ]
+    reg.inputs.transform_parameters = [(2.0,4.0,6.0),(0.75,0.8,1.0) ]
+    reg.inputs.number_of_iterations = [ [20],[15] ]
     reg.inputs.metric= [ ['CC'], ['CC'] ]
-    reg.inputs.metric_weight= [ [1.0] , [1.0], [1.0] ]
-    reg.inputs.radius_or_number_of_bins= [[6],[3],[3]]
+    reg.inputs.metric_weight= [ [1.0] , [1.0] ]
+    reg.inputs.radius_or_number_of_bins= [[6],[3]]
     reg.inputs.sampling_strategy= [ ['Regular'], ['Regular'] ]
     reg.inputs.sampling_percentage= [ [1.0], [1.0] ]
     reg.inputs.convergence_threshold= [ 1.e-7, 1.e-8]
@@ -272,9 +273,10 @@ def ants_normalization_2( name='ANTs_Normalization_v2' ):
     reg.inputs.smoothing_sigmas= [ [4.0], [1.0]  ]
     reg.inputs.sigma_units= [ 'mm', 'mm' ]
     reg.inputs.shrink_factors= [ [1],[1]]
-    reg.inputs.use_estimate_learning_rate_once= [True]*3
-    reg.inputs.use_histogram_matching= [True]*3
+    reg.inputs.use_estimate_learning_rate_once= [True]*2
+    reg.inputs.use_histogram_matching= [True]*2
     reg.inputs.winsorize_lower_quantile = 0.15
+    reg.inputs.invert_initial_moving_transform = False
 
     applytfm = pe.Node( ants.ApplyTransforms(dimension=3), name='Apply' )
     tfm_bbox = pe.MapNode( ants.ApplyTransforms(dimension=3), iterfield=['input_image'], name='ApplyROIs' )
