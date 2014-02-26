@@ -384,6 +384,7 @@ The evaluation framework, \gls*{pysbr}, one template,
 
 Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
   of signal processing methods are notoriously difficult tasks.
+\fixme{pg5. ‘In order to produce a trustful benchmarking framework, …’: are those gold standard for general/universal use? or are those designed to use for your evaluation? what do you mean ‘trustful’?}
 In order to produce a trustful benchmarking framework, we generate two 
   \gls*{datscan} databases from real \gls*{mri} scans (\autoref{sec:data_synthetic}
   and \autoref{sec:data_simulated}) that can be used as gold standard, 
@@ -406,6 +407,8 @@ Finally, all the synthetic phantoms were downsampled and cropped to the characte
 
 \subsection{Simulated database} %
 \label{sec:data_simulated}
+\fixme{revise use of ``cohort''}
+\fixme{pg3: ‘we generated very simplistic SPECT-like images mimicking disease in four stages of severity’: This is not clear how SPECT-like images are created.}
 A cohort of 23 datasets was simulated from real \gls*{mri} data.
   \Gls*{spect} projections were simulated  for a Siemens E-CAM gamma
   camera equipped with a \acrlong*{lehr} parallel-hole collimator.
@@ -442,6 +445,7 @@ Projections were filtered with a 2D-Butterworth filter ($0.64cm^{-1}$,
 
 \subsection{Real datasets} %
 \label{sec:data_real}
+\fixme{how many datasets?}
 \Gls*{spect} acquisition was undertaken $4h$
   after injection  of $185$\textit{MBq} of $^{123}$I-ioflupane
   (\Gls*{datscan}, GE Healthcare, Eindhoven, The Netherlands),
@@ -457,14 +461,14 @@ Reconstruction was performed as described for simulated studies.
 
 \subsection{Templates} %
 \label{sec:data_templates}
-
+\fixme{pg4: Section 2.1.4 Templates: What is template? Can you define more precisely? Are you using atlas and template interchangeably? or is the template a set of images including ROIs and landmarks?}
 Two templates were built using subsets of cases of the simulated and real
   databases (\autoref{sec:data_simulated} and \autoref{sec:data_real}), respectively.
 For the experiments using synthetic phantoms (\autoref{sec:data_synthetic}),
   we used the template generated for the simulated database.
-The simulated template was created averaging 14 ``healthy'' subjects drawn from
+The simulated template was created averaging 14 ``healthy'' subjects selected randomly from
   the numerical simulations.
-All the subjects were normalized to the \gls*{t1} template distributed with
+All the subjects were spatially normalized to the \gls*{t1} template distributed with
   \gls*{spm}2.
 This normalization step was validated by visual inspection.
 The normalized \glspl*{mri} were resampled to have a matrix size of
@@ -569,14 +573,17 @@ ev.run()
 This workflow can be configured to operate in batch mode over a
   set of cases, using the \emph{Iterables} feature from \gls*{nipype}.
 
+\fixme{pg5. ‘… to compare the standard methodologies with our tool.’: what is the standard methodologies? the ANTs is the standard in the field?}
+\fixme{pg4. Section 2.2.2: Terms are confusing: Are three terminologies of Feature= Shape Feature = Landmarks indicate identical ‘feature’?}
+
 \subsection{Initialization stage}
 \label{sec:meth_initialization}
 The initial step performs a preliminary affine approximation of the selected
   template to the subject's image as explained in \autoref{sec:intro}.
 To this end, a fast registration approach is implemented using \gls*{ants}.
-We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
+\fixme{We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
   mutual information as cost function; the detailed parameter description 
-  is given in \autoref{Tab:01}.
+  is given in \autoref{Tab:01}. \#11}
 The resulting affine matrix is then applied to project information defined on
   the template's space into the \gls*{datscan} image.
 
@@ -677,8 +684,8 @@ On one hand, landmarks on the brain surface are used as boundary condition to li
   transformation of the test image. 
 On the other hand, landmarks are extracted from the activation areas. 
 
-As all the affine mismatch between template and subject should be captured by the initialization
-  step, we define a number of \emph{static} landmarks (\lm{static}).
+\fixme{As all the affine mismatch between template and subject should be captured by the initialization
+  step, we define a number of \emph{static} landmarks (\lm{static}). (Re-write in understandable English)}
 These \lm{static} are intended to prevent the 
   transformation change the scale of the imaged whole brain.
 To this end, \lm{static} should be uniformly located on the brain surface and present
@@ -697,6 +704,7 @@ To obtain the \emph{mapping} landmarks (along the activation areas), the procedu
   outlined in Figure \ref{fig:featlmextract} is used.
 The detailed description of the procedure is found in \autoref{alg:lspots}.
 
+\fixme{pg4: this feature extraction results…’ → this shape feature extraction results…?}
 In summary, this feature extraction results in tree landmark sets: the static landmarks \lm{static} on the 
   brain surface, the landmarks related to the left \lm{*,l} and right \lm{*,l} activation area, 
   and the  landmark centered between the two activation centers \lm{center} that are then used for the 
@@ -704,11 +712,12 @@ In summary, this feature extraction results in tree landmark sets: the static la
 
 \paragraph{Registration methodology}
 \label{sec:registration}
+\fixme{pg5: ‘In order to correct for location…’ : What is wrong for location and orientation??? Why do we need a correction?}
 In order to correct for location and orientation of the segmented nuclei, we
   perform a registration step in spherical coordinates. We extract the boundary of
   each label extracted from the \gls*{spect} images. The cartesian pixel coordinates are
   transformed to a spherical coordinates system centered at the primary 
-  landmark, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
+  landmark \fixme{pg5. ‘the primary landmark’: what is the primary landmark???}, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
   of the objects \citep{davies_computer_2012}.
 This profile shows a flat surface for point-like shapes (typically
   present in patients with grade 2 and 3) and a characteristic distribution for
@@ -736,7 +745,6 @@ Once the landmarks have been extracted and mapped, a dense deformation field of 
   is de divergence of the displacement field; $\vect{f}(\vect{x})$ is the force
   field defined by the landmarks mapping, and $\mu$ and $\lambda$ are the Lam\'e
   coefficients, which describe the physical properties of the elastic material.
-
 Therefore, the $\vect{u}(\vect{x})$ found is the solution to our problem and
   can be used to project the quantification \glspl*{roi} to the subject's image.
 
