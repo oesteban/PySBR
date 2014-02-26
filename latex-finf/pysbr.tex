@@ -343,12 +343,12 @@ This initial affine registration linearly aligns the images
 The second step is a \emph{Refinement stage} that optimizes the local alignment of
   the uptake foci present in the image.
 Some software tools have been proposed for this purpose.
-For instance, \gls*{basgan} proposes a local registration scheme clipping the 
+For instance, \gls*{basgan} proposes a local registration scheme, clipping the 
   uptake foci and using cross-correlation between the subject's image and 
   the template as objective function.
 \citeauthor{ciarmiello_weighted_2013} recently proposed \gls*{brainnest}, which
-  generates a \emph{weighted} image enhancing the putaminal uptake in
-  subjects with advanced progression of disease.
+  generates a \emph{weighted} image with enhanced putaminal uptake in
+  subjects that present an advanced grade of disease.
 \cbstart
 Currently, our \emph{in-house} approach is implemented adapting the nonlinear registration
   tools included with \gls*{spm}.
@@ -356,32 +356,24 @@ We use the \emph{spatial normalization} module configured to impose a strong reg
   that needs to be manually fine-tuned.
 Therefore, visual inspection of the results is mandatory in these settings.
 \cbend
-The assessment of these solutions has been, mainly, phantom-based
+The assessment of aforementioned solutions has been, mainly, phantom-based
   and semi-automated \citep{skanjeti_assessing_2013}.
 To our knowledge, no cross-comparison study has been published so far.
 
-Therefore, we propose an evaluation framework implemented in Python for the
+\cbstart
+In this work, we propose an evaluation framework implemented in Python for the
   spatial normalization of \gls*{datscan} images required by absolute quantification
   protocols.
-The evaluation framework comprises the following parts: 
-(1) A workflow for generating very simplistic phantoms from
-   \gls*{mri} data, to be used in the evaluation framework;
-(2) a fast \emph{Initialization stage}, common for all the spatial
-    normalization packages under comparison;
-(3) a \emph{Refinement stage} where the tool under evaluation can be inserted; and
-(4) a benchmarking and reporting module to gather and present results.
-
-In order to demonstrate the utility of the evaluation framework we compare 
-  two methods, delivering the source code and data necessary to run the tests.
-The first methodology under comparison is one among currently standard approaches,
-  that use \gls*{ibr}.
-The second method is called \gls*{pysbr}, a new shape based registration tool and
-  work in progress introduced here.
-
 Quantitative results of the assessment are reported for the synthetic
   phantoms and simulated \gls*{spect} images described in \autoref{sec:data}.
 Finally, the aptness of the tools is also tested on real datasets,
   assessed by visual inspection (see \autoref{sec:results_real}).
+In order to demonstrate the utility of the evaluation framework, we compare 
+  two methods:
+(1) an implementation of our \emph{in-house} method, which uses \gls*{ibr};
+(2) \gls*{pysbr}, a new shape-based registration tool and
+  work in progress described in \autoref{sec:pysbr}.
+\cbend
 The evaluation framework, \gls*{pysbr}, one template,
   and a representative subset of the presented data are publicly 
   available in \url{https://github.com/oesteban/PySBR}.
@@ -498,18 +490,25 @@ Finally, the resampling, the normalization of \gls*{spect} counts, and the final
 \subsection{Nipype-based evaluation workflow}
 \label{sec:evaluation}
 \paragraph{Software design}\label{sec:workflow}
-We propose an evaluation workflow with the following structure:
+The evaluation framework comprises the following parts: 
 \begin{enumerate}
-\emitem{Initialization stage} (described in \autoref{sec:meth_initialization}).
-\emitem{Refinement stage}: at the evaluators digression the workflow can execute 
-  this step either by using \gls*{pysbr} or \gls*{ants}, as
-  introduced in \autoref{sec:meth_refinement}.
+\emitem{Initialization stage}: a fast registration process shared by the
+  spatial normalization packages under comparison. This module is described
+  in \autoref{sec:meth_initialization}.
+\emitem{Refinement stage}: where the tools under evaluation can be inserted.
+  The workflow relased can execute this step either by using \gls*{pysbr} 
+  or \gls*{ants} at the evaluators digression. This module is described
+  in \autoref{sec:meth_refinement}.
 \emitem{\Glspl{roi} mapping}: use the displacement field resulting from
   the previous step to project the template's anatomical \glspl*{roi} to
   subject's space.
-\emitem{Overlap computation}: Dice scores are obtained for the four
-  \glspl*{roi} (left and right caudates and putamens) and a
-  volume-weighted average of them.
+\emitem{Benchmarking and reporting}: overlap scores (Dice indices) are
+  computed for the four \glspl*{roi} (left and right caudates and putamens)
+  and a volume-weighted average of them. Also, plots presented in
+  \autoref{fig:results} are automatically generated.
+\emitem{Synthetic phantom generator}: an additional workflow is released
+  implementing the procedure described in \autoref{sec:data_synthetic} to
+  generate the synthetic phantoms database.
 \end{enumerate}
 We selected \gls*{nipype} to build up the system for its unique properties for
   the construction of processing pipelines for neuroimage (i.e. flexibility,
@@ -584,7 +583,8 @@ As introduced before, this stage is defined with a certain interface where the
   tool under study can be plugged-in.
 To demonstrate the fast prototyping and \emph{functional-test driven} development
   we promote, we provide two built-in refinement tools.
-On one side, our aim was to include any of aforementioned normalization tools.
+On one side, our aim was to include any of the normalization tools introduced in
+  \autoref{sec:intro}.
 Unfortunately, at the time of writing, the \gls*{basgan} software was not available
   on the URLs provided in \cite{calvini_basal_2007,skanjeti_assessing_2013}.
 Although we were able to download \gls*{brainnest} binaries, as they are compiled 
@@ -630,7 +630,7 @@ The full description of the settings for \gls*{ants} are provided in \autoref{Ta
 \end{table*}
 
 
-\section{PySBR: Shape-based registration prototype}
+\section{PySBR: Shape-based registration prototype}\label{sec:pysbr}
 \subsection{Methods}
 A flowchart to overview \gls*{pysbr} is presented in \autoref{fig:02},
   and described hereafter.
