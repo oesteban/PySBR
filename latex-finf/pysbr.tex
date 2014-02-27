@@ -6,15 +6,15 @@
 % Total length: <12.001 words
 % Final PDF length: <13 pages
 
-
-\usepackage{url}
 \usepackage[acronym,nowarn,nomain]{glossaries}
-\usepackage[hidelinks]{hyperref}
-
-%\usepackage[boxed,lined,commentsnumbered]{algorithm2e}
-% this really should be part of the frontiers style package 
+\usepackage{aliascnt}
+\usepackage{relsize}
+\usepackage[procnames]{listings}
 \usepackage[font=footnotesize,labelfont=bf]{caption}
 \usepackage[font=footnotesize]{subcaption}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{changebar}
+\usepackage{url}
 
 % Set this to true if you submit the article
 %  it will put all the figures at the end 
@@ -39,63 +39,7 @@
   \newcommand{\insertgraphic}[2]{\includegraphics[#1]{#2}}
 }
 
-\usepackage[procnames]{listings}
-\definecolor{pink}{RGB}{255,0,90}
-\definecolor{comments}{RGB}{50,120,110}
-\definecolor{string}{RGB}{160,0,0}
-\definecolor{keywords}{RGB}{0,150,0}
-
-\usepackage{relsize}
-\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
-
-\lstset{
-  language=Python,
-  showstringspaces=false,
-  formfeed=\newpage,
-  tabsize=4,
-  breaklines=true,
-  basicstyle=\ttfamily\smaller\relax,
-  keywordstyle=\color{keywords}\bfseries,
-  commentstyle=\color{comments}\itshape,
-  stringstyle=\color{string},
-  showstringspaces=false,
-  %identifierstyle=\color{green},
-  procnamekeys={def,class},
-  morekeywords={models, lambda, forms, as, from},
-  numbers=left,
-  numberstyle=\smaller\color{black!60},
-  stepnumber=1,
-  numbersep=5pt,
-  frame=single,
-  xleftmargin= 40pt,
-  xrightmargin= 20pt,
-  framexleftmargin=20pt,
-  frameround=tttt,
-  fillcolor=\color{gray!10},
-  backgroundcolor=\color{gray!10}
-}
-
-%\usepackage{algorithm}
-
-\usepackage{mdframed}
-
-\mdfdefinestyle{algstyle}{%
-  backgroundcolor=gray!10,
-  topline=false, rightline=false, leftline=false, bottomline=true,
-  frametitlerule=true,
-  skipabove=15pt, skipbelow=10pt,
-  innertopmargin=\topskip,innerbottommargin=5pt,
-  frametitlebackgroundcolor=white,
-  frametitleaboveskip=10pt, frametitlebelowskip=0pt,
-  frametitlerule=true, frametitlerulewidth=0.5pt,
-  frametitlealignment=\raggedright,
-  font=\footnotesize
-  %subtitlebelowline=true
-}
-
-
-\mdtheorem[style=algstyle]{myalgorithm}{Algorithm}
-\def\myalgorithmautorefname{Algorithm}
+\usepackage[hidelinks]{hyperref}
 
 \copyrightyear{2013}
 \pubyear{}
@@ -126,20 +70,18 @@
                  ETSI Telecomunicaci\'on, Lab. C203, E-28040 Madrid, Spain}
 \def\corrEmail{oesteban@die.upm.es}
 
+
+% Redefine maths and items -------------------------------------------------------------------
+\newcommand{\emitem}[1]{\item \emph{#1}}
 \newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\vx}{\vect{x}}
 \newcommand{\vy}{\vect{y}}
 \newcommand{\lm}[1]{\ensuremath{\mathbf{l}_{#1}}}
-
-\newcommand{\emitem}[1]{\item \emph{#1}}
-
 \newcommand{\ab}{\ensuremath{\partial \mathbf{A}}}
 \newcommand{\gc}{\ensuremath{\mathbf{g}_{\ab}}}
-
 \newcommand{\ma}{\ensuremath{\mu(\lm{1}, \ab)}}
 \newcommand{\va}{\ensuremath{\sigma(\lm{1}, \ab)}}
 \newcommand{\degree}{\ensuremath{^{\circ}}}
-
 \newcommand{\pc}{\ensuremath{\mathbf{c}}}
 \newcommand{\pb}{\ensuremath{\mathbf{b}}}
 \newcommand{\pa}{\ensuremath{\mathbf{a}}}
@@ -147,38 +89,87 @@
 \newcommand{\ph}{\ensuremath{\mathbf{h}}}
 \newcommand{\px}{\ensuremath{\mathbf{x}}}
 \newcommand{\pr}{\ensuremath{\mathbf{r}}}
-
 \newcommand{\hp}[1]{\ensuremath{\mathbf{h}_{#1}}}
 
-\usepackage{changebar}
 
+% Change tt font size
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+% Listings style -----------------------------------------------------------------------------
+\definecolor{pink}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{50,120,110}
+\definecolor{string}{RGB}{160,0,0}
+\definecolor{keywords}{RGB}{0,150,0}
+\lstset{
+  language=Python,
+  showstringspaces=false,
+  formfeed=\newpage,
+  tabsize=4,
+  breaklines=true,
+  basicstyle=\ttfamily\smaller\relax,
+  keywordstyle=\color{keywords}\bfseries,
+  commentstyle=\color{comments}\itshape,
+  stringstyle=\color{string},
+  showstringspaces=false,
+  %identifierstyle=\color{green},
+  procnamekeys={def,class},
+  morekeywords={models, lambda, forms, as, from},
+  numbers=left,
+  numberstyle=\smaller\color{black!60},
+  stepnumber=1,
+  numbersep=5pt,
+  frame=single,
+  xleftmargin= 40pt,
+  xrightmargin= 20pt,
+  framexleftmargin=20pt,
+  frameround=tttt,
+  fillcolor=\color{gray!10},
+  backgroundcolor=\color{gray!10}
+}
+
+% Algorithms style -----------------------------------------------------------------------------
+\mdfdefinestyle{algstyle}{%
+  backgroundcolor=gray!10,
+  topline=false, rightline=false, leftline=false, bottomline=true,
+  frametitlerule=true,
+  skipabove=15pt, skipbelow=10pt,
+  innertopmargin=\topskip,innerbottommargin=5pt,
+  frametitlebackgroundcolor=white,
+  frametitleaboveskip=10pt, frametitlebelowskip=0pt,
+  frametitlerule=true, frametitlerulewidth=0.5pt,
+  frametitlealignment=\raggedright,
+  font=\footnotesize
+  %subtitlebelowline=true
+}
+
+
+\newcounter{myalgorithm}
+\newenvironment{myalgorithm}[1][]{%
+  \begin{mdframed}[style=algstyle,frametitle={\refstepcounter{myalgorithm}Algorithm \themyalgorithm: #1}]%
+}{%
+  \end{mdframed}
+}
+\providecommand*{\myalgorithmautorefname}{Algorithm}
+
+% Define acronyms ------------------------------------------------------------------------------
 \newacronym[first={\emph{SPM} (Statistical Parametric Mapping, \cite{ashburner_unified_2005})}]%
 {spm}{\emph{SPM}}{Statistical Parametric Mapping}
-
 \newacronym[first={Symmetric Normalization (\emph{SyN}, \cite{avants_symmetric_2008})}]%
 {syn}{\emph{SyN}}{Symmetric Normalization transformation model}
-
 \newacronym[first={\emph{ANTS} (Advanced Normalization tools, \cite{avants_ants:_2013})}]%
 {ants}{\emph{ANTS}}{Advanced Normalization tools}
-
 \newacronym[first={\emph{ITK} (the Insight Registration \& Segmentation Toolkit, \url{http://www.itk.org})}]%
 {itk}{\emph{ITK}}{Insight Registration \& Segmentation Toolkit}
-
 \newacronym[first={\emph{PySBR} (shape-based registration in Python)}]%
 {pysbr}{\emph{PySBR}}{Shape-based registration in Python}
-
 \newacronym[first={\emph{nipype} (Neuroimaging in Python, Pipelines and Interfaces, \cite{gorgolewski_nipype:_2011})}]%
 {nipype}{\emph{nipype}}{Neuroimaging in Python, Pipelines and Interfaces}
-
 \newacronym[first={\emph{NeSt} (\url{www.brainnest.org}, \cite{ciarmiello_weighted_2013})}]%
 {brainnest}{\emph{NeSt}}{BrainNest neuroimaging platform}
-
 \newacronym[first={\emph{BasGan} \citep{calvini_basal_2007}}]%
 {basgan}{\emph{BasGan}}{BrainNest neuroimaging platform}
-
 \newacronym[first={intensity-based registration (which we will refer to as IBR in the following)}]%
 {ibr}{IBR}{intensity-based registration}
-
 \newacronym{mri}{MRI}{magnetic resonance imaging}
 \newacronym{montecarlo}{MC}{Monte-Carlo}
 \newacronym[longplural={regions of interest}]{roi}{ROI}{region of interest}
@@ -199,7 +190,6 @@
 \newacronym{wm}{WM}{white matter}
 \newacronym{gm}{GM}{grey matter}
 \newacronym{json}{JSON}{JavaScript Object Notation}
-
 \makeglossaries
 
 \begin{document}
@@ -367,6 +357,7 @@ To our knowledge, no cross-comparison study has been published so far.
 
 
 \cbstart
+\subsection{Our contribution}\label{sec:contribution}
 In this work, we propose an evaluation framework implemented in Python for the
   spatial normalization of \gls*{datscan} images required by absolute quantification
   protocols.
@@ -388,22 +379,34 @@ The evaluation framework, \gls*{pysbr}, one template,
 
 Due to the absence of ground truth data to assess the outcomes, validation and evaluation 
   of signal processing methods are notoriously difficult tasks.
-\fixme{pg5. ‘In order to produce a trustful benchmarking framework, …’: are those gold standard for general/universal use? or are those designed to use for your evaluation? what do you mean ‘trustful’?}
-In order to produce a trustful benchmarking framework, we generate two 
-  \gls*{datscan} databases from real \gls*{mri} scans (\autoref{sec:data_synthetic}
-  and \autoref{sec:data_simulated}) that can be used as gold standard, 
-  because they retain the relevant information about the underlying anatomy.
- 
+\cbstart
+In order to produce a reliable benchmarking framework, we use two 
+  \gls*{datscan} databases generated from real \gls*{mri} scans.
+These data are used as ``ground truth'' to assess the functional operation
+  of the evaluated tools.
+The first database comprises synthetic phantom images (\autoref{sec:data_synthetic})
+  that mimick real \glspl*{datscan}.
+The second group are the results of a comprehensive simulation of the acquisition 
+  process as described in \autoref{sec:data_simulated}, obtaining realistic images.
+\fixme{should we mention here the real datasets as well?}
+\cbend
+
 \subsection{Synthetic phantoms database} %
 \label{sec:data_synthetic}
-We randomly selected 60 source \gls*{t1} images from a publicly available
+We selected randomly 60 source \gls*{t1} images from a publicly available
   \gls*{mri} database \citep{hill_ixi_2006} of healthy volunteers.
-The striatal cavities and a brain mask were obtained from each dataset
+The striatal cavities and a brain mask were segmented from each dataset
   using \emph{Freesurfer} \citep{fischl_freesurfer_2012}.
 Then, based on the extracted \glspl*{roi} corresponding to the caudate and putamen
-  nuclei,  we generated very simplistic \gls*{spect}-like images mimicking disease in
+  nuclei, we generated very simplistic \gls*{spect}-like images mimicking disease in
   four stages of severity: healthy, and the three remaining stages.
-  Therefore, a total of four datasets (healthy as ``grade 0'',
+\cbstart
+The procedure involves some mathematical morphology operations to reproduce the
+  shape that basal ganglia present in \glspl*{datscan}, emmiting signal with
+  normaly distributed noise.
+For further details, please see \autoref{supl:synth_phantom_wf}
+\cbend
+Therefore, a total of four datasets (healthy as ``grade 0'',
   and diseased as ``grades 1, 2, and 3'') were generated from each \gls*{mri}.
 Finally, all the synthetic phantoms were downsampled and cropped to the characteristic
   grid and \acrlong*{fov} of typical \glspl*{datscan} ($100\times100\times100$ matrix,
@@ -411,12 +414,13 @@ Finally, all the synthetic phantoms were downsampled and cropped to the characte
 
 \subsection{Simulated database} %
 \label{sec:data_simulated}
-\fixme{revise use of ``cohort''}
-\fixme{pg3: ‘we generated very simplistic SPECT-like images mimicking disease in four stages of severity’: This is not clear how SPECT-like images are created.}
-A cohort of 23 datasets was simulated from real \gls*{mri} data.
-  \Gls*{spect} projections were simulated  for a Siemens E-CAM gamma
+\cbstart
+A total of 23 datasets were generated using real \gls*{mri} data as
+  anatomical model.
+\cbend
+\Gls*{spect} projections were simulated for a Siemens E-CAM gamma
   camera equipped with a \acrlong*{lehr} parallel-hole collimator.
-The acquisition parameters were selected accordingly to routine conditions.
+The acquisition parameters were selected accordingly to routinary conditions.
 Thus, a total of 128 projections were obtained over 360{\degree} using a
   bin size of $3.9\times3.9mm^{2}$, a radius of rotation of $14.5cm$, and
   a $15\%$ energy window.
@@ -465,7 +469,14 @@ Reconstruction was performed as described for simulated studies.
 
 \subsection{Templates} %
 \label{sec:data_templates}
-\fixme{pg4: Section 2.1.4 Templates: What is template? Can you define more precisely? Are you using atlas and template interchangeably? or is the template a set of images including ROIs and landmarks?}
+\cbstart
+In standard quantification of \gls*{datscan} images, a \emph{template} is understood as
+  a reference image resulting from averaging a certain number of \gls*{spect}
+  images selected to build the template.
+For the evaluation framework proposed here, we include some additional information
+  under the same concept, such as the ``Search-\gls*{roi}'' --a mask clipping inside
+  the striatal nuclei-- and a set of landmarks that will be defined in \autoref{sec:pysbr}.
+\cbend
 Two templates were built using subsets of cases of the simulated and real
   databases (\autoref{sec:data_simulated} and \autoref{sec:data_real}), respectively.
 For the experiments using synthetic phantoms (\autoref{sec:data_synthetic}),
@@ -544,7 +555,7 @@ The workflow graph (automatically generated by \gls*{nipype}) is depicted in
 Real \glspl*{datscan} can only be validated visually due to the 
   absence of structural \gls*{mri} data to precisely extract
   the evaluation \glspl*{roi}.
-The cohort described in \autoref{sec:data_real}
+The database described in \autoref{sec:data_real}
   is a subset from a pool of cases that were previously aligned with an
   affine registration step, but rejected for quantification due to the
   visual mismatch with the template.
@@ -577,17 +588,12 @@ ev.run()
 This workflow can be configured to operate in batch mode over a
   set of cases, using the \emph{Iterables} feature from \gls*{nipype}.
 
-\fixme{pg5. ‘… to compare the standard methodologies with our tool.’: what is the standard methodologies? the ANTs is the standard in the field?}
-\fixme{pg4. Section 2.2.2: Terms are confusing: Are three terminologies of Feature= Shape Feature = Landmarks indicate identical ‘feature’?}
-
 \subsection{Initialization stage}
 \label{sec:meth_initialization}
 The initial step performs a preliminary affine approximation of the selected
   template to the subject's image as explained in \autoref{sec:intro}.
-To this end, a fast registration approach is implemented using \gls*{ants}.
-\fixme{We propose a multi-resolution scheme of two levels (identified as 0 and 1) and 
-  mutual information as cost function; the detailed parameter description 
-  is given in \autoref{Tab:01}. \#11}
+Therefore, we configured \gls*{ants} to operate with a multi-resolution scheme
+  of two levels, as described in \autoref{Tab:01} (levels 0 and 1)..
 The resulting affine matrix is then applied to project information defined on
   the template's space into the \gls*{datscan} image.
 
@@ -683,16 +689,21 @@ Finally, we apply a kernel transform to propagate the local displacements of
 \paragraph{Shape features extraction}
 \label{sec:shape_features}
 
-The shape features used for registration are two-fold:
+\cbstart
+The shape features used for registration are currently restricted to two landmark sets:
+\cbend
 On one hand, landmarks on the brain surface are used as boundary condition to limit the nonlinear 
   transformation of the test image. 
 On the other hand, landmarks are extracted from the activation areas. 
-
-\fixme{As all the affine mismatch between template and subject should be captured by the initialization
-  step, we define a number of \emph{static} landmarks (\lm{static}). (Re-write in understandable English)}
-These \lm{static} are intended to prevent the 
-  transformation change the scale of the imaged whole brain.
-To this end, \lm{static} should be uniformly located on the brain surface and present
+\cbstart
+The \emph{Initialization stage} is intended to solve the registration problem of matching brain location
+  and size between subject's image and template.
+Then, we define a number of landmarks (\lm{static}) on the brain's pial surface, which are assumed
+  to be correctly aligned in both images after initialization.
+These \lm{static} are set to disable global changes on scale and location of the brain in the following
+  nonlinear registration performed in the \emph{Refinement stage}.
+\cbend
+To this end, \lm{static} are uniformly located on the brain surface and present
   zero displacement. The \lm{static} are located as described in \autoref{alg:lstatic}.
 
 \begin{figure}
@@ -702,26 +713,33 @@ To this end, \lm{static} should be uniformly located on the brain surface and pr
 }
 \end{figure}
 
-Because at the feature extraction step the test image is already linearly registered to the template, 
+Because at the shape feature extraction step the test image is already linearly registered to the template, 
   the activation spot search area can be restricted with the search-\gls*{roi} mask obtained from the template.
 To obtain the \emph{mapping} landmarks (along the activation areas), the procedure
   outlined in Figure \ref{fig:featlmextract} is used.
-The detailed description of the procedure is found in \autoref{alg:lspots}.
+\cbstart
+As a result, the centers $c$ of the Caudates are estimated as the \emph{primary landmarks} of the activation area, the point 
+    the middle between these two primary landmarks as the \emph{center landmark}, and a set of secondary landmarks. 
+For a detailed description of the procedure see \autoref{alg:lspots}.
+\cbend
 
-\fixme{pg4: this feature extraction results…’ → this shape feature extraction results…?}
-In summary, this feature extraction results in tree landmark sets: the static landmarks \lm{static} on the 
+\cbstart
+In summary, by this shape feature extraction step three landmark sets are obtained: the static landmarks \lm{static} on the 
+\cbend
   brain surface, the landmarks related to the left \lm{*,l} and right \lm{*,l} activation area, 
   and the  landmark centered between the two activation centers \lm{center} that are then used for the 
   feature based nonlinear registration described below.
 
 \paragraph{Registration methodology}
 \label{sec:registration}
-\fixme{pg5: ‘In order to correct for location…’ : What is wrong for location and orientation??? Why do we need a correction?}
-In order to correct for location and orientation of the segmented nuclei, we
-  perform a registration step in spherical coordinates. We extract the boundary of
-  each label extracted from the \gls*{spect} images. The cartesian pixel coordinates are
+
+\cbstart
+In order to correct for the anatomical variability between patients with regard to location and orientation of the segmented nuclei, we
+  perform a registration step in spherical coordinates.
+\cbend
+We extract the boundary of each label extracted from the \gls*{spect} images. The cartesian pixel coordinates are
   transformed to a spherical coordinates system centered at the primary 
-  landmark \fixme{pg5. ‘the primary landmark’: what is the primary landmark???}, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
+  landmark, obtaining the ``$(r,\theta,\phi)$-plot'' or 3D ``boundary-profile''
   of the objects \citep{davies_computer_2012}.
 This profile shows a flat surface for point-like shapes (typically
   present in patients with grade 2 and 3) and a characteristic distribution for
@@ -800,9 +818,9 @@ Consequently, the different processing units described in \autoref{fig:01}
 They are fully functional to be used as stand-alone modules, or 
   they can be \emph{Nodes} of higher level \emph{Workflows}.
   
-In \autoref{sec:implementation_details} we describe the main \emph{Interfaces}
+In \autoref{supl:implementation_details} we describe the main \emph{Interfaces}
   available to perform the unitary processing steps of \gls*{pysbr}.
-In \autoref{sec:user_interface} we introduce the main \emph{Workflows} that are
+In \autoref{supl:user_interface} we introduce the main \emph{Workflows} that are
   distributed under \gls*{pysbr}, especially the main application interface
   for normalization of \gls*{datscan} studies in standardized
   quantification of \gls*{spect} images.
@@ -915,7 +933,7 @@ Presented plots are standard: boxes extend from the lower to upper quartile valu
 
 \subsection{Real datasets evaluation}
 \label{sec:results_real}
-Visual assessment by two experts is performed on the real datasets cohort,
+Visual assessment by two experts is performed on the real datasets,
   validating the performance of the tool in all the cases.
 In \autoref{fig:real_dataset_result} we reproduce the results obtained
   for the real dataset with paired anatomical reference (a \gls*{t1}),
@@ -1170,7 +1188,7 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 \section*{Suplemental Material}
 
 \subsection*{PySBR Implementation details}
-\label{sec:implementation_details}
+\label{supl:implementation_details}
 
 All the interfaces present a uniform structure (input parameters, output parameters,
   and functional body), and a uniform use (creation, input parameters setting, and
@@ -1181,8 +1199,12 @@ We summarize here the most important interfaces,
 The presented code examples make use of the three modules of 
   \gls*{pysbr}, that will be imported as given in \autoref{list:interfaces}.
 
+\subsection*{Workflow for generation of synthetic phantoms}
+\label{supl:synth_phantom_wf}
+\fixme{here the workflow with some exemplary images}
+
 \subsection*{Templates}
-\label{sec:templates}
+\label{supl:templates}
 Templates are a fundamental part of the software, as they hold the reference shapes to
   perform normalization.
 A template is defined by the reference \gls*{datscan} image, that
@@ -1201,7 +1223,7 @@ When using \gls*{pysbr} for evaluation or quantification purposes, it is possibl
 
 
 \subsection*{Shape analysis interfaces}
-\label{sec:shapeanalysis}
+\label{supl:shapeanalysis}
 
 \Gls*{pysbr} provides several interfaces to perform shape-based analysis of \gls*{datscan}
   images.
@@ -1233,7 +1255,7 @@ This interface extends a base class (\texttt{BaseTransform}) that is provided to
 
 \glsreset{ibr}
 \subsection*{PySBR User interface}
-\label{sec:user_interface}
+\label{supl:user_interface}
 
 Here, We introduce two final user
   applications released with \gls*{pysbr}: a registration workflow for
@@ -1251,7 +1273,7 @@ The core interface for the user is offered by this workflow,
   dataset to a selectable template.
 
 The input value \texttt{template} must hold a valid name of an installed 
-  template (see \autoref{sec:templates}). 
+  template (see \autoref{supl:templates}). 
 The input \texttt{in\_file} must be the path to an existing \gls*{spect} image.
 
 \begin{lstlisting}[caption={\label{list:interfaces}\textbf{Execution samples.}}]
