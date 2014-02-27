@@ -590,10 +590,10 @@ This workflow can be configured to operate in batch mode over a
 
 \subsection{Initialization stage}
 \label{sec:meth_initialization}
-The initial step performs a preliminary affine approximation of the selected
-  template to the subject's image as explained in \autoref{sec:intro}.
+The initial step performs a preliminary affine approximation of the subject's
+  image to the selected template as explained in \autoref{sec:intro}.
 Therefore, we configured \gls*{ants} to operate with a multi-resolution scheme
-  of two levels, as described in \autoref{Tab:01} (levels 0 and 1)..
+  of two levels, as described in \autoref{Tab:01} (levels 0 and 1).
 The resulting affine matrix is then applied to project information defined on
   the template's space into the \gls*{datscan} image.
 
@@ -605,7 +605,7 @@ To demonstrate the fast prototyping and \emph{functional-test driven} developmen
 On one side, our aim was to include any of the normalization tools introduced in
   \autoref{sec:intro}.
 Unfortunately, at the time of writing, the \gls*{basgan} software was not available
-  on the URLs provided in \cite{calvini_basal_2007,skanjeti_assessing_2013}.
+  on the URLs provided in \citep{calvini_basal_2007,skanjeti_assessing_2013}.
 Although we were able to download \gls*{brainnest} binaries, as they are compiled 
   only for Windows platforms we could not integrate it in our pipeline.
 Additionally, both tools are not conceived to be easily integrated into third-party
@@ -702,7 +702,7 @@ These \lm{static} are set to disable global changes on scale and location of the
   nonlinear registration performed in the \emph{Refinement stage}.
 \cbend
 To this end, \lm{static} are uniformly located on the brain surface and present
-  zero displacement. The \lm{static} are located as described in \autoref{alg:lstatic}.
+  zero displacement. The \lm{static} are located as described in \autoref{alg:lstatic} (\nameref{appendix}).
 
 \begin{figure}
 \centering
@@ -715,7 +715,7 @@ Because at the feature extraction step the test image is already linearly regist
   the activation spot search area can be restricted with the search-\gls*{roi} mask obtained from the template.
 To obtain the \emph{mapping} landmarks (along the activation areas), the procedure
   outlined in Figure \ref{fig:featlmextract} is used.
-The detailed description of the procedure is found in \autoref{alg:lspots}.
+The detailed description of the procedure is found in \autoref{alg:lspots} (\nameref{appendix}).
 
 \fixme{pg4: this feature extraction results…’ → this shape feature extraction results…?}
 In summary, this feature extraction results in three landmark sets: the static landmarks \lm{static} on the 
@@ -808,13 +808,8 @@ Consequently, the different processing units described in \autoref{fig:01}
   are implemented as \emph{Interfaces}. 
 They are fully functional to be used as stand-alone modules, or 
   they can be \emph{Nodes} of higher level \emph{Workflows}.
-  
-In \autoref{supl:implementation_details} we describe the main \emph{Interfaces}
-  available to perform the unitary processing steps of \gls*{pysbr}.
-In \autoref{supl:user_interface} we introduce the main \emph{Workflows} that are
-  distributed under \gls*{pysbr}, especially the main application interface
-  for normalization of \gls*{datscan} studies in standardized
-  quantification of \gls*{spect} images.
+For details regarding the implementation and the use of the \emph{Interfaces}
+  and the \emph{Workflows} released with this work, we provide the \nameref{supl}.
 
 \section{Results and discussion}
 \label{sec:results}
@@ -824,11 +819,6 @@ In \autoref{supl:user_interface} we introduce the main \emph{Workflows} that are
 We use the evaluation workflow on both groups of datasets
   for which we have a gold-standard (synthetic phantoms and simulated \gls*{spect}).
 Numerical results from this evaluation are presented in \autoref{fig:results}.
-
-%For the synthetic phantoms, 
-%In the case of simulated \gls*{spect} datasets, 
-%Fortunately, the caching and parallelizing features of \gls*{nipype} ease
-%  this burden significantly.
 
 \subsubsection{Evaluation on synthetic phantoms}
 \label{sec:results_phantoms}
@@ -924,13 +914,15 @@ Presented plots are standard: boxes extend from the lower to upper quartile valu
 
 \subsection{Real datasets evaluation}
 \label{sec:results_real}
-Visual assessment by two experts is performed on the real datasets,
-  validating the performance of the tool in all the cases.
-In \autoref{fig:real_dataset_result} we reproduce the results obtained
-  for the real dataset with paired anatomical reference (a \gls*{t1}),
-  and both tools under analysis.
-The benefits of shape-based registration were more clear on real \gls*{datscan}
-  images, for two reasons.
+\cbstart
+Visual inspection by two experts was performed on the real datasets,
+  validating the performance of the evaluation.
+In \autoref{fig:real_dataset_result} we reproduce the resulting \glspl*{roi} achieved
+  with \gls*{ibr} and \gls*{pysbr} for the real dataset with \gls*{t1} image
+  available.
+\Gls*{pysbr} results on real \gls*{datscan} images are promising for the raters,
+  for two reasons.
+\cbend
 First, the landmarks for the template computed from real datasets were 
   better located.
 Second, the performance of the \gls*{ibr} approach was clearly worse on
@@ -948,24 +940,32 @@ Second, the performance of the \gls*{ibr} approach was clearly worse on
 }
 \end{figure}
 
-\glsreset{nipype}
-\glsreset{pysbr}
+%\glsreset{nipype}
+%\glsreset{pysbr}
 
 \section{Conclusion}
 \label{sec:conclusion}
-Within the framework of absolute quantification of \gls*{spect}
-  imaging studies for the evaluation and monitoring of movement
-  disorders, we propose a workflow implemented with \gls*{nipype}
-  to evaluate current spatial normalization techniques that are
-  crucial for the described applications.
-The evaluation workflow demonstrates the aptness of Python 
-  and \gls*{nipype} for the rapid development of new methodologies
-  and algorithms in image processing, while meeting
-  all the requirements to enable reproducible research.
-
-Spatial normalization of \gls*{spect} imaging studies is
-  usually performed by means of intensity-based registration
-  techniques in two steps.
+\cbstart
+We present an evaluation workflow implemented in Python
+  with \gls*{nipype} to demonstrate the usefulness of
+  \emph{functional test driven} methodologies in the design
+  and implementation of new image processing algorithms.
+The absolute quantification of \gls*{spect} imaging studies
+  for the evaluation and monitoring of movement disorders is
+  a clinical neuroimaging application demanding a strong effort
+  in standardization of results and full automation.
+Some solutions have been proposed, such as \gls*{basgan} or
+  \gls*{brainnest}, but are conceived for standalone and
+  semi-automated use.
+The main drawback to automate the protocols is the accuracy of
+  spatial normalization to a reference template.
+Along with the evaluation workflow, we provide two sets of
+  synthetic phantoms and simulated images that can be used
+  as ground-truth.
+Spatial normalization of \gls*{spect} imaging studies can be
+  performed semi-automatedly by means of \gls*{ibr} techniques in 
+  two steps.
+\cbend
 First step involves the affine mapping of the subject and the
   reference template.
 The second, is a refinement using a nonlinear transformation.
@@ -973,7 +973,7 @@ The evaluation framework enables to show
   how intensity-based normalization often fails
   for advanced cases of Parkinson's Disease.
 
-We present \gls*{pysbr}, an alternative tool for the
+We compare this approach with \gls*{pysbr}, an alternative tool for the
   spatial normalization using shape-features.
 \Gls*{pysbr} is also implemented in \emph{Python} using
   \gls*{nipype}, and a number of publicly available tools
@@ -996,12 +996,15 @@ The code is publicly released along with this manuscript and
   a number of datasets to help replicate our experiments and we
   invite the community to collaborate improving and testing
   the tool.
-Additionally, \gls*{pysbr} will be used in clinical studies 
-  at the Biophysics and Bioengineering Unit (Physiological 
+\cbstart
+Additionally, this evaluation software will be used to lead the
+  development of \gls*{pysbr} on clinical studies at the Biophysics 
+  and Bioengineering Unit (Physiological 
   Sciences Department I, School of Medicine, University of 
   Barcelona, Barcelona, Spain), what ensures the
   continuity of support for the tool and a comprehensive
   testing for quality assessment.
+\cbend
 
 \section*{Information Sharing Statement}
 \label{sec:iss}
@@ -1073,10 +1076,8 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 
 \onecolumn
 \appendix
-\section*{Appendix}
+\section*{Appendix}\label{appendix}
 \subsection*{Algorithms used for extraction of shape features}
-\par
-
 \begin{myalgorithm}[Extraction of static landmarks across the surface of the brain\label{alg:lstatic}]
 \begin{enumerate}
 \emitem{Boundary}: the boundary of the brain mask corresponding to the template is
@@ -1104,7 +1105,7 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
   \emitem{Activation area segmentation}: An intensity based region growing is used to extract the two activation 
      areas simultaneously. 
   The breaking condition for this region growing are set based on the minimum intensity of the image along the line 
-    connecting the two hotspots  \hp{1,l} and \hp{1,r} and the mean intensity of the masked input area.
+    connecting the two hotspots \hp{1,l} and \hp{1,r} and the mean intensity of the masked input area.
   As the result of this procedure two labeled regions $A_{\text{spot},*}$ are obtained. 
   Here, if the volume $V_{\text{spot},*}$ of an extracted region exceeds a user set parameter $V_{\text{max}}$, 
     the segmentation is considered to have failed and the registration method can not be applied.
@@ -1177,7 +1178,7 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 \appendix
 \setcounter{page}{1}
 \renewcommand*{\thepage}{Suplemental Material - \arabic{page}}
-\section*{Suplemental Material}
+\section*{Suplemental Material}\label{supl}
 
 \subsection*{PySBR Implementation details}
 \label{supl:implementation_details}
