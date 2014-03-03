@@ -13,7 +13,6 @@
 \usepackage[font=footnotesize,labelfont=bf]{caption}
 \usepackage[font=footnotesize]{subcaption}
 \usepackage[framemethod=TikZ]{mdframed}
-\usepackage{changebar}
 \usepackage{url}
 
 % Set this to true if you submit the article
@@ -31,8 +30,11 @@
   %\newcommand{\insertgraphic}[2]{}
   \newcommand{\insertgraphic}[2]{\includegraphics[#1]{#2}}
   \newcommand{\fixme}[1]{}
+  \newcommand{\cbstart}{\relax}
+  \newcommand{\cbend}{\relax}
 }
 {
+  \usepackage{changebar}
   % Until we submit we can have fixmes, Setting the version to submit will 
   % let latex choke on this one forcing us to really fix it ;) 
   \newcommand{\fixme}[1]{{\color{red}{\bf FIXME: }\emph{#1}}}
@@ -1200,7 +1202,7 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 \appendix
 \setcounter{page}{1}
 \renewcommand*{\thepage}{Suplemental Material - \arabic{page}}
-\section*{Suplemental Material}\label{supl}
+\section*{Suplemental Materials}\label{supl}
 
 \subsection*{PySBR Implementation details}
 \label{supl:implementation_details}
@@ -1229,7 +1231,7 @@ Once these two files are correctly placed in a folder
   (e.g. \texttt{myTemplate/}) under the templates path (that can be moved from the
   default setup at the user's convenience), the appropriate \gls*{nipype}-style
   interface can be invoked to run the template shape feature extraction (see
-  \autoref{list:interfaces}, lines 2-3).
+  \autoref{list:interfaces}, lines 13-14).
 On the first execution of the interface, the shape features extracted from
   the template are cached for faster retrieval in subsequent calls to the interface. 
 When using \gls*{pysbr} for evaluation or quantification purposes, it is possible
@@ -1244,13 +1246,13 @@ When using \gls*{pysbr} for evaluation or quantification purposes, it is possibl
   images.
 The first interface is \texttt{FindPrincipalSpots} that segments the \acrlong*{dat} activity
   associated to each nuclei (comprising caudate and putamen of each hemisphere),
-  as shown in \autoref{list:interfaces}, lines 6-9.
+  as shown in \autoref{list:interfaces}, lines 17-20.
 As inputs, the interface requires the subject's \gls*{datscan} image and a ``search-\gls*{roi}'' or
   bounding box.
 The extraction methodologies involved in this interface are described in \autoref{sec:shape_features}.
 
 A second interface performing shape-based registration is named \texttt{SBR}
-  (\autoref{list:interfaces}, lines 12-15).
+  (\autoref{list:interfaces}, lines 23-26).
 This interface takes the landmarks extracted previously and, finds
   the shape-based mapping described in \autoref{par:registration}.
 Input and output files make use of the \gls*{json} format
@@ -1258,7 +1260,7 @@ Input and output files make use of the \gls*{json} format
 
 \subsection*{Transformation model} %
 Currently, only the \gls*{ebs} transform from \gls*{itk} is supported
-  (see \autoref{list:interfaces}, lines 18-24).
+  (see \autoref{list:interfaces}, lines 29-35).
 The \texttt{EBSTransform} interface composes the initial affine transform
   with the nonlinear transform found as described in \autoref{sec:deformation}
   to project the moving inputs into reference space.
