@@ -220,7 +220,7 @@ However, quantification protocols generally lack of a structural reference
 In this paper, we present a new evaluation framework implemented with \emph{nipype},
   and we propose \gls*{pysbr}, a new spatial normalization tool implemented in Python for 
   its use in the described environment.
-\gls*{pysbr} detects particular shape-features in the SPECT images and
+\gls*{pysbr} detects particular shape features in the SPECT images and
   minimizes a distance to the corresponding features in standard space.
 Densification of the resulting sparse displacements field is achieved by using
   Elastic-body splines as deformation model.
@@ -512,6 +512,10 @@ Third, the \gls*{spect} studies were rigidly registered to their corresponding \
 Finally, the resampling, the normalization of \gls*{spect} counts, and the final
   smoothing filter were applied as explained for the simulated template.
 
+In addition, during the first run of the pipeline described below, shape features 
+  are extracted and cached following the procedure given in \autoref{sec:pysbr}.
+
+
 \section{Methods}
 \label{sec:methods}
 
@@ -655,12 +659,12 @@ The full description of the settings for \gls*{ants} are provided in \autoref{Ta
 \subsection{Methods}
 A flowchart to overview \gls*{pysbr} is presented in \autoref{fig:02},
   and described hereafter.
-After the \emph{Initialization stage}, the pre-cached features in the template space are projected
+After the \emph{Initialization stage}, the pre-cached shape features in the template space are projected
   onto the subject's coordinate system and fed to a shape-matching function.
-On the subject's branch, the corresponding features are detected.
-Then, the shape-matching function evaluates the similarity between features.
+On the subject's branch, the corresponding shape features are detected, and 
+  then, the shape-matching function evaluates the similarity between these features.
 Finally, we apply a kernel transform to propagate the local displacements of
-  the features along the coordinate system of the template, obtaining the final
+  the shape features along the coordinate system of the template, obtaining the final
   projection of the template onto the subject's image.
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -679,7 +683,7 @@ Finally, we apply a kernel transform to propagate the local displacements of
   metric by a shape-based one. In the \emph{Initialization} step (yellow box),
   a global alignment is found, and the shape-descriptors from the template
   are projected onto subject's space. Also, image data is masked outside the
-  so-called ``Search-\gls*{roi}'' on which the features are sought. \\
+  so-called ``Search-\gls*{roi}'' on which the shape features are sought. \\
   Finally, \gls*{pysbr} iteratively seeks for the features mapping in
   shape-features space. The mapping found can be propagated to the full
   image domain using a kernel transform.
@@ -1217,7 +1221,7 @@ A template is defined by the reference \gls*{datscan} image, that
 Once these two files are correctly placed in a folder
   (e.g. \texttt{myTemplate/}) under the templates path (that can be moved from the
   default setup at the user's convenience), the appropriate \gls*{nipype}-style
-  interface can be invoked to run the template feature extraction (see
+  interface can be invoked to run the template shape feature extraction (see
   \autoref{list:interfaces}, lines 2-3).
 On the first execution of the interface, the shape features extracted from
   the template are cached for faster retrieval in subsequent calls to the interface. 
