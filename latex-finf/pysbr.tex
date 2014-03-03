@@ -740,8 +740,7 @@ In summary, by this shape feature extraction step three landmark sets are obtain
   feature based nonlinear registration described below.
 
 \paragraph{Registration methodology}
-\label{sec:registration}
-
+\label{par:registration}
 \cbstart
 In order to correct for the anatomical variability between patients with regard to location and orientation of the segmented nuclei, we
   perform a registration step in spherical coordinates.
@@ -844,45 +843,39 @@ A total of 240 images, embodying the 4 different stages
   of Parkinson's Disease for the 60 selected subjects
   (\autoref{sec:data_synthetic}), were used to evaluate
   the two methodologies (480 experiments in total).
-Quantitative results, grouped by grade of the stage of
+Quantitative results, grouped by the grade of the
   syndrome and spatial normalization methodology, 
   are given in \autoref{fig:results_a}.
 
-\glsreset{ibr}
-With the term \gls*{ibr}, we identify the spatial normalization
-  workflow implemented with \gls*{ants}.
 Results show that \gls*{ibr} behaves consistently,
   but offers very small improvements of overlap with respect to the
   initial mapping.
 From \autoref{fig:results_a} we can interpret that there is not 
   a meaningful improvement on applying \gls*{ibr} solutions to 
   the refinement problem.
-Moreover, subplots presented for ``grades'' 2 and 3 demonstrate the
-  impact of the progression of the syndromes described in 
+Moreover, subplots presented for diseased statuses (``grades'' 1-3) 
+  demonstrate the impact of the progression of the syndromes described in 
   \autoref{sec:intro}, i.e. that a number of negative samples fall 
    statistically beyond the normal span of overlaps (marked with red ``+'' symbols).
-For the majority of the datasets only small improvements ($\approx1.00\%$)
-  with respect to the initial overlap could be achieved.
-Nonetheless, the number of statistical outliers with large degradations
-  (negative change of overlap) grows notably with the advance of the state of
-  pathology under study.
-The effect is particularly clear for ``grade 3'', for which the outliers are enough
-  to deviate the estimated mean increments (marked with stars) with respect to their
-  corresponding median.
-Although the appearance of negative ``outliers'' is boosted with the advance
-  of pathology, \gls*{ibr} maintains an acceptable level of accuracy as it keeps
-  a positive (although small) positive median increment for all the studied \glspl*{roi}.
+For the majority of the grade 0 datasets, only small improvements ($\approx1.00\%$)
+  could be achieved with respect to the initial overlap.
+This result confirms the main hypothesis of the necessity of evaluations and
+  comparisons in the proposed application, and demonstrates the need for 
+  improved methodologies in the \emph{Refinement stage}.
   
-Regarding the performance of \gls*{pysbr}, experiments show that the application of the tool
+Regarding the performance of \gls*{pysbr}, experiments show that the application of the prototype
   did not result in a reliable enhancement of the alignment.
 In fact, the estimated medians of each \gls*{roi} are always negative: i. e. in average
   the normalization achieved with the initialization was not improved.
-Using the evaluation tool, we detected serious problems with the automatic 
+Even though this result confirms that the majority of cases failed, \gls*{pysbr} also achieved
+  great average improvements ($>10\%$) for certain cases, regardless the grade
+  simulated.
+Using the evaluation tool, we detected serious problems, in terms of reliability, with the automatic 
   estimation of the landmarks associated with the caudate and putamen.
 As it is clearly depicted in \autoref{fig:results_a}, this is especially true for the left-side
   structures, which always scored much worse than their right-side counterparts.
-Notwithstanding, in some scarce cases notable improvements of the overlap measure could be achieved
-  --  when the landmarks could be located at their right positions.
+Notwithstanding, mentioned improvements were achieved when the landmarks could be located at their 
+  right positions.
 We interpret these results as promising for \gls*{pysbr}, as it shows that the proposed registration 
   approach works well if the primary activation area landmarks can be detected properly.
 
@@ -891,29 +884,27 @@ We interpret these results as promising for \gls*{pysbr}, as it shows that the p
 The equivalent box plot for this database is presented in \autoref{fig:results_b},
   depicting very similar conclusions.
 This second database presents increased difficulties in terms of signal-to-noise
-  ratio, resolution, and other artifacts related to the simulated acquisition
-  procedure.
+  ratio, resolution, and other variability sources related to the acquisition procedure.
 These difficulties show a certain impact, especially on the robustness of the
   methodologies under analysis.
 \Gls*{ibr} shows a similar performance as above, but in this second experiment the addition
-  of this refinement step does not improve the initial mapping at all.
+  of this refinement step does not improve the initial mapping at all, obtaining
+  small degradations ($\approx4.00\%$) on the average overlap.
 \Gls*{pysbr} also suffers from the additional difficulties, but the impact is
-  also limited.
+  more limited than in the synthetic phantoms.
 
 \begin{figure*}[ht]
 \centering 
 \begin{subfigure}[b]{0.61\linewidth}
 \insertgraphic{width=1.0\linewidth}{figures/05-results-phantoms}
 \caption{\label{fig:results_a}
-Synthetic phantoms.
-}
+Synthetic phantoms.}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.33\linewidth}
 \insertgraphic{width=1.0\linewidth}{figures/05-results-simulated}
 \caption{\label{fig:results_b}
-Simulated \gls*{spect} datasets.
-}
+Simulated \gls*{spect} datasets.}
 \end{subfigure}
 
 \caption{\label{fig:results}
@@ -957,9 +948,6 @@ Second, the performance of the \gls*{ibr} approach was clearly worse on
   the result obtained by the two tools under evaluation.
 }
 \end{figure}
-
-%\glsreset{nipype}
-%\glsreset{pysbr}
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -1015,8 +1003,24 @@ The code is publicly released along with this manuscript and
   invite the community to collaborate improving and testing
   the tool.
 \cbstart
-Additionally, this evaluation software will be used to lead the
-  development of \gls*{pysbr} on clinical studies at the Biophysics 
+\subsection{Future prospects}
+The presented evaluation framework will be used on the development
+  of the \gls*{pysbr} prototype.
+The results achieved confirm the need for improved spatial normalization
+  methodologies, and illustrated that \gls*{ibr} does not improve the
+  linear mapping after a initialization.
+On the next release of \gls*{pysbr}, the shape features associated to the
+  template will be generated from the structural data offered by the 
+  reference \gls*{t1} images.
+We consider that the structural error on the location of the left-side striatal
+  cavities will be fixed with such procedure.
+The second functionality to be implemented is an enhanced version and 
+  new definitions of the shape-features to lead the alignment,
+  with the aim at increasing the reliability of the mapping technique
+  introduced in ``\nameref{par:registration}'' (\autoref{par:registration}).
+
+Additionally, \gls*{pysbr} will be used under the framework of
+  ongoing clinical studies at the Biophysics 
   and Bioengineering Unit (Physiological 
   Sciences Department I, School of Medicine, University of 
   Barcelona, Barcelona, Spain), what ensures the
@@ -1248,7 +1252,7 @@ The extraction methodologies involved in this interface are described in \autore
 A second interface performing shape-based registration is named \texttt{SBR}
   (\autoref{list:interfaces}, lines 12-15).
 This interface takes the landmarks extracted previously and, finds
-  the shape-based mapping described in \autoref{sec:registration}.
+  the shape-based mapping described in \autoref{par:registration}.
 Input and output files make use of the \gls*{json} format
   for interoperability reasons.
 
