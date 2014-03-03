@@ -168,8 +168,7 @@
 {brainnest}{\emph{NeSt}}{BrainNest neuroimaging platform}
 \newacronym[first={\emph{BasGan} \citep{calvini_basal_2007}}]%
 {basgan}{\emph{BasGan}}{BrainNest neuroimaging platform}
-\newacronym[first={intensity-based registration (which we will refer to as IBR in the following)}]%
-{ibr}{IBR}{intensity-based registration}
+\newacronym{ibr}{IBR}{intensity-based registration}
 \newacronym{mri}{MRI}{magnetic resonance imaging}
 \newacronym{montecarlo}{MC}{Monte-Carlo}
 \newacronym[longplural={regions of interest}]{roi}{ROI}{region of interest}
@@ -367,7 +366,8 @@ Finally, the aptness of the tools is also tested on real datasets,
   assessed by visual inspection (see \autoref{sec:results_real}).
 In order to demonstrate the utility of the evaluation framework, we compare 
   two methods:
-(1) an implementation of our \emph{in-house} method, which uses \gls*{ibr};
+(1) an implementation of our \emph{in-house} method, which uses \acrlong*{ibr}
+  (which we will refer to as \acrshort*{ibr} in the following);
 (2) \gls*{pysbr}, a new shape-based registration tool and
   work in progress described in \autoref{sec:pysbr}.
 \cbend
@@ -404,8 +404,8 @@ Then, based on the extracted \glspl*{roi} corresponding to the caudate and putam
 \cbstart
 The procedure involves some mathematical morphology operations to reproduce the
   shape that basal ganglia present in \glspl*{datscan}, emmiting signal with
-  normaly distributed noise.
-For further details, please see \autoref{supl:synth_phantom_wf}
+  normaly distributed noise (for further details, please see section 
+  ``\nameref{supl:synth_phantom_wf}'' in \nameref{supl}).
 \cbend
 Therefore, a total of four datasets (healthy as ``grade 0'',
   and diseased as ``grades 1, 2, and 3'') were generated from each \gls*{mri}.
@@ -416,8 +416,8 @@ Finally, all the synthetic phantoms were downsampled and cropped to the characte
 \subsection{Simulated database} %
 \label{sec:data_simulated}
 \cbstart
-A total of 23 datasets were generated using real \gls*{mri} data as
-  anatomical model.
+A total of 23 simulated \gls*{datscan} images were generated using real
+  \gls*{mri} data from healthy volunteers as anatomical model.
 \cbend
 \Gls*{spect} projections were simulated for a Siemens E-CAM gamma
   camera equipped with a \acrlong*{lehr} parallel-hole collimator.
@@ -433,11 +433,11 @@ This version uses different approaches to model the interactions of
   the high-energy photons within the collimator and the detector depending
   on the energy of the simulated photons 
   \citep{cot_study_2004, cot_modeling_2006}.
-To generate the activity maps, 23 \gls*{mri} images acquired from healthy
-  volunteers were segmented into \gls*{gm}, \gls*{wm}, and \gls*{csf}
+To generate the activity maps, the 23 \gls*{mri} images
+  were segmented into \gls*{gm}, \gls*{wm}, and \gls*{csf}
   using \gls*{spm}.
 A different striatal to background ratio was considered for each individual
-  (i.e. each subject was assigned a disease stage randomly).
+  (i.e. each subject was assigned a disease grade randomly).
 Non-specific uptake was considered to be the same for \gls*{gm} and \gls*{wm},
   whereas the activity from the \gls*{csf} regions was assumed to be zero.
 Specific uptake was considered by the segmentation of the striatal cavities
@@ -824,7 +824,7 @@ Both \emph{Interfaces} and \emph{Workflows} levels strictly follow the
   \citep{gorgolewski_nipype:_2011}.
 Consequently, the different processing units described in \autoref{fig:01} 
   are implemented as \emph{Interfaces}. 
-They are fully functional to be used as stand-alone modules, or 
+They are fully functional to be used as standalone modules, or 
   they can be \emph{Nodes} of higher level \emph{Workflows}.
 For details regarding the implementation and the use of the \emph{Interfaces}
   and the \emph{Workflows} released with this work, we provide the \nameref{supl}.
