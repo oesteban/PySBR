@@ -211,32 +211,26 @@
 
 \begin{abstract}
 \section{}
-Absolute quantification of \gls*{spect} will
-  provide the necessary standardization for the diagnosis and monitoring
-  of movement disorders and a number of related diseases.
-In order to achieve this standardization, the full automation of the
-  process requires precise image normalization to/from a standard space.
-However, quantification protocols generally lack of a structural reference
-  (e.g. \acrlong{t1}) for high-standard accuracy.
-In this paper, we present a new evaluation framework implemented with \emph{nipype},
-  and we propose \gls*{pysbr}, a new spatial normalization tool implemented in Python for 
-  its use in the described environment.
-\gls*{pysbr} detects particular shape features in the SPECT images and
-  minimizes a distance to the corresponding features in standard space.
-Densification of the resulting sparse displacements field is achieved by using
-  Elastic-body splines as deformation model.
-We use the evaluation tool to study \gls*{pysbr} and a standard normalization
-  scheme employing intensity-based nonlinear image registration, both starting 
-  from an affine initialization. 
-The evaluation was run on 60 synthetic  phantoms and 23 realistic datasets simulated 
-  for a gamma-camera widely used in the clinical routine.
-Finally, we compare the proposed tools on the normalization of 5 real datasets.
-Results show that both approaches on average do not offer significant improvements over 
-  the affine initialization.
-Nevertheless, \gls*{pysbr} shows potential for the use in a different
-  imaging settings with better signal-to-noise ratio that justifies its further development.
-
-
+We show how rigorous evaluation pipelines can be designed
+  with readily available software in Python \emph{before} the development of 
+  problem-specific solutions .
+We use a clinical application, the fully automated quantification of \gls*{datscan},
+  as a vessel to illustrate how this approach can easily be implementable.
+Even though diagnosis is broadly based on experienced observers' visual
+  assesment, some efforts have been made to help automate the quantification
+  process and standardize the outcome
+In this work, we propose an evaluation framework implemented in Python for the
+  spatial normalization of \gls*{datscan} images required by absolute quantification
+  protocols.
+Results show that \gls*{ibr} behaves consistently,
+  but offers very small improvements of overlap with respect to the
+  initial mapping.
+Regarding the performance of \gls*{pysbr}, experiments show that the application of the prototype
+  did not result in a reliable enhancement of the alignment.
+Quantitative and qualitative results illustrate that registration approach
+  of \gls*{pysbr} is promising, but requires a significant improvement
+  in landmark detection for robustness.
+  
 \tiny
   \section{Keywords:} nonlinear registration, spect, pet, quantification, movement disorders
 \end{abstract}
