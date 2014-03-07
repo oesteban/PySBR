@@ -212,11 +212,19 @@
 
 \begin{abstract}
 \section{}
-In this work we show how rigorous evaluation pipelines can be designed
-  with readily available software in Python \emph{before} the development of 
-  problem-specific solutions.
-To illustrate the approach, we use the clinical application of fully automated
-  quantification of \gls*{spect} images, which is currently challenging
+Considering that image processing requires more and more reliance on software tools, 
+  this software has to be considered to be part of the instrument that requires 
+  proper calibration and maintenance to ensure accurate measurements and reproducible 
+  results. 
+Hence, establishing and the publication of the evaluation procedure is becoming an important 
+  part of the publication of new image processing methods.
+In this work we show that such evaluation pipelines are not only useful for a post-hoc validation, 
+  but that they can also be established as an pre-requisite 
+  to guide the develop new, problem-specific solutions. 
+In this work we show, how such an a-priory  evaluation pipelines can be designed
+  with readily available software in Python.
+To illustrate this approach of evaluation-guided algorithm design, we use the clinical 
+  application of fully automated quantification of \gls*{spect} images, which is currently challenging
   for its need of accurate and reliable spatial normalization of subjects.
 The spatial normalization is usually performed in two steps: the
   \emph{initialization} finds a global and linear matching between
@@ -232,7 +240,6 @@ Quantitative and qualitative results illustrate that our evaluation framework
   successfully ranked both algorithms and helped identify the promising features
   of \gls*{pysbr} and the necessity of an improved landmark detection to
   increase its reliability.
-
 \tiny
   \section{Keywords:} nonlinear registration, spect, quantification, movement disorders
 \end{abstract}
@@ -700,7 +707,7 @@ On the other hand, landmarks are extracted from the activation areas.
 \cbstart
 The \emph{Initialization stage} is intended to solve the registration problem of matching brain location
   and size between subject's image and template.
-Then, we define a number of landmarks (\lm{static}) on the brain's pial surface, which are assumed
+Then, we define a number of landmarks (\lm{static}) on the brain's peel surface, which are assumed
   to be correctly aligned in both images after initialization.
 These \lm{static} are set to disable global changes on scale and location of the brain in the following
   nonlinear registration performed in the \emph{Refinement stage}.
