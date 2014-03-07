@@ -1214,9 +1214,31 @@ We summarize here the most important interfaces,
 The presented code examples make use of the three modules of 
   \gls*{pysbr}, that will be imported as given in \autoref{list:interfaces}.
 
-\subsection*{Workflow for generation of synthetic phantoms}
-\label{supl:synth_phantom_wf}
-\fixme{here the workflow with some exemplary images}
+\subsection*{Workflow for generation of synthetic phantoms}\label{supl:synth_phantom_wf}
+This workflow takes as input a \gls*{t1} image processed with \emph{Freesurfer} and its
+  \texttt{recon-all} tool.
+One \emph{Interface} called \texttt{PhantomGenerate} extracts the \glspl*{roi} 
+  (i.e. caudates, putamens and parenchyma) from the so-called \texttt{aseg} segmentation.
+A sequence of morphological operations (distance transform, binary dilations and binary
+  erosions) are then applied to produce a probability map of the four striatal structures
+  and background activity associated to the parenchyma.
+This map resembles the uptake pattern of grade-0 images.
+The last part of the process comprehends the modulation of activity patterns on the
+  \glspl*{roi}, to generate the four images associated to each grade of disorder.
+Finally, normally distributed noise is added to the signal and images are resampled
+  to the ordinary grid size of \gls*{spect} images.
+\autoref{fig:supl_phantoms} presents one exemplary dataset, with the four grades of
+  synthetic \gls*{spect} images (boxes A0-A3) and the corresponding \gls*{t1} image
+  from which anatomical information is retrieved in this case.
+
+\begin{figure*}[ht]
+\centering 
+\insertgraphic{width=1.0\linewidth}{figures/07-images-phantoms}
+\caption{%
+\textbf{Example of one synthetic phantom}. A0-A3 represent the four simulated
+  grades of disease, and B is the underlying \gls*{t1} MRI with the 
+  overlay of the \glspl*{roi}.\label{fig:supl_phantoms}}
+\end{figure*}
 
 \subsection*{Templates}
 \label{supl:templates}

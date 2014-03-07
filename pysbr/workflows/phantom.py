@@ -29,7 +29,7 @@ import os.path as op
 import os
 import glob
 
-root_dir = op.abspath( '../' )
+root_dir = op.abspath( '../../' )
 sys.path.append( op.join( root_dir, 'pysbr') )
 
 import interfaces as pysbr
@@ -179,5 +179,6 @@ if __name__== '__main__':
 
     wf = generate_all( subjects_list[0:60], results_dir, ixi_dir )
     wf.base_dir=work_dir
-    wf.run()
+    wf.write_graph( format='pdf' )
+#    wf.run()
 
