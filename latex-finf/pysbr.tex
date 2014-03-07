@@ -92,7 +92,8 @@
 \newcommand{\px}{\ensuremath{\mathbf{x}}}
 \newcommand{\pr}{\ensuremath{\mathbf{r}}}
 \newcommand{\hp}[1]{\ensuremath{\mathbf{h}_{#1}}}
-
+\newcommand{\gridsize}[1]{\ensuremath{#1\times#1\times#1}}
+\newcommand{\isores}[2]{\ensuremath{\gridsize{#1}\,#2^{3}}}
 
 % Change tt font size
 \renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
@@ -220,7 +221,7 @@ Even though diagnosis is broadly based on experienced observers' visual
   assesment, some efforts have been made to help automate the quantification
   process and standardize the outcome
 In this work, we propose an evaluation framework implemented in Python for the
-  spatial normalization of \gls*{datscan} images required by absolute quantification
+  spatial normalization of \gls*{datscan} images required by semi-quantification
   protocols.
 Results show that \gls*{ibr} behaves consistently,
   but offers very small improvements of overlap with respect to the
@@ -249,8 +250,8 @@ As a consequence, the number of evaluation and comparison papers is
   also rapidly increasing.
 \cite{tustison_instrumentation_2013} describe that software should be considered 
  ``a type of instrument requiring proper calibration and maintenance for accurate measurements'', 
-  and in order to avoid \emph{instrumentation bias} (\cite{Shattuck_validation_2009}), the proper planning 
-  and the publication of such evaluations of brain image processing methods is imperative. 
+  and in order to avoid \emph{instrumentation bias} (\cite{Shattuck_validation_2009}), the appropriate planning 
+  and the publication of such evaluations of brain image processing methods is mandatory. 
 We consider that the principles described in \cite{tustison_instrumentation_2013} are not only
   important for the design of evaluations and comparisons, 
   but that they can also be applied to the development of new image processing
@@ -259,27 +260,31 @@ In this Research Topic, we show how rigorous evaluation pipelines can be designe
   with readily available software in Python \emph{before} the development of 
   problem-specific solutions .
 We use a clinical application, the fully automated quantification of \gls*{datscan},
-  as a vessel to illustrate how this approach can easily be implementable by using \gls*{nipype}.
+  as a vessel to illustrate how this approach can be easily implementable by 
+  using \gls*{nipype}.
 
 \subsection{Clinical problem}\label{sec:intro_problem}
 \Gls*{spect} imaging of the dopaminergic system using
-  specific agents (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
+  radiotracer labels (e.g. $^{123}$I- or $^{99m}$Tc- based) is of great
   value to discriminate parkinsonian syndromes from other movement
-  disorders by quantifying the \acrlong*{dat} binding \citep{bajaj_clinical_2013}.
+  disorders by quantifying the \acrlong*{dat} binding \citep{booij_[123i]fp-cit_1997}.
 Quantification of \gls*{datscan} can facilitate early 
   diagnosis, progression follow-up, and assessment of treatment
   strategies. 
 In clinical routine, this application is generally
   performed by visual inspection of regions corresponding to the
-  striatal structures in the \gls*{datscan}  (see \autoref{fig:01}, subfigure A).
-Specifically, due to the predominant uptake that occurs at caudal and putaminal areas,
+  striatal structures in the \gls*{datscan} \citep{bajaj_clinical_2013}.
+Specifically, due to the predominant uptake that occurs at striatal areas,
   \gls*{datscan} images of healthy subjects present two
   ``comma-shaped'' patterns at the locations of the striatum nuclei
   (\autoref{fig:01}, A0).
 However, in subjects affected by parkinsonian syndromes, the associated
   neuronal degeneration results in a lower uptake in the putamen.
-Therefore, the activity registered by the corresponding \gls*{datscan} presents
-  ``point-like'' patterns located at the areas of caudates (\autoref{fig:01}, A1-A3).
+Therefore, the activity registered by the corresponding \gls*{datscan}
+  is prone to show more ``point-like'' patterns located at
+  caudates (\autoref{fig:01}, A1-A3).
+
+  
 \begin{figure*}[ht]
 \insertgraphic{width=1.0\linewidth}{figures/01-ProblemStatement}
 \caption{\label{fig:01} \textbf{Problem statement.} 
@@ -299,7 +304,7 @@ In yellow, the corresponding contours from the template projected into the subje
 }
 \end{figure*}
 
-\subsection{State of art}\label{sec:state-of-art}
+\subsection{State of the art}\label{sec:state-of-art}
 Even though diagnosis is broadly based on experienced observers' visual
   assesment, some efforts have been made to help automate the quantification
   process and standardize the outcome (we refer the reader to
@@ -316,7 +321,7 @@ This alignment implies an image registration process, which is challenging for t
 The first caveat  is the scarce information that \gls*{datscan} images 
   retain from the underlying anatomical structures (see \autoref{fig:01}),
   also resulting from the typically low resolution of
-  \gls*{datscan} images (approximately $2.5mm\times2.5mm\times2.5mm$).
+  \gls*{spect} images (approximately \isores{2.5}{mm}).
 Since clinical protocols usually do not include the acquisition of anatomical images
   (e.g. \gls*{t1}), in general no structural reference is available.
 The second caveat is the implicit difficulty of \emph{subject-to-atlas} 
@@ -354,7 +359,7 @@ To our knowledge, no cross-comparison study has been published so far.
 \cbstart
 \subsection{Our contribution}\label{sec:contribution}
 In this work, we propose an evaluation framework implemented in Python for the
-  spatial normalization of \gls*{datscan} images required by absolute quantification
+  spatial normalization of \gls*{datscan} images required by semi-quantification
   protocols.
 Quantitative results of the assessment are reported for the synthetic
   phantoms and simulated \gls*{spect} images described in \autoref{sec:data}.
@@ -392,7 +397,7 @@ Finally, some real datasets (\autoref{sec:data_real}) were included for visual
 \label{sec:data_synthetic}
 We selected randomly 60 source \gls*{t1} images from a publicly available
   \gls*{mri} database \citep{hill_ixi_2006} of healthy volunteers.
-The striatal cavities and a brain mask were segmented from each dataset
+The striatal cavities and the brain were segmented from each dataset
   using \emph{Freesurfer} \citep{fischl_freesurfer_2012}.
 Then, based on the extracted \glspl*{roi} corresponding to the caudate and putamen
   nuclei, we generated very simplistic \gls*{spect}-like images mimicking disease in
@@ -406,8 +411,8 @@ The procedure involves some mathematical morphology operations to reproduce the
 Therefore, a total of four datasets (healthy as ``grade 0'',
   and diseased as ``grades 1, 2, and 3'') were generated from each \gls*{mri}.
 Finally, all the synthetic phantoms were downsampled and cropped to the characteristic
-  grid and \acrlong*{fov} of typical \glspl*{datscan} ($100\times100\times100$ matrix,
-  $2.56mm\times2.56mm\times2.56mm$ voxel size).
+  grid and \acrlong*{fov} of typical \glspl*{datscan} (\gridsize{100} matrix,
+  \isores{2.56}{mm} voxel size).
 
 \subsection{Simulated database} %
 \label{sec:data_simulated}
@@ -455,7 +460,7 @@ A total of 10 \gls*{datscan} datasets comprehend the database of real cases.
 We selected 9 \gls*{spect} images that especially failed on the spatial normalization
   using our internal registration method from a pool of clinical subjects.
 We also included an additional dataset from one healthy subject for whom
-  a corresponding \acrlong*{t1} was acquired.
+  a corresponding \gls*{t1} was acquired.
 \cbend
 \Gls*{spect} acquisition was undertaken $4h$
   after injection  of $185$\textit{MBq} of $^{123}$I-ioflupane
@@ -490,11 +495,11 @@ All the subjects were spatially normalized to the \gls*{t1} template distributed
   \gls*{spm}2.
 This normalization step was validated by visual inspection.
 The normalized \glspl*{mri} were resampled to have a matrix size of
-  $111\times134\times102$ and a voxel size of $2.0mm\times2.0mm\times2.0mm$.
+  $111\times134\times102$ and a voxel size of \isores{2.0}{mm}.
 \Gls*{spect} studies were simulated (as described in \autoref{sec:data_simulated})
   on the native \gls*{mri} space, spatially normalized applying the transform
-  corresponding to the subject, and intensity was normalized to a
-  uniform number of counts.
+  corresponding to the subject, and intensity normalized to a uniform 
+  number of counts.
 The final template was obtained by averaging the normalized \gls*{spect} studies
   and filtering the result with a Gaussian filter of $8.0mm$ (isotropic)
   full width at half maximum.
@@ -507,13 +512,6 @@ Third, the \gls*{spect} studies were rigidly registered to their corresponding \
   and then the normalization transform was applied.
 Finally, the resampling, the normalization of \gls*{spect} counts, and the final
   smoothing filter were applied as explained for the simulated template.
-
-\cbstart
-In addition, during the first run of the pipeline described below, shape features 
-  are extracted and cached following the procedure given in \autoref{sec:pysbr}.
-
-\cbend 
-
 
 \section{Methods}
 \label{sec:methods}
@@ -535,8 +533,8 @@ The evaluation framework comprises the following parts:
   subject's space.
 \emitem{Benchmarking and reporting}: overlap scores (Dice indices) are
   computed for the four \glspl*{roi} (left and right caudates and putamens)
-  and a volume-weighted average of them. Also, plots presented in
-  \autoref{fig:results} are automatically generated.
+  and a volume-weighted average of them. This module automatically generates
+  summary plots as those presented in \autoref{fig:results}.
 \emitem{Synthetic phantom generator}: an additional workflow is released
   implementing the procedure described in \autoref{sec:data_synthetic} to
   generate the synthetic phantoms database.
@@ -570,8 +568,6 @@ This unique dataset allowed us to quantitatively evaluate \gls*{pysbr} on one re
   implicitly assuming that the necessary image registration from the 
   \gls*{spect} image to the reference \gls*{t1} is error-free 
   (or, at least, significantly smaller than the \gls*{spect}-template misregistration).
-This case is used to produce the visual results illustrated in
-  \autoref{fig:real_dataset_result}.
 
 \paragraph{Implementation} %
 The evaluation workflow implements the assessment of the objective tool on the three different
@@ -606,7 +602,7 @@ The resulting affine matrix is then applied to project information defined on
 As introduced before, this stage is defined with a certain interface where the
   tool under evaluation can be plugged-in.
 To demonstrate the fast prototyping and \emph{functional-test driven} development
-  we promote, we provide two built-in refinement tools.
+  promoted here, we provide two built-in refinement tools.
 On one side, our aim was to include any of the normalization tools introduced in
   \autoref{sec:intro}.
 Unfortunately, at the time of writing, the \gls*{basgan} software was not available
@@ -632,16 +628,16 @@ The full description of the settings for \gls*{ants} are provided in \autoref{Ta
         Level & Sub-sampling                   & Settings     \\
         \hline 
         \hline  \\[-0.8em]
-        0     & Regular$^{*}$ \mbox{($4\times4\times4$)}    & Mutual information metric (``Mattes'' option in \gls*{ants}) with joint histogram of 64 bins,
+        0     & Regular$^{*}$ \mbox{(\gridsize{4})}    & Mutual information metric (``Mattes'' option in \gls*{ants}) with joint histogram of 64 bins,
                                                        rigid (6 parameters) transformation model, $\sigma_s=8.0mm$, $w=\left[25,95\right]$.
                                                        Initialized with a translation mapping geometrical centers of template and subject's images.\\
         \hline \\[-0.8em]
-        1     & Regular$^{*}$ \mbox{($2\times2\times2$)} & ``Mattes'' (64 bins), affine transform (12 parameters), $\sigma_s=4.0mm$, $w=\left[25,95\right]$. \\
+        1     & Regular$^{*}$ \mbox{(\gridsize{2})} & ``Mattes'' (64 bins), affine transform (12 parameters), $\sigma_s=4.0mm$, $w=\left[25,95\right]$. \\
         \hline \\[-0.8em]
-        2     & Mask$^{**}$ \mbox{($1\times1\times1$)}   & Cross-correlation metric (``CC'' option in \gls*{ants}) with 6 pixels radius,
+        2     & Mask$^{**}$ \mbox{(\gridsize{1})}   & Cross-correlation metric (``CC'' option in \gls*{ants}) with 6 pixels radius,
                                                     \glsreset{syn}\gls*{syn} transformation model, $w=\left[15,100\right]$, $\tau_g = 2.0$, $\sigma^2_u = 6.0mm$, $\sigma^2_f = 10.0mm$. \\
         \hline \\[-0.8em]
-        3     & Mask$^{**}$ \mbox{($1\times1\times1$)}   & ``CC'' (1 pixel radius), \gls*{syn}, $w=\left[15,100\right]$, $\tau_g = 0.75$, $\sigma^2_u = 4.0mm$,
+        3     & Mask$^{**}$ \mbox{(\gridsize{1})}   & ``CC'' (1 pixel radius), \gls*{syn}, $w=\left[15,100\right]$, $\tau_g = 0.75$, $\sigma^2_u = 4.0mm$,
                                                     $\sigma^2_f = 6.0mm$. \\
         \hline \\[-0.8em]
         All   & -                                 & Images preprocessed with: histogram matching filter, pre-smoothing gaussian filter of standard deviation $\sigma_s$,
@@ -723,7 +719,7 @@ Because at the shape feature extraction step the test image is already linearly 
 To obtain the \emph{mapping} landmarks (along the activation areas), the procedure
   outlined in Figure \ref{fig:featlmextract} is used.
 \cbstart
-As a result, the centers $c$ of the Caudates are estimated as the \emph{primary landmarks} of the activation area, the point 
+As a result, the centers $c$ of the Caudates are estimated as the \emph{primary landmarks} of the activation area, the points
     the middle between these two primary landmarks as the \emph{center landmark}, and a set of secondary landmarks. 
 For a detailed description of the procedure see \autoref{alg:lspots} (\nameref{appendix}).
 \cbend
@@ -952,7 +948,7 @@ We present an evaluation workflow implemented in Python
   with \gls*{nipype} to demonstrate the usefulness of
   \emph{functional test driven} methodologies in the design
   and implementation of new image processing algorithms.
-The absolute quantification of \gls*{spect} imaging studies
+The semi-quantification of \gls*{spect} imaging studies
   for the evaluation and monitoring of movement disorders is
   a clinical neuroimaging application demanding a strong effort
   in standardization of results and full automation.
