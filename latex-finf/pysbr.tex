@@ -212,28 +212,29 @@
 
 \begin{abstract}
 \section{}
-We show how rigorous evaluation pipelines can be designed
+In this work we show how rigorous evaluation pipelines can be designed
   with readily available software in Python \emph{before} the development of 
-  problem-specific solutions .
-We use a clinical application, the fully automated quantification of \gls*{datscan},
-  as a vessel to illustrate how this approach can easily be implementable.
-Even though diagnosis is broadly based on experienced observers' visual
-  assesment, some efforts have been made to help automate the quantification
-  process and standardize the outcome
-In this work, we propose an evaluation framework implemented in Python for the
-  spatial normalization of \gls*{datscan} images required by semi-quantification
-  protocols.
-Results show that \gls*{ibr} behaves consistently,
-  but offers very small improvements of overlap with respect to the
-  initial mapping.
-Regarding the performance of \gls*{pysbr}, experiments show that the application of the prototype
-  did not result in a reliable enhancement of the alignment.
-Quantitative and qualitative results illustrate that registration approach
-  of \gls*{pysbr} is promising, but requires a significant improvement
-  in landmark detection for robustness.
-  
+  problem-specific solutions.
+To illustrate the approach, we use the clinical application of fully automated
+  quantification of \gls*{spect} images, which is currently challenging
+  for its need of accurate and reliable spatial normalization of subjects.
+The spatial normalization is usually performed in two steps: the
+  \emph{initialization} finds a global and linear matching between
+  the subject's image and a template; and the \emph{refinement}
+  locally improves the nonlinear registration of the \acrlongpl{roi}.
+We benchmark two approaches to this spatial normalization.
+First, we adapt a standard \acrlong*{ibr} technique to the nonlinear mapping.
+Second, we propose a novel methodology based on detected shape-features,
+  called \gls*{pysbr}.
+The standard \acrlong{ibr} behaved consistently,
+  with small --when present-- accuracy improvements after the refinement stage.
+Quantitative and qualitative results illustrate that our evaluation framework
+  successfully ranked both algorithms and helped identify the promising features
+  of \gls*{pysbr} and the necessity of an improved landmark detection to
+  increase its reliability.
+
 \tiny
-  \section{Keywords:} nonlinear registration, spect, pet, quantification, movement disorders
+  \section{Keywords:} nonlinear registration, spect, quantification, movement disorders
 \end{abstract}
 
 %\twocolumn
@@ -250,9 +251,9 @@ As a consequence, the number of evaluation and comparison papers is
   also rapidly increasing.
 \cite{tustison_instrumentation_2013} describe that software should be considered 
  ``a type of instrument requiring proper calibration and maintenance for accurate measurements'', 
-  and in order to avoid \emph{instrumentation bias} (\cite{Shattuck_validation_2009}), the appropriate planning 
+  and in order to avoid \emph{instrumentation bias} \citep{shattuck_online_2009}, the appropriate planning 
   and the publication of such evaluations of brain image processing methods is mandatory. 
-We consider that the principles described in \cite{tustison_instrumentation_2013} are not only
+We consider that the principles described in \citep{tustison_instrumentation_2013} are not only
   important for the design of evaluations and comparisons, 
   but that they can also be applied to the development of new image processing
   methods, i.e. in \emph{functional-test driven} strategies \citep{andrea_envisioning_2007}.
@@ -306,7 +307,7 @@ In yellow, the corresponding contours from the template projected into the subje
 
 \subsection{State of the art}\label{sec:state-of-art}
 Even though diagnosis is broadly based on experienced observers' visual
-  assesment, some efforts have been made to help automate the quantification
+  assessment, some efforts have been made to help automate the quantification
   process and standardize the outcome (we refer the reader to
   \citep{badiavas_spect_2011} for an overview).
 Automated protocols typically use a template created by averaging a healthy
@@ -359,7 +360,7 @@ To our knowledge, no cross-comparison study has been published so far.
 \cbstart
 \subsection{Our contribution}\label{sec:contribution}
 In this work, we propose an evaluation framework implemented in Python for the
-  spatial normalization of \gls*{datscan} images required by semi-quantification
+  spatial normalization of \gls*{datscan} images required by quantification
   protocols.
 Quantitative results of the assessment are reported for the synthetic
   phantoms and simulated \gls*{spect} images described in \autoref{sec:data}.
@@ -386,7 +387,7 @@ In order to produce a reliable benchmarking framework, we use two
 These data are used as ``ground truth'' to assess the functional operation
   of the evaluated tools.
 The first database comprises synthetic phantom images (\autoref{sec:data_synthetic})
-  that mimick real \glspl*{datscan}.
+  that mimic real \glspl*{datscan}.
 The second group are the results of a comprehensive simulation of the acquisition 
   process as described in \autoref{sec:data_simulated}, obtaining realistic images.
 Finally, some real datasets (\autoref{sec:data_real}) were included for visual 
@@ -404,8 +405,8 @@ Then, based on the extracted \glspl*{roi} corresponding to the caudate and putam
   four stages of severity: healthy, and the three remaining grades.
 \cbstart
 The procedure involves some mathematical morphology operations to reproduce the
-  shape that basal ganglia present in \glspl*{datscan}, emmiting signal with
-  normaly distributed noise (for further details, please see section 
+  shape that basal ganglia present in \glspl*{datscan}, emitting signal with
+  normally distributed noise (for further details, please see section 
   ``\nameref{supl:synth_phantom_wf}'' in \nameref{supl}).
 \cbend
 Therefore, a total of four datasets (healthy as ``grade 0'',
@@ -422,14 +423,14 @@ A total of 23 simulated \gls*{datscan} images were generated using real
 \cbend
 \Gls*{spect} projections were simulated for a Siemens E-CAM gamma
   camera equipped with a \acrlong*{lehr} parallel-hole collimator.
-The acquisition parameters were selected accordingly to routinary conditions.
+The acquisition parameters were selected accordingly to ordinary conditions.
 Thus, a total of 128 projections were obtained over 360{\degree} using a
   bin size of $3.9\times3.9mm^{2}$, a radius of rotation of $14.5cm$, and
   a $15\%$ energy window.
 Subject-specific projections were obtained by using an in-house version
   \citep{crespo_quantification_2008} of the \emph{SimSET} software
   \citep{harrison_preliminary_1993}, which adapts the original code
-  to $^{123}$I-labelled radioligands.
+  to $^{123}$I-labelled radiotracers.
 This version uses different approaches to model the interactions of
   the high-energy photons within the collimator and the detector depending
   on the energy of the simulated photons 
@@ -525,7 +526,7 @@ The evaluation framework comprises the following parts:
   spatial normalization packages under comparison. This module is described
   in \autoref{sec:meth_initialization}.
 \emitem{Refinement stage}: where the tools under evaluation can be inserted.
-  The workflow relased can execute this step either by using \gls*{pysbr} 
+  The workflow released can execute this step either by using \gls*{pysbr} 
   or \gls*{ants} at the evaluators digression. This module is described
   in \autoref{sec:meth_refinement}.
 \emitem{\Glspl{roi} mapping}: use the displacement field resulting from
@@ -719,7 +720,7 @@ Because at the shape feature extraction step the test image is already linearly 
 To obtain the \emph{mapping} landmarks (along the activation areas), the procedure
   outlined in Figure \ref{fig:featlmextract} is used.
 \cbstart
-As a result, the centers $c$ of the Caudates are estimated as the \emph{primary landmarks} of the activation area, the points
+As a result, the centers $c$ of the caudates are estimated as the \emph{primary landmarks} of the activation area, the points
     the middle between these two primary landmarks as the \emph{center landmark}, and a set of secondary landmarks. 
 For a detailed description of the procedure see \autoref{alg:lspots} (\nameref{appendix}).
 \cbend
@@ -748,7 +749,7 @@ This profile shows a flat surface for point-like shapes (typically
 Registration is then performed to the corresponding boundary-profiles cached from
   template data. This registration is restricted to translations in the
   $(\theta,\phi)$ space, what is finally translated into small corrections of
-  the relative angular missalignment of each nuclei (i.e. correction of
+  the relative angular misalignment of each nuclei (i.e. correction of
   azimuth and elevation of the putaminal tails \emph{seen} from the caudate heads).
 
 \paragraph{Deformation model}
@@ -763,8 +764,8 @@ Once the landmarks have been extracted and mapped, a dense deformation field of 
   \end{equation}
   where $\vect{u}(\vect{x})$ is the displacement of a point within the body
   from the original (unloaded) position $\vect{x}$; $\nabla^2$ and $\nabla$
-  are the Laplacian and gradient, repectively; $\nabla \cdot \vect{u}(\vect{x})$
-  is de divergence of the displacement field; $\vect{f}(\vect{x})$ is the force
+  are the Laplacian and gradient, respectively; $\nabla \cdot \vect{u}(\vect{x})$
+  is the divergence of the displacement field; $\vect{f}(\vect{x})$ is the force
   field defined by the landmarks mapping, and $\mu$ and $\lambda$ are the Lam\'e
   coefficients, which describe the physical properties of the elastic material.
 Therefore, the $\vect{u}(\vect{x})$ found is the solution to our problem and
@@ -948,7 +949,7 @@ We present an evaluation workflow implemented in Python
   with \gls*{nipype} to demonstrate the usefulness of
   \emph{functional test driven} methodologies in the design
   and implementation of new image processing algorithms.
-The semi-quantification of \gls*{spect} imaging studies
+The quantification of \gls*{spect} imaging studies
   for the evaluation and monitoring of movement disorders is
   a clinical neuroimaging application demanding a strong effort
   in standardization of results and full automation.
@@ -1031,7 +1032,7 @@ Additionally, \gls*{pysbr} will be used under the framework of
   specifications is published in the main website, along with
   the necessary installation notes.
 
-\emitem{Licence} This software is released under BSD license.
+\emitem{License} This software is released under BSD license.
   A copy of the license is distributed along with \gls*{pysbr}.
   A number of the datasets presented in this work is also
   available under a Creative Commons licenses.
@@ -1053,14 +1054,14 @@ MJLC, XS and AS contributed with the application background and participated
   in the analysis and interpretation of results.
 All authors read, contributed to, and approved the manuscript.
 
-\section*{Acknowledgement}
+\section*{Acknowledgment}
 The authors thank Judith Gallego from the Biophysics and Bioengineering Unit, Physiological Sciences Department I,
 School of Medicine, University of Barcelona, Barcelona, Spain, for the simulated \gls*{spect} database.
 \paragraph{Funding\textcolon} This work was supported in part by Multimodal Imaging tools for Neurological Diseases (MIND-t) 
   project of Biomedical Research Networking center in Bioengineering, Biomaterials and Nanomedicine (CIBER-BBN), 
   by Spain's Ministry of Science and Innovation (through SAF2009-08076, TEC2011-28972-C02-02, TEC2010-21619-C04-03,
   IPT-2010-003-300000, IPT-2012-0401-300000), by CDTI-CENIT (AMIT project), and by Fondo de Investigaciones Sanitarias (PI12-00390).
-BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bioengineering of Catalonia (IBEC).
+BMF was awarded a PhD fellowship (App form--call 07-2009) of Institute for Bioengineering of Catalonia (IBEC).
 
 %\section*{Supplemental Data}
 % enable if needed
@@ -1123,13 +1124,13 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
   As the result of this procedure two labeled regions $A_{\text{spot},*}$ are obtained. 
   Here, if the volume $V_{\text{spot},*}$ of an extracted region exceeds a user set parameter $V_{\text{max}}$, 
     the segmentation is considered to have failed and the registration method can not be applied.
-  \emitem{Landmark estimation}: The center $\pc$ of the Caudates are estimated as the primary activation area landmarks.
-    The procedure is run independently for the left and right Caudate:
+  \emitem{Landmark estimation}: The center $\pc$ of the caudates are estimated as the primary activation area landmarks.
+    The procedure is run independently for the left and right caudate:
   \begin{enumerate}
   \emitem{Thinning}: A number $n_{\text{thin}}$ of morphological thinning iterations \citep{lee_building_1994} is run on 
     $A_{\text{spot},l}$ that is based on the volume $V_{\text{spot},l}$ of the segmented areas, 
     resulting in an area $\hat{A}_{\text{spot},l}$. 
-  \emitem{Scanning}: In order to find the center of the left Caudate, its following properties are considered: 
+  \emitem{Scanning}: In order to find the center of the left caudate, its following properties are considered: 
   It is located at an extreme location of the activation area, it is close to the other activation area, and 
     its intensity in the activation image is relatively high. 
   Based on this and given the boundary $B_l:= \partial A_{\text{spot},l}$, 
@@ -1191,8 +1192,8 @@ BMF was awarded a PhD fellowship (App Form – Call 07-2009) of Institute for Bi
 \newpage
 \appendix
 \setcounter{page}{1}
-\renewcommand*{\thepage}{Suplemental Material - \arabic{page}}
-\section*{Suplemental Materials}\label{supl}
+\renewcommand*{\thepage}{Supplemental Material - \arabic{page}}
+\section*{Supplemental Materials}\label{supl}
 
 \subsection*{PySBR Implementation details}
 \label{supl:implementation_details}
