@@ -212,34 +212,37 @@
 
 \begin{abstract}
 \section{}
-Considering that image processing requires more and more reliance on software tools, 
-  this software has to be considered to be part of the instrument that requires 
-  proper calibration and maintenance to ensure accurate measurements and reproducible 
-  results. 
-Hence, establishing evaluation procedures is becoming an important 
-  part of the development and publication of new image processing methods.
-In this work we show that such evaluation pipelines are not only useful for a post-hoc validation, 
-  but that they can also be established as an pre-requisite 
-  to guide the develop new, problem-specific solutions. 
-Specifically, we show how such an a-priory  evaluation pipelines can be designed
-  with readily available software in Python.
-To illustrate this approach of evaluation-guided algorithm design, we use the clinical 
-  application of fully automated quantification of \gls*{spect} images, which is currently challenging
-  for its need of accurate and reliable spatial normalization of subjects.
-The spatial normalization is usually performed in two steps: the
-  \emph{initialization} finds a global and linear matching between
-  the subject's image and a template; and the \emph{refinement}
-  locally improves the nonlinear registration of the \acrlongpl{roi}.
-We benchmark two approaches to this spatial normalization.
-First, we adapt a standard \acrlong*{ibr} technique to the nonlinear mapping.
-Second, we propose a novel methodology based on detected shape-features,
+Current trends in biomedical imaging invite to reproducible research
+  through open databases released together to their validation data
+  and promoting image processing challenges with a common framework
+  of evaluation.
+As a response to this tendency, in this work we propose a
+  framework to evaluate spatial normalization methods for fully
+  automated quantification of \gls*{spect} images.
+This task remains an open challenge in the diagnosis and stratification
+  of motion disorder patients, and it requires an accurate and reliable
+  spatial normalization for proper quantification.
+The spatial normalization is usually performed in two steps: an
+  \emph{initialization} step that finds a global and linear matching
+  between the subject's image and a template; and the \emph{refinement}
+  step that locally improves the alignment of certain \acrlongpl*{roi}
+  through a nonlinear registration.
+
+To show the usefulness of the proposed evaluation framework, we benchmarked
+  two approaches to spatial normalization.
+First, we adapted a standard \acrlong{ibr} tool to perform the nonlinear
+  mapping.
+Second, we tested a novel methodology based on detected shape-features,
   called \gls*{pysbr}.
-The standard \acrlong{ibr} behaved consistently,
-  with small --when present-- accuracy improvements after the refinement stage.
-Quantitative and qualitative results illustrate that our evaluation framework
-  successfully ranked both algorithms and helped identify the promising features
-  of \gls*{pysbr} and the necessity of an improved landmark detection to
-  increase its reliability.
+The \acrlong{ibr} behaved consistently, with small --when
+  present-- accuracy improvements after the refinement stage.
+Quantitative and qualitative results illustrate that our evaluation
+  framework successfully ranked both algorithms.
+Additionally we aimed to show how this type of frameworks are useful to
+  design new methods for specific tasks.
+In this sense, it helped identify the valuable features of \gls*{pysbr},
+  and the necessity of improved landmark detection to increase
+  its reliability.
 \tiny
   \section{Keywords:} nonlinear registration, spect, quantification, movement disorders
 \end{abstract}
@@ -970,7 +973,7 @@ Along with the evaluation workflow, we provide two sets of
   synthetic phantoms and simulated images that can be used
   as ground-truth.
 Spatial normalization of \gls*{spect} imaging studies can be
-  performed semi-automatedly by means of \gls*{ibr} techniques in 
+  performed semi-automatically by means of \gls*{ibr} techniques in 
   two steps.
 \cbend
 First step involves the affine mapping of the subject and the
