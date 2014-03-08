@@ -376,7 +376,7 @@ Finally, the aptness of the tools is also tested on real datasets,
 In order to demonstrate the utility of the evaluation framework, we compare 
   two methods:
 (1) an implementation of our \emph{in-house} method, which uses \acrlong*{ibr}
-  (which we will refer to as \acrshort*{ibr} in the following);
+  (referred to as \acrshort*{ibr});
 (2) \gls*{pysbr}, a new shape-based registration tool and
   work in progress described in \autoref{sec:pysbr}.
 \cbend
@@ -413,8 +413,8 @@ Then, based on the extracted \glspl*{roi} corresponding to the caudate and putam
 \cbstart
 The procedure involves some mathematical morphology operations to reproduce the
   shape that basal ganglia present in \glspl*{datscan}, emitting signal with
-  normally distributed noise (for further details, please see section 
-  ``\nameref{supl:synth_phantom_wf}'' in \nameref{supl}).
+  normally distributed noise (for further details, please see 
+  \autoref{supl:synth_phantom_wf}, \nameref{supl}).
 \cbend
 Therefore, a total of four datasets (healthy as ``grade 0'',
   and diseased as ``grades 1, 2, and 3'') were generated from each \gls*{mri}.
@@ -465,8 +465,9 @@ Projections were filtered with a 2D-Butterworth filter ($0.64cm^{-1}$,
 \label{sec:data_real}
 \cbstart
 A total of 10 \gls*{datscan} datasets comprehend the database of real cases.
-We selected 9 \gls*{spect} images that especially failed on the spatial normalization
-  using our internal registration method from a pool of clinical subjects.
+We selected 9 \gls*{spect} images from a pool of clinical subjects on which
+  the spatial normalization, using our internal registration method, did not
+  provide a satisfactory result.
 We also included an additional dataset from one healthy subject for whom
   a corresponding \gls*{t1} was acquired.
 \cbend
@@ -1008,7 +1009,7 @@ The presented evaluation framework will be used on the development
   of the \gls*{pysbr} prototype.
 The results achieved confirm the need for improved spatial normalization
   methodologies, and illustrated that \gls*{ibr} does not improve the
-  linear mapping after a initialization.
+  linear mapping after an initialization.
 On the next release of \gls*{pysbr}, the shape features associated to the
   template will be generated from the structural data offered by the 
   reference \gls*{t1} images.
@@ -1016,8 +1017,7 @@ We consider that the structural error on the location of the left-side striatal
   cavities will be fixed with such procedure.
 The second functionality to be implemented is an enhanced version and 
   new definitions of the shape-features to lead the alignment,
-  with the aim at increasing the reliability of the mapping technique
-  introduced in ``\nameref{par:registration}'' (\autoref{par:registration}).
+  with the aim at increasing the reliability.
 
 Additionally, \gls*{pysbr} will be used under the framework of
   ongoing clinical studies at the Biophysics 
@@ -1200,21 +1200,10 @@ BMF was awarded a PhD fellowship (App form--call 07-2009) of Institute for Bioen
 \appendix
 \setcounter{page}{1}
 \renewcommand*{\thepage}{Supplemental Material - \arabic{page}}
+\renewcommand*{\thesubsection}{S.\arabic{subsection}}
+
 \section*{Supplemental Materials}\label{supl}
-
-\subsection*{PySBR Implementation details}
-\label{supl:implementation_details}
-
-All the interfaces present a uniform structure (input parameters, output parameters,
-  and functional body), and a uniform use (creation, input parameters setting, and
-  execution calling \texttt{run()}).
-This behavior is inherited from the \texttt{BaseInterface} class of \gls*{nipype}.
-We summarize here the most important interfaces,
-  presenting some examples of their use in \autoref{list:interfaces}.
-The presented code examples make use of the three modules of 
-  \gls*{pysbr}, that will be imported as given in \autoref{list:interfaces}.
-
-\subsection*{Workflow for generation of synthetic phantoms}\label{supl:synth_phantom_wf}
+\subsection{Workflow for generation of synthetic phantoms}\label{supl:synth_phantom_wf}
 This workflow takes as input a \gls*{t1} image processed with \emph{Freesurfer} and its
   \texttt{recon-all} tool.
 One \emph{Interface} called \texttt{PhantomGenerate} extracts the \glspl*{roi} 
@@ -1240,7 +1229,20 @@ Finally, normally distributed noise is added to the signal and images are resamp
   overlay of the \glspl*{roi}.\label{fig:supl_phantoms}}
 \end{figure*}
 
-\subsection*{Templates}
+
+\subsection{PySBR Implementation details}
+\label{supl:implementation_details}
+
+All the interfaces present a uniform structure (input parameters, output parameters,
+  and functional body), and a uniform use (creation, input parameters setting, and
+  execution calling \texttt{run()}).
+This behavior is inherited from the \texttt{BaseInterface} class of \gls*{nipype}.
+We summarize here the most important interfaces,
+  presenting some examples of their use in \autoref{list:interfaces}.
+The presented code examples make use of the three modules of 
+  \gls*{pysbr}, that will be imported as given in \autoref{list:interfaces}.
+
+\subsubsection{Templates}
 \label{supl:templates}
 Templates are a fundamental part of the software, as they hold the reference shapes to
   perform normalization.
@@ -1259,7 +1261,7 @@ When using \gls*{pysbr} for evaluation or quantification purposes, it is possibl
   from the anatomical reference.
 
 
-\subsection*{Shape analysis interfaces}
+\subsubsection{Shape analysis interfaces}
 \label{supl:shapeanalysis}
 
 \Gls*{pysbr} provides several interfaces to perform shape-based analysis of \gls*{datscan}
@@ -1278,7 +1280,7 @@ This interface takes the landmarks extracted previously and, finds
 Input and output files make use of the \gls*{json} format
   for interoperability reasons.
 
-\subsection*{Transformation model} %
+\subsubsection{Transformation model} %
 Currently, only the \gls*{ebs} transform from \gls*{itk} is supported
   (see \autoref{list:interfaces}, lines 29-35).
 The \texttt{EBSTransform} interface composes the initial affine transform
@@ -1291,7 +1293,7 @@ This interface extends a base class (\texttt{BaseTransform}) that is provided to
 
 
 \glsreset{ibr}
-\subsection*{PySBR User interface}
+\subsection{Workflows and user interface}
 \label{supl:user_interface}
 
 Here, We introduce two final user
