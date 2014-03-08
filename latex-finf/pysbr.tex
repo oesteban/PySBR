@@ -18,7 +18,7 @@
 % Set this to true if you submit the article
 %  it will put all the figures at the end 
 \newboolean{submit}
-\setboolean{submit}{false}
+\setboolean{submit}{true}
 
 \ifthenelse{\boolean{submit}}
 {
@@ -244,7 +244,8 @@ In this sense, it helped identify the valuable features of \gls*{pysbr},
   and the necessity of improved landmark detection to increase
   its reliability.
 \tiny
-  \section{Keywords:} nonlinear registration, spect, quantification, movement disorders
+\section{Keywords:}  spect, nonlinear registration, quantification, movement disorders,
+  reproducible research
 \end{abstract}
 
 %\twocolumn
@@ -357,7 +358,7 @@ For instance, \gls*{basgan} proposes a local registration scheme, clipping the
   subjects that present an advanced grade of disease.
 \cbstart
 Currently, our \emph{in-house} approach is implemented adapting the nonlinear registration
-  tools included with \gls*{spm}.
+  tools included with \gls*{spm}, likewise in \citep{rakshi_frontal_1999}.
 We use the \emph{spatial normalization} module configured to impose a strong regularization penalty,
   that needs to be manually fine-tuned.
 Therefore, visual inspection of the results is mandatory in these settings.
@@ -1098,9 +1099,18 @@ BMF was awarded a PhD fellowship (App form--call 07-2009) of Institute for Bioen
 %\end{thebibliography}
 
 \newpage
-
 \onecolumn
 \appendix
+\makeatletter
+\ifthenelse{\boolean{submit}}{
+  \efloat@restorefloats
+  \setcounter{figure}{0} % Start again
+  \renewcommand\thefigure{S\arabic{figure}}
+  \setcounter{table}{0} % Start again
+  \renewcommand\thetable{S\arabic{table}}
+}{}
+\makeatother
+
 \section*{Appendix}\label{appendix}
 \subsection*{Algorithms used for extraction of shape features}
 \begin{myalgorithm}[Extraction of static landmarks across the surface of the brain\label{alg:lstatic}]
@@ -1355,5 +1365,15 @@ tfm.inputs.in_transform = 'path/to/displacements.txt'
 tfm.inputs.in_apply = [ 'path/to/myTemplate/ROI1.nii.gz', 'path/to/myTemplate/ROI2.nii.gz']
 tfm.run()
 \end{lstlisting}
+
+\ifthenelse{\boolean{submit}}{
+  \newpage
+  \setcounter{page}{1}
+  \renewcommand*{\thepage}{Figures - \arabic{page}}
+  \setcounter{figure}{0} % Start again
+  \renewcommand\thefigure{\arabic{figure}}
+  \setcounter{table}{0} % Start again
+  \renewcommand\thetable{\arabic{table}}
+}{}
 
 \end{document}
